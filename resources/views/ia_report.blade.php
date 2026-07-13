@@ -88,6 +88,12 @@
             </p>
         </div>
 
+        <!-- Hero Banner Image -->
+        <div class="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border border-slate-800/80 neon-glow h-52 sm:h-72 my-8">
+            <img src="{{ asset('images/generative_ai_banner.png') }}" alt="Generative AI Banner" class="w-full h-full object-cover object-center filter brightness-95">
+            <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-darkBg/10 to-transparent"></div>
+        </div>
+
         <!-- Grid of 10 Generative AIs -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
@@ -95,17 +101,24 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-neonBlue to-blue-600 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-neonBlue uppercase tracking-wider">01. OpenAI</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">GPT-4o (Omni)</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-neonBlue uppercase tracking-wider">01. OpenAI</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">GPT-4o (Omni)</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                El modelo omni de OpenAI que procesa de manera nativa texto, voz y visión en tiempo real con una velocidad de respuesta humana.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full">Multimodal Texto/Voz/Visión</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        El modelo omni de OpenAI que procesa de manera nativa texto, voz y visión en tiempo real con una velocidad de respuesta humana.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full">Multimodal Texto/Voz/Visión</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Interacciones de voz naturales, análisis visual complejo y asistencia de programación rápida.</p>
                         <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Automatizar atención al cliente con agentes de voz integrados o analizar diagramas técnicos de inmediato.</p>
                     </div>
@@ -116,17 +129,24 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-neonBlue to-neonGreen rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-neonGreen uppercase tracking-wider">02. Anthropic</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">Claude 3.5 Sonnet</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-neonGreen uppercase tracking-wider">02. Anthropic</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">Claude 3.5 Sonnet</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                El modelo líder en desarrollo de software y lógica analítica. Su función "Artifacts" permite previsualizar páginas web y scripts directamente en el chat.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full">Razonamiento & Código</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        El modelo líder en desarrollo de software y lógica analítica. Su función "Artifacts" permite previsualizar páginas web y scripts directamente en el chat.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full">Razonamiento & Código</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Programación compleja, redacción de documentos técnicos y análisis detallado de datos.</p>
                         <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Escribir landing pages o refactorizar bloques enteros de código en minutos con explicaciones detalladas.</p>
                     </div>
@@ -137,17 +157,24 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-neonBlue rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">03. Google DeepMind</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">Gemini 1.5 Pro</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">03. Google DeepMind</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">Gemini 1.5 Pro</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                Cuenta con una ventana de contexto revolucionaria de hasta 2 millones de tokens, permitiendo procesar libros completos, horas de video o bases de datos enteras en una sola pregunta.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-purple-500/10 border border-purple-500/20 text-purple-400 px-2.5 py-1 rounded-full">Súper Contexto (2M)</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Cuenta con una ventana de contexto revolucionaria de hasta 2 millones de tokens, permitiendo procesar libros completos, horas de video o bases de datos enteras en una sola pregunta.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-purple-500/10 border border-purple-500/20 text-purple-400 px-2.5 py-1 rounded-full">Súper Contexto (2M)</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Análisis de videos de larga duración, auditorías de repositorios de código completos y traducción masiva.</p>
                         <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Subir un video grabado de una hora de reunión y pedirle un resumen exacto con marcas de tiempo y acciones acordadas.</p>
                     </div>
@@ -158,17 +185,24 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-700 to-indigo-900 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">04. Meta AI</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">Llama 3.1 405B</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">04. Meta AI</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">Llama 3.1 405B</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                El primer modelo abierto que compite de tú a tú con los modelos propietarios más grandes. Ofrece un rendimiento increíble para la personalización y despliegue privado.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full">Código Abierto / Open Weights</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        El primer modelo abierto que compite de tú a tú con los modelos propietarios más grandes. Ofrece un rendimiento increíble para la personalización y despliegue privado.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full">Código Abierto / Open Weights</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Despliegue en servidores privados corporativos, destilación de modelos pequeños y privacidad de datos.</p>
                         <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Entrenar modelos de lenguaje más pequeños basados en las respuestas de Llama 3.1 sin pagar tarifas de API externas.</p>
                     </div>
@@ -179,17 +213,24 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-neonBlue to-yellow-600 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-yellow-500 uppercase tracking-wider">05. Midjourney</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">Midjourney v6</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-yellow-500 uppercase tracking-wider">05. Midjourney</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">Midjourney v6</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                El generador de imágenes fotorrealistas y artísticas líder en el mundo. Su versión 6 ofrece renderizado de texto impecable, coherencia espacial extrema y un nivel de detalle incomparable.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 px-2.5 py-1 rounded-full">Generación de Imagen</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/image_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        El generador de imágenes fotorrealistas y artísticas líder en el mundo. Su versión 6 ofrece renderizado de texto impecable, coherencia espacial extrema y un nivel de detalle incomparable.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 px-2.5 py-1 rounded-full">Generación de Imagen</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Creación de piezas publicitarias, maquetas de interfaz (UI), e ilustraciones digitales premium.</p>
                         <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Diseñar mockups de productos y banners para campañas publicitarias de alto impacto en redes sociales.</p>
                     </div>
@@ -200,17 +241,24 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-red-600 to-neonBlue rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-red-500 uppercase tracking-wider">06. OpenAI</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">Sora</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-red-500 uppercase tracking-wider">06. OpenAI</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">Sora</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                La revolucionaria IA de OpenAI capaz de generar escenas de video altamente detalladas, movimientos de cámara complejos y múltiples personajes con físicas realistas a partir de texto.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-red-500/10 border border-red-500/20 text-red-400 px-2.5 py-1 rounded-full">Texto a Video</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/video_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        La revolucionaria IA de OpenAI capaz de generar escenas de video altamente detalladas, movimientos de cámara complejos y múltiples personajes con físicas realistas a partir de texto.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-red-500/10 border border-red-500/20 text-red-400 px-2.5 py-1 rounded-full">Texto a Video</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Creación de trailers, previsualización cinematográfica, contenido educativo de alta calidad y clips de stock.</p>
                         <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Reducir costos de rodaje de B-roll y tomas de relleno para canales de YouTube y videos corporativos.</p>
                     </div>
@@ -221,17 +269,24 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-purple-600 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-pink-500 uppercase tracking-wider">07. Stability AI</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">Stable Diffusion 3</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-pink-500 uppercase tracking-wider">07. Stability AI</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">Stable Diffusion 3</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                Modelo de código abierto que destaca por su increíble comprensión de prompts de texto complejos, corrección de letras/palabras escritas en la imagen y flexibilidad para correr localmente.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-pink-500/10 border border-pink-500/20 text-pink-400 px-2.5 py-1 rounded-full">Imagen Open Source</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/image_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Modelo de código abierto que destaca por su increíble comprensión de prompts de texto complejos, corrección de letras/palabras escritas en la imagen y flexibilidad para correr localmente.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-pink-500/10 border border-pink-500/20 text-pink-400 px-2.5 py-1 rounded-full">Imagen Open Source</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Diseño gráfico personalizado, tipografías generadas por IA y control absoluto de generación local offline.</p>
                         <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Integrar generación de imágenes directamente dentro de aplicaciones de software personalizadas.</p>
                     </div>
@@ -242,17 +297,24 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-orange-600 to-yellow-500 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-orange-500 uppercase tracking-wider">08. Udio & Suno</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">Udio & Suno AI</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-orange-500 uppercase tracking-wider">08. Udio & Suno</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">Udio & Suno AI</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                Herramientas pioneras en la creación de audio y canciones completas. Permiten generar pistas musicales de calidad de estudio con voces realistas en cualquier género a partir de una descripción.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2.5 py-1 rounded-full">Generación de Música</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/video_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Herramientas pioneras en la creación de audio y canciones completas. Permiten generar pistas musicales de calidad de estudio con voces realistas en cualquier género a partir de una descripción.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2.5 py-1 rounded-full">Generación de Música</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Creación de bandas sonoras libres de derechos, jingles publicitarios, música ambiental para creadores.</p>
                         <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Producir música de fondo única para podcasts y campañas de marketing sin incurrir en regalías comerciales.</p>
                     </div>
@@ -263,17 +325,24 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-cyan-600 to-indigo-600 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">09. Kling & Runway</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">Kling & Gen-3 Alpha</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">09. Kling & Runway</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">Kling & Gen-3 Alpha</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                Modelos de video comercialmente accesibles que ofrecen animaciones fluidas, hiperrealismo visual e instrucciones precisas de cámara basadas en texto, imagen a video o video a video.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-2.5 py-1 rounded-full">Video Generativo Rápido</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/video_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Modelos de video comercialmente accesibles que ofrecen animaciones fluidas, hiperrealismo visual e instrucciones precisas de cámara basadas en texto, imagen a video o video a video.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-2.5 py-1 rounded-full">Video Generativo Rápido</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Creación ágil de contenido comercial, efectos especiales sencillos y animación de fotografías fijas.</p>
                         <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Animar imágenes publicitarias estáticas de productos para transformarlas en videos interactivos de TikTok.</p>
                     </div>
@@ -284,19 +353,26 @@
             <div class="relative group">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-teal-600 to-neonBlue rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-300"></div>
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">10. OpenAI</span>
-                            <h3 class="font-outfit font-black text-2xl text-white mt-1">Whisper v3</h3>
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="flex-grow space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">10. OpenAI</span>
+                                    <h3 class="font-outfit font-black text-2xl text-white mt-1">Whisper v3</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                El estándar absoluto en reconocimiento de voz automático y traducción. Ofrece una precisión extrema para transcribir audios con ruido, acentos complejos o terminología técnica.
+                            </p>
                         </div>
-                        <span class="text-[10px] font-bold bg-teal-500/10 border border-teal-500/20 text-teal-400 px-2.5 py-1 rounded-full">Transcripción & Audio</span>
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
+                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        El estándar absoluto en reconocimiento de voz automático y traducción. Ofrece una precisión extrema para transcribir audios con ruido, acentos complejos o terminología técnica.
-                    </p>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
+                        <span class="inline-block text-[10px] font-bold bg-teal-500/10 border border-teal-500/20 text-teal-400 px-2.5 py-1 rounded-full">Transcripción & Audio</span>
                         <p class="text-xs font-semibold text-slate-300">💡 <strong class="text-white">Mejor para:</strong> Generación automática de subtítulos, traducción de audio directa y transcripción de actas médicas o legales.</p>
-                        <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Transcribir audios de videollamadas o entrevistas de forma masiva para transformarlas en artículos de blog optimizados para SEO.</p>
+                        <p class="text-xs text-slate-400"><strong class="text-neonGreen">Caso de uso productivo:</strong> Transcribir audios de videollamadas o interviews de forma masiva para transformarlas en artículos de blog optimizados para SEO.</p>
                     </div>
                 </div>
             </div>
