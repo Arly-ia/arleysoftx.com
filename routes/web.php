@@ -24,3 +24,8 @@ Route::get('/tutoriales-task', [TikTokTutorialController::class, 'showLanding'])
 Route::post('/tutoriales-task/checkout', [TikTokTutorialController::class, 'createCheckoutSession'])->name('tutorial.checkout');
 Route::get('/tutoriales-task/success', [TikTokTutorialController::class, 'success'])->name('tutorial.success');
 Route::get('/tutoriales-task/cancel', [TikTokTutorialController::class, 'cancel'])->name('tutorial.cancel');
+
+// Ruta para el reporte de las últimas IA Generativas
+Route::get('/reporte-ia', function () {
+    return view('ia_report');
+})->name('ia.report');
