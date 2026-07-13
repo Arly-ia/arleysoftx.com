@@ -67,22 +67,22 @@
     <!-- Main Content -->
     <main class="relative z-10 max-w-4xl mx-auto px-6 py-16 md:py-24 text-center my-auto">
         <!-- Badge -->
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-neonBlue/30 bg-neonBlue/5 mb-8 animate-pulse">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-neonBlue/30 bg-neonBlue/5 mb-8">
             <span class="w-2 h-2 rounded-full bg-neonBlue"></span>
-            <span class="text-xs font-semibold text-neonBlue uppercase tracking-widest font-outfit">Plataforma de Capacitación</span>
+            <span class="text-xs font-semibold text-neonBlue uppercase tracking-widest font-outfit">Recursos & Reportes</span>
         </div>
 
         <!-- Title -->
         <h1 class="font-outfit font-black text-4xl sm:text-5xl md:text-6xl tracking-tight text-white mb-6 leading-none">
-            Aprende a Generar Ingresos <br class="hidden sm:inline">
+            Portal de Recursos <br class="hidden sm:inline">
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-neonBlue via-cyan-400 to-neonGreen">
-                Desde Tu Casa
+                y Capacitación
             </span>
         </h1>
 
         <!-- Subtitle -->
-        <p class="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto mb-12 font-light leading-relaxed">
-            Te brindamos guías paso a paso de optimización, videotutoriales prácticos y herramientas digitales diseñadas para iniciar desde cero sin conocimientos previos.
+        <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+            Explora nuestros reportes técnicos y guías de aprendizaje. Información y herramientas de alta calidad para potenciar tus habilidades.
         </p>
 
         <!-- Cards Container -->
@@ -96,7 +96,7 @@
                         <span class="text-xs font-bold text-neonGreen uppercase tracking-wider font-outfit">Disponible Ahora</span>
                         <h3 class="font-outfit font-black text-xl text-white mt-1">Guías & Tutoriales TASK</h3>
                         <p class="text-slate-400 text-sm mt-2 max-w-sm">
-                            Aprende la Fórmula POV y optimiza tu cuenta de aplicación para maximizar ganancias.
+                            Aprende a generar ingresos desde tu casa: guías paso a paso de optimización y videotutoriales prácticos para maximizar tus ganancias.
                         </p>
                     </div>
                     <div class="w-full sm:w-auto shrink-0">
