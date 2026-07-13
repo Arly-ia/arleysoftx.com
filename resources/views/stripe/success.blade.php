@@ -106,7 +106,7 @@
                 <iframe 
                     class="w-full h-full" 
                     src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" 
-                    title="Magic Travel Video Tutorial" 
+                    title="Task Video Tutorial" 
                     frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                     allowfullscreen>
