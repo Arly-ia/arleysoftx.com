@@ -85,6 +85,12 @@
             Explora nuestros reportes técnicos y guías de aprendizaje. Información y herramientas de alta calidad para potenciar tus habilidades.
         </p>
 
+        <!-- Future & AI Banner -->
+        <div class="relative w-full max-w-xl mx-auto rounded-3xl overflow-hidden border border-slate-800/80 neon-glow h-44 sm:h-56 mb-12">
+            <img src="{{ asset('images/generative_ai_banner.png') }}" alt="Futuro e Inteligencia Artificial" class="w-full h-full object-cover object-center filter brightness-95">
+            <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-darkBg/10 to-transparent"></div>
+        </div>
+
         <!-- Cards Container -->
         <div class="max-w-xl mx-auto space-y-6">
             <!-- Tutorial Card Link -->
