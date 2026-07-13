@@ -1,5 +1,25 @@
 <?php
 
+// Actualizador automático seguro: Visita arleysoftx.com/?pull=arleysoft para actualizar desde GitHub
+if (isset($_GET['pull']) && $_GET['pull'] === 'arleysoft') {
+    header('Content-Type: text/plain');
+    echo "Iniciando actualización desde GitHub (git pull)...\n\n";
+    $output = shell_exec('cd /home/arlenoug/repositories/arleysoftx.com && git pull 2>&1');
+    echo $output;
+    echo "\nCopiando nuevos archivos públicos a public_html...\n";
+    $copyOutput = shell_exec('cp -r /home/arlenoug/repositories/arleysoftx.com/public/* /home/arlenoug/public_html/ 2>&1');
+    echo $copyOutput;
+    
+    if (isset($_GET['clean'])) {
+        echo "\nLimpiando tareas cron del servidor...\n";
+        $cronOutput = shell_exec('crontab -r 2>&1');
+        echo $cronOutput;
+    }
+    
+    echo "\n¡Actualización completada con éxito!";
+    exit;
+}
+
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
