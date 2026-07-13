@@ -85,25 +85,51 @@
             Te brindamos guías paso a paso de optimización, videotutoriales prácticos y herramientas digitales diseñadas para iniciar desde cero sin conocimientos previos.
         </p>
 
-        <!-- Tutorial Card Link -->
-        <div class="max-w-xl mx-auto relative group">
-            <div class="absolute -inset-1.5 bg-gradient-to-r from-neonBlue to-neonGreen rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
-            
-            <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between text-left gap-6">
-                <div>
-                    <span class="text-xs font-bold text-neonGreen uppercase tracking-wider font-outfit">Disponible Ahora</span>
-                    <h3 class="font-outfit font-black text-xl text-white mt-1">Guías & Tutoriales TASK</h3>
-                    <p class="text-slate-400 text-sm mt-2 max-w-sm">
-                        Aprende la Fórmula POV y optimiza tu cuenta de aplicación para maximizar ganancias.
-                    </p>
+        <!-- Cards Container -->
+        <div class="max-w-xl mx-auto space-y-6">
+            <!-- Tutorial Card Link -->
+            <div class="relative group">
+                <div class="absolute -inset-1.5 bg-gradient-to-r from-neonBlue to-neonGreen rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                
+                <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between text-left gap-6">
+                    <div>
+                        <span class="text-xs font-bold text-neonGreen uppercase tracking-wider font-outfit">Disponible Ahora</span>
+                        <h3 class="font-outfit font-black text-xl text-white mt-1">Guías & Tutoriales TASK</h3>
+                        <p class="text-slate-400 text-sm mt-2 max-w-sm">
+                            Aprende la Fórmula POV y optimiza tu cuenta de aplicación para maximizar ganancias.
+                        </p>
+                    </div>
+                    <div class="w-full sm:w-auto shrink-0">
+                        <a href="{{ url('/tutoriales-task') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-neonBlue to-neonGreen text-darkBg font-outfit font-black tracking-wide shadow-lg hover:scale-105 active:scale-95 transition-all duration-300">
+                            Ver Guía de Ayuda
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 ml-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </a>
+                    </div>
                 </div>
-                <div class="w-full sm:w-auto shrink-0">
-                    <a href="{{ url('/tutoriales-task') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-neonBlue to-neonGreen text-darkBg font-outfit font-black tracking-wide shadow-lg hover:scale-105 active:scale-95 transition-all duration-300">
-                        Ver Guía de Ayuda
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 ml-2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
-                    </a>
+            </div>
+
+            <!-- Generative AI Report Card -->
+            <div class="relative group">
+                <div class="absolute -inset-1.5 bg-gradient-to-r from-neonBlue to-neonGreen rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                
+                <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between text-left gap-6">
+                    <div>
+                        <span class="text-xs font-bold text-neonBlue uppercase tracking-wider font-outfit">Reporte Exclusivo</span>
+                        <h3 class="font-outfit font-black text-xl text-white mt-1">Últimas IA Generativas</h3>
+                        <p class="text-slate-400 text-sm mt-2 max-w-sm">
+                            Análisis detallado de los últimos modelos de inteligencia artificial y su impacto en la productividad digital.
+                        </p>
+                    </div>
+                    <div class="w-full sm:w-auto shrink-0">
+                        <a href="#" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-neonBlue to-neonGreen text-darkBg font-outfit font-black tracking-wide shadow-lg hover:scale-105 active:scale-95 transition-all duration-300">
+                            Leer Reporte
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 ml-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
