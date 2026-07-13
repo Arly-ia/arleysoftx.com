@@ -73,10 +73,16 @@
     <!-- Header Navigation -->
     <header class="w-full py-6 px-6 max-w-7xl mx-auto flex justify-between items-center relative z-10">
         <div class="flex items-center gap-2">
-            <span class="text-2xl font-black font-outfit tracking-tighter bg-gradient-to-r from-neonBlue via-white to-neonGreen bg-clip-text text-transparent">
+            <a href="{{ url('/') }}" class="text-2xl font-black font-outfit tracking-tighter bg-gradient-to-r from-neonBlue via-white to-neonGreen bg-clip-text text-transparent hover:opacity-90">
                 GUIA Y TUTORIALES TASK
-            </span>
+            </a>
         </div>
+        <a href="{{ url('/') }}" class="text-xs font-bold text-slate-400 hover:text-white transition duration-200 flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+            Volver al Inicio
+        </a>
     </header>
 
     <!-- Main Content (Hero Section) -->
