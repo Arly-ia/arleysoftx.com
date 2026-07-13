@@ -39,7 +39,7 @@ class TikTokTutorialController extends Controller
                             'price_data' => [
                                 'currency' => 'usd',
                                 'product_data' => [
-                                    'name' => 'Guías y Tutoriales Magic Travel',
+                                    'name' => 'Guías y Tutoriales Task',
                                     'description' => 'Acceso completo a videotutoriales de optimización, guías técnicas en PDF y recursos digitales descargables.',
                                 ],
                                 'unit_amount' => 2700, // $27.00 USD en centavos

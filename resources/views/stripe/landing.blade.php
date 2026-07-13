@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Guías y Tutoriales - Magic Travel</title>
+    <title>Guías y Tutoriales - Task</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,7 +74,7 @@
     <header class="w-full py-6 px-6 max-w-7xl mx-auto flex justify-between items-center relative z-10">
         <div class="flex items-center gap-2">
             <span class="text-2xl font-black font-outfit tracking-tighter bg-gradient-to-r from-neonBlue via-white to-neonGreen bg-clip-text text-transparent">
-                TUTORIALES MAGIC TRAVEL
+                GUIA Y TUTORIALES TASK
             </span>
         </div>
     </header>
@@ -194,7 +194,7 @@
     <!-- Footer -->
     <footer class="w-full py-8 border-t border-blue-950/40 bg-[#02050a] text-center text-xs text-slate-500 relative z-10">
         <div class="max-w-6xl mx-auto px-6 space-y-2">
-            <p>© 2026 Tutoriales Magic Travel. Todos los derechos reservados.</p>
+            <p>© 2026 Guías y Tutoriales Task. Todos los derechos reservados.</p>
         </div>
     </footer>
 

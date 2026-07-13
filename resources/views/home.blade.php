@@ -94,7 +94,7 @@
                     <span class="text-xs font-bold text-neonGreen uppercase tracking-wider font-outfit">Disponible Ahora</span>
                     <h3 class="font-outfit font-black text-xl text-white mt-1">Guías & Tutoriales TASK</h3>
                     <p class="text-slate-400 text-sm mt-2 max-w-sm">
-                        Aprende la Fórmula POV de Magic Travel y optimiza tu cuenta de aplicación para maximizar ganancias.
+                        Aprende la Fórmula POV y optimiza tu cuenta de aplicación para maximizar ganancias.
                     </p>
                 </div>
                 <div class="w-full sm:w-auto shrink-0">
