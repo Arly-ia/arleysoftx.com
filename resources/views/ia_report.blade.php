@@ -90,7 +90,7 @@
 
         <!-- Hero Banner Image -->
         <div class="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border border-slate-800/80 neon-glow h-52 sm:h-72 my-8">
-            <img src="{{ asset('images/generative_ai_banner.png') }}" alt="Generative AI Banner" class="w-full h-full object-cover object-center filter brightness-95">
+            <img src="{{ asset('images/generative_ai_banner.webp') }}" alt="Generative AI Banner" class="w-full h-full object-cover object-center filter brightness-95">
             <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-darkBg/10 to-transparent"></div>
         </div>
 
@@ -114,7 +114,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/text_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
@@ -142,7 +142,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/text_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
@@ -170,7 +170,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/text_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
@@ -198,7 +198,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/text_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
@@ -226,7 +226,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/image_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/image_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
@@ -254,7 +254,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/video_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/video_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
@@ -282,7 +282,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/image_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/image_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
@@ -310,7 +310,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/video_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/video_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
@@ -338,7 +338,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/video_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/video_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">
@@ -366,7 +366,7 @@
                             </p>
                         </div>
                         <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-850 bg-slate-950 p-2 shadow-inner flex items-center justify-center">
-                            <img src="{{ asset('images/text_ai.png') }}" class="w-full h-full object-contain filter brightness-95">
+                            <img src="{{ asset('images/text_ai.webp') }}" class="w-full h-full object-contain filter brightness-95">
                         </div>
                     </div>
                     <div class="border-t border-slate-800/60 pt-4 space-y-2">

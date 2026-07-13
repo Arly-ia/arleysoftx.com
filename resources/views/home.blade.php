@@ -87,7 +87,7 @@
 
         <!-- Future & AI Banner -->
         <div class="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border border-slate-800/80 neon-glow h-52 sm:h-72 mb-12">
-            <img src="{{ asset('images/generative_ai_banner.png') }}" alt="Futuro e Inteligencia Artificial" class="w-full h-full object-cover object-center filter brightness-95">
+            <img src="{{ asset('images/generative_ai_banner.webp') }}" alt="Futuro e Inteligencia Artificial" class="w-full h-full object-cover object-center filter brightness-95">
             <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-darkBg/10 to-transparent"></div>
         </div>
 
