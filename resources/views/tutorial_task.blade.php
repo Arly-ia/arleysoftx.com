@@ -281,14 +281,18 @@
                         </p>
                     </div>
 
-                    <div class="space-y-6">
+                    <div class="space-y-4">
                         @foreach($tasks as $index => $task)
                         @php
                             $isLockedTask = $isPreview && ($index > 1);
+                            $imgPath = 'images/' . ($task['image'] ?? '');
+                            $hasImg = !empty($task['image']) && file_exists(public_path($imgPath));
                         @endphp
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl md:items-start hover:border-neonBlue/40 transition duration-300 relative overflow-hidden">
+                        {{-- Card: flex row en desktop, col en mobile --}}
+                        <div class="flex flex-col sm:flex-row gap-0 bg-slate-900/60 border border-slate-800/40 rounded-2xl overflow-hidden hover:border-neonBlue/40 transition duration-300 relative">
+
                             @if($isLockedTask)
-                                <!-- Lock Overlay -->
+                                {{-- Lock Overlay --}}
                                 <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-[6px] z-20 flex flex-col items-center justify-center p-6 text-center space-y-4">
                                     <div class="w-12 h-12 rounded-2xl bg-neonBlue/10 border border-neonBlue/30 text-neonBlue flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,240,255,0.15)]">
                                         🔒
@@ -305,8 +309,9 @@
                                     </form>
                                 </div>
                             @endif
-                            <!-- Izquierda: Información de la Tarea -->
-                            <div class="space-y-4">
+
+                            {{-- Columna izquierda: texto --}}
+                            <div class="flex-1 p-6 space-y-4 min-w-0">
                                 <div class="flex flex-wrap gap-2">
                                     <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-slate-800/80 text-slate-300 rounded-full border border-slate-700/50">
                                         Tarea #{{ $index + 1 }}
@@ -318,17 +323,14 @@
                                         💵 Pago: {{ $task['pago'] }}
                                     </span>
                                 </div>
-                                
+
                                 <h4 class="font-outfit font-black text-xl text-white tracking-tight">
                                     {{ $task['title'] }}
                                 </h4>
 
-                                <!-- Instrucciones detalladas -->
                                 <div class="space-y-1">
                                     <span class="text-xs font-bold text-slate-400 uppercase tracking-widest font-outfit">Instrucciones:</span>
-                                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                        {{ $task['instrucciones'] }}
-                                    </p>
+                                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">{{ $task['instrucciones'] }}</p>
                                 </div>
 
                                 <div class="space-y-2">
@@ -343,16 +345,12 @@
                                 </div>
                             </div>
 
-                            <!-- Derecha: Imagen / Captura vertical -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end flex items-center justify-center min-h-[240px] md:min-h-[300px]">
-                                @php
-                                    $imgPath = 'images/' . $task['image'];
-                                    $hasImg = !empty($task['image']) && file_exists(public_path($imgPath));
-                                @endphp
+                            {{-- Columna derecha: imagen fija --}}
+                            <div class="sm:w-52 sm:flex-shrink-0 bg-slate-950 border-t sm:border-t-0 sm:border-l border-slate-800/60 flex items-center justify-center group overflow-hidden" style="min-height: 240px;">
                                 @if($hasImg)
-                                    <img src="{{ asset($imgPath) }}" alt="{{ $task['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                    <img src="{{ asset($imgPath) }}" alt="{{ $task['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" style="height: 100%; min-height: 240px;">
                                 @else
-                                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-600 p-4 select-none">
+                                    <div class="flex flex-col items-center justify-center text-slate-600 p-4 select-none w-full h-full" style="min-height: 240px;">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mb-2 text-slate-800 animate-pulse">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
@@ -361,6 +359,8 @@
                                     </div>
                                 @endif
                             </div>
+
+                        </div>
                         @endforeach
 
                         @if($isPreview)
