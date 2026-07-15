@@ -78,7 +78,24 @@ class TaskTutorialController extends Controller
         // Determinar si es vista previa (si no ha pagado, es vista previa)
         $isPreview = !session('task_tutorial_paid', false);
 
-        $tasks = $this->getTasks();
+        $allTasks = $this->getTasks();
+        
+        // Reordenar para que la de wipe/mop y kitchen queden al principio de la lista
+        $unlockedTasks = [];
+        $lockedTasks = [];
+
+        foreach ($allTasks as $task) {
+            $titleLower = strtolower($task['title']);
+            if (str_contains($titleLower, 'kitchen') || str_contains($titleLower, 'wipe') || str_contains($titleLower, 'mop')) {
+                $unlockedTasks[] = $task;
+            } else {
+                $lockedTasks[] = $task;
+            }
+        }
+
+        // Combinar dejando las desbloqueadas primero
+        $tasks = array_merge($unlockedTasks, $lockedTasks);
+
         return view('tutorial_task', compact('tasks', 'isPreview'));
     }
 

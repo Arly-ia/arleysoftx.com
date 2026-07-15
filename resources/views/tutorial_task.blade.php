@@ -284,9 +284,7 @@
                     <div class="space-y-6">
                         @foreach($tasks as $index => $task)
                         @php
-                            $titleLower = strtolower($task['title']);
-                            $isUnlocked = str_contains($titleLower, 'kitchen') || str_contains($titleLower, 'wipe') || str_contains($titleLower, 'mop');
-                            $isLockedTask = $isPreview && !$isUnlocked;
+                            $isLockedTask = $isPreview && ($index > 1);
                         @endphp
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300 relative overflow-hidden">
                             @if($isLockedTask)
