@@ -230,6 +230,52 @@
                         <p class="text-xs text-slate-400">A medida que completas tareas con buena calificación, tu reputación sube, permitiéndote acceder a tareas exclusivas mejor pagadas.</p>
                     </div>
                 </div>
+
+                <!-- Sección de Ejemplos de Tareas con Fotos en 2 columnas -->
+                <div class="pt-8 border-t border-slate-800/80 space-y-6">
+                    <div class="space-y-1">
+                        <h3 class="font-outfit font-bold text-white text-lg flex items-center gap-2">
+                            📸 Ejemplos Visuales de Tareas TASK
+                        </h3>
+                        <p class="text-slate-400 text-xs sm:text-sm">
+                            Aquí puedes ver el formato y la captura de las tareas reales que realizarás en la plataforma.
+                        </p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Tarea 1 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
+                            <!-- Izquierda: Título y descripción -->
+                            <div class="space-y-3">
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Categoría Moderación</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Moderación y Categorización de Contenido</h4>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Consiste en revisar capturas, textos o videos cortos reportados para clasificarlos según las políticas de la comunidad. Es una tarea muy frecuente y de rápida resolución.
+                                </p>
+                            </div>
+                            <!-- Derecha: Foto -->
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-video relative group">
+                                <img src="{{ asset('images/task_screenshot_1.png') }}" alt="Ejemplo de Moderación" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                        </div>
+
+                        <!-- Tarea 2 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonGreen/40 transition duration-300">
+                            <!-- Izquierda: Título y descripción -->
+                            <div class="space-y-3">
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Categoría Transcripción</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Transcripción y Etiquetado de Datos</h4>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Deberás escuchar audios breves o leer imágenes digitalizadas y escribir exactamente lo que se dice o ve para entrenar motores de voz e Inteligencia Artificial.
+                                </p>
+                            </div>
+                            <!-- Derecha: Foto -->
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-video relative group">
+                                <img src="{{ asset('images/task_screenshot_2.png') }}" alt="Ejemplo de Transcripción" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Tab 4: Recursos y Descargas -->
