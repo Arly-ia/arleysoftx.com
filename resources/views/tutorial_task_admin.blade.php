@@ -161,8 +161,10 @@
                             
                             <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800/60 flex items-center gap-3">
                                 @if(!empty($task['image']) && file_exists(public_path('images/' . $task['image'])))
-                                    <div class="w-10 h-12 rounded bg-slate-900 border border-slate-800 overflow-hidden flex-shrink-0">
-                                        <img src="{{ asset('images/' . $task['image']) }}" class="w-full h-full object-cover">
+                                    <div class="w-10 h-12 rounded bg-slate-900 border border-slate-800 overflow-hidden flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-neonBlue/50 transition"
+                                         onclick="openImageModal('{{ asset('images/' . $task['image']) }}')"
+                                         title="Click para ver imagen">
+                                        <img src="{{ asset('images/' . $task['image']) }}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
                                     </div>
                                     <div class="flex-grow">
                                         <p class="text-[10px] text-slate-500 font-mono truncate max-w-[150px]">{{ $task['image'] }}</p>
@@ -282,6 +284,40 @@
                 }
             }
         }
+    </script>
+
+    <!-- Image Preview Modal -->
+    <div id="imageModal" onclick="closeImageModal()" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="relative max-w-md w-full" onclick="event.stopPropagation()">
+            <button onclick="closeImageModal()" class="absolute -top-3 -right-3 z-10 w-9 h-9 rounded-full bg-slate-900 border border-slate-700 text-white hover:bg-red-500/80 hover:border-red-400 flex items-center justify-center text-sm font-black transition duration-200 shadow-lg">
+                ✕
+            </button>
+            <div class="rounded-2xl overflow-hidden border border-slate-700 shadow-[0_0_40px_rgba(0,240,255,0.15)]">
+                <img id="modalImage" src="" alt="Vista previa" class="w-full h-auto object-contain max-h-[80vh]">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openImageModal(src) {
+            const modal = document.getElementById('imageModal');
+            document.getElementById('modalImage').src = src;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        // Cerrar con tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
     </script>
 </body>
 </html>
