@@ -17,7 +17,7 @@ use App\Http\Controllers\TikTokTutorialController;
 // Home page for arleysoftx.com
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
 
 // Rutas para la venta del tutorial de POV con Stripe (Tutoriales TASK)
 Route::get('/tutoriales-task', [TikTokTutorialController::class, 'showLanding'])->name('tutorial.landing');

@@ -75,14 +75,23 @@ class TaskTutorialController extends Controller
             }
         }
 
-        // 2. Si no tiene sesión de pago, redirigir a la landing page de ventas
-        if (!session('task_tutorial_paid')) {
-            return redirect()->route('tutorial.landing')->with('error', 'Debes adquirir la guía para acceder a este contenido.');
+        // Determinar si es vista previa (si no ha pagado, es vista previa)
+        $isPreview = !session('task_tutorial_paid', false);
+
+        $allTasks = $this->getTasks();
+
+        if ($isPreview) {
+            $filteredTasks = [];
+            foreach ($allTasks as $task) {
+                $titleLower = strtolower($task['title']);
+                if (str_contains($titleLower, 'kitchen') || str_contains($titleLower, 'wipe') || str_contains($titleLower, 'mop')) {
+                    $filteredTasks[] = $task;
+                }
+            }
+            $tasks = array_slice($filteredTasks, 0, 2);
+        } else {
+            $tasks = $allTasks;
         }
-
-        $isPreview = false;
-
-        $tasks = $this->getTasks();
         return view('tutorial_task', compact('tasks', 'isPreview'));
     }
 

@@ -57,7 +57,7 @@
     <!-- Header Navigation -->
     <header class="w-full py-6 px-6 max-w-7xl mx-auto flex justify-between items-center relative z-10 border-b border-slate-800/40 bg-darkBg/50 backdrop-blur-md sticky top-0">
         <div class="flex items-center gap-2">
-            <a href="{{ url('/') }}" class="text-2xl font-black font-outfit tracking-tighter bg-gradient-to-r from-neonBlue via-white to-neonGreen bg-clip-text text-transparent hover:opacity-90 transition">
+            <a href="{{ route('home') }}" class="text-2xl font-black font-outfit tracking-tighter bg-gradient-to-r from-neonBlue via-white to-neonGreen bg-clip-text text-transparent hover:opacity-90 transition">
                 TASK
             </a>
         </div>
@@ -70,7 +70,7 @@
                     </button>
                 </form>
             @endif
-            <a href="{{ url('/') }}" class="text-xs font-bold text-slate-400 hover:text-white transition duration-200 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800/60">
+            <a href="{{ route('home') }}" class="text-xs font-bold text-slate-400 hover:text-white transition duration-200 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800/60">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                 </svg>
@@ -361,8 +361,31 @@
                                     </div>
                                 @endif
                             </div>
-                        </div>
                         @endforeach
+
+                        @if($isPreview)
+                            <!-- Premium Locked Card -->
+                            <div class="p-8 rounded-3xl bg-gradient-to-r from-neonBlue/15 to-emerald-500/10 border border-neonBlue/30 text-center space-y-6 shadow-[0_0_30px_rgba(0,240,255,0.15)] relative overflow-hidden backdrop-blur-md mt-6">
+                                <div class="absolute -right-10 -bottom-10 w-24 h-24 bg-neonBlue/20 rounded-full blur-2xl pointer-events-none"></div>
+                                <div class="w-16 h-16 mx-auto rounded-3xl bg-neonBlue/10 border border-neonBlue/30 text-neonBlue flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(0,240,255,0.2)] animate-pulse">
+                                    🔒
+                                </div>
+                                <div class="space-y-2">
+                                    <h4 class="font-outfit font-black text-xl text-white tracking-tight">
+                                        ¿Quieres desbloquear las 24 labores Premium restantes?
+                                    </h4>
+                                    <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
+                                        Adquiere la guía completa de Tareas TASK por solo **$27 USD** y obtén acceso inmediato a todas las especificaciones de grabación, requisitos técnicos detallados y descargas.
+                                    </p>
+                                </div>
+                                <form action="{{ route('tutorial.checkout') }}" method="POST" class="inline-block">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-gradient-to-r from-neonBlue to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-darkBg font-extrabold text-sm uppercase tracking-wider transition duration-300 shadow-[0_0_20px_rgba(0,240,255,0.25)] active:scale-[0.98]">
+                                        🔑 Desbloquear Guía Completa ($27 USD)
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
