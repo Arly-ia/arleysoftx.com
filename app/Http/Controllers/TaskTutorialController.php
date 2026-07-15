@@ -44,6 +44,11 @@ class TaskTutorialController extends Controller
      */
     public function index(Request $request)
     {
+        // 0. Si viene el parámetro de vista previa, conceder acceso directo
+        if ($request->query('preview') === 'arleysoft' || $request->query('preview') === '1') {
+            session(['task_tutorial_paid' => true]);
+        }
+
         // 1. Si viene session_id en la query de la URL, intentamos verificarlo en Stripe
         if ($request->has('session_id')) {
             $sessionId = $request->query('session_id');
