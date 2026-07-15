@@ -171,6 +171,46 @@
         .fbtn.active { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.4); color: #fff; }
         .fbtn[data-cat].active { background: var(--cc,rgba(255,255,255,0.12)); border-color: var(--cc-border, rgba(255,255,255,0.4)); color: var(--cc-text,#fff); }
 
+        /* ── GASTOS GENERALES ───────────────────────── */
+        .general-receipt-card {
+            background: linear-gradient(135deg, #181830 0%, #111122 100%);
+            border: 2px solid #10b981;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin: 22px 24px 0;
+            max-width: 1400px;
+            box-shadow: 0 16px 40px rgba(16,185,129,0.15);
+        }
+        @media (min-width: 1440px) {
+            .general-receipt-card { margin: 22px auto 0; }
+        }
+        .general-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .general-card-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 26px;
+            letter-spacing: 2px;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1;
+        }
+        .general-card-desc {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
         /* ── TASKS GRID ─────────────────────────────── */
         .tasks-grid {
             display: grid;
@@ -594,6 +634,40 @@ $cats = [
 {{-- ===== FLASH ===== --}}
 @if(session('success'))
 <div class="flash">{{ session('success') }}</div>
+@endif
+
+{{-- ===== STANDALONE GASTOS GENERALES CARD ===== --}}
+@if($generalTask)
+<div class="general-receipt-card">
+    <div class="general-card-header">
+        <div class="general-card-title">
+            <span>🧾</span> {{ $generalTask->name }}
+        </div>
+        <span class="task-gasto-total" id="task-gasto-0" style="font-size: 15px; padding: 4px 12px;">
+            Total: ${{ number_format($generalTask->receipts_total, 2) }}
+        </span>
+    </div>
+    <p class="general-card-desc">{{ $generalTask->notes }}</p>
+    
+    <div class="receipts-list" id="receipts-0" style="margin-bottom: 16px;">
+        @foreach($generalTask->receipts as $receipt)
+        <div class="p-thumb receipt-thumb" data-rcptid="{{ $receipt->id }}" style="width: 68px; height: 68px;">
+            <img src="{{ asset('images/jj_receipts/'.$receipt->filename) }}"
+                 alt="Recibo General"
+                 class="lb-trigger"
+                 data-src="{{ asset('images/jj_receipts/'.$receipt->filename) }}"
+                 data-cap="Recibo General: ${{ number_format($receipt->amount, 2) }}">
+            <span class="rcp-amount" style="font-size: 9px; padding: 3px 0;">${{ number_format($receipt->amount, 0) }}</span>
+            <button class="del-ph" onclick="delReceipt({{ $receipt->id }},this)">×</button>
+        </div>
+        @endforeach
+    </div>
+    
+    <button class="up-btn receipt-btn" style="padding: 8px 16px; font-size: 11px;" 
+            onclick="openReceiptModal(0, '{{ addslashes($generalTask->name) }}')">
+        + Subir Factura / Recibo General
+    </button>
+</div>
 @endif
 
 {{-- ===== FILTERS ===== --}}
@@ -1040,7 +1114,7 @@ function overlayClose(e) { if (e.target.id === 'mOverlay') closeModal(); }
 /* ─── RECEIPTS MODAL ─────────────────────── */
 function openReceiptModal(taskId, taskName) {
     document.getElementById('rTaskId').value = taskId;
-    document.getElementById('rTaskName').textContent = "Tarea: " + taskName;
+    document.getElementById('rTaskName').textContent = "Categoría: " + taskName;
     document.getElementById('rOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -1083,16 +1157,20 @@ async function submitReceipt(e) {
             const div = document.createElement('div');
             div.className = 'p-thumb receipt-thumb';
             div.dataset.rcptid = data.receipt.id;
+            if (id == 0) {
+                div.style.width = '68px';
+                div.style.height = '68px';
+            }
             div.innerHTML = `
                 <img src="${data.receipt.url}" alt="Recibo" class="lb-trigger"
-                     data-src="${data.receipt.url}" data-cap="Recibo: $${Number(data.receipt.amount).toLocaleString('es-ES', {minimumFractionDigits: 2})} — ${document.getElementById('rTaskName').textContent.replace('Tarea: ', '')}">
-                <span class="rcp-amount">$${Number(data.receipt.amount).toLocaleString('es-ES', {maximumFractionDigits: 0})}</span>
+                     data-src="${data.receipt.url}" data-cap="${id == 0 ? 'Recibo General' : 'Recibo'}: $${Number(data.receipt.amount).toLocaleString('es-ES', {minimumFractionDigits: 2})}">
+                <span class="rcp-amount" style="${id == 0 ? 'font-size: 9px; padding: 3px 0;' : ''}">$${Number(data.receipt.amount).toLocaleString('es-ES', {maximumFractionDigits: 0})}</span>
                 <button class="del-ph" onclick="delReceipt(${data.receipt.id},this)">×</button>
             `;
             list.appendChild(div);
 
             // Update task total
-            document.getElementById(`task-gasto-${id}`).textContent = `$${Number(data.task_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;
+            document.getElementById(`task-gasto-${id}`).textContent = (id == 0 ? 'Total: ' : '') + `$${Number(data.task_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;
 
             // Update stats bar overall total
             document.getElementById('stat-gastos').textContent = `$${Number(data.overall_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;
@@ -1121,13 +1199,13 @@ async function delReceipt(id, btn) {
 
         if (data.success) {
             const thumb = btn.closest('.p-thumb');
-            const card = thumb.closest('.task-card');
-            const taskId = card.dataset.id;
+            const list = thumb.closest('.receipts-list');
+            const taskId = list.id.replace('receipts-', '');
 
             thumb.remove();
 
             // Update task total
-            document.getElementById(`task-gasto-${taskId}`).textContent = `$${Number(data.task_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;
+            document.getElementById(`task-gasto-${taskId}`).textContent = (taskId == 0 ? 'Total: ' : '') + `$${Number(data.task_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;
 
             // Update stats bar overall total
             document.getElementById('stat-gastos').textContent = `$${Number(data.overall_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;

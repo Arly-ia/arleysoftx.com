@@ -40,13 +40,16 @@ class JJTaskController extends Controller
     protected function getTasks(): array
     {
         $path = $this->getJsonPath();
+        $tasks = [];
 
-        if (!File::exists($path)) {
+        if (File::exists($path)) {
+            $content = File::get($path);
+            $tasks = json_decode($content, true) ?: [];
+        } else {
             $dir = dirname($path);
             if (!File::exists($dir)) {
                 File::makeDirectory($dir, 0755, true);
             }
-            $tasks = [];
             foreach (self::$defaultTasks as $idx => $task) {
                 $tasks[] = [
                     'id'           => $idx + 1,
@@ -56,16 +59,37 @@ class JJTaskController extends Controller
                     'status'       => 'pendiente',
                     'completed_at' => null,
                     'notes'        => null,
-                    'photos'       => [], // Array of {id, type, filename}
-                    'receipts'     => [], // Array of {id, amount, filename}
+                    'photos'       => [],
+                    'receipts'     => [],
                 ];
             }
-            $this->saveTasks($tasks);
-            return $tasks;
         }
 
-        $content = File::get($path);
-        return json_decode($content, true) ?: [];
+        // Ensure Gastos Generales (ID 0) is always present
+        $hasGeneral = false;
+        foreach ($tasks as $t) {
+            if ($t['id'] === 0) {
+                $hasGeneral = true;
+                break;
+            }
+        }
+
+        if (!$hasGeneral) {
+            array_unshift($tasks, [
+                'id'           => 0,
+                'name'         => 'Gastos Generales (Materiales, Compras y Varios)',
+                'category'     => 'mantenimiento',
+                'priority'     => 'media',
+                'status'       => 'en_progreso',
+                'completed_at' => null,
+                'notes'        => 'Sube aquí todas las facturas y recibos generales que no correspondan a una tarea específica.',
+                'photos'       => [],
+                'receipts'     => [],
+            ]);
+            $this->saveTasks($tasks);
+        }
+
+        return $tasks;
     }
 
     protected function saveTasks(array $tasks): void
@@ -77,9 +101,38 @@ class JJTaskController extends Controller
     {
         $tasks = $this->getTasks();
 
-        // Sort by status: pendiente -> en_progreso -> completada
-        // Sort by priority: alta -> media -> baja
-        usort($tasks, function($a, $b) {
+        $generalTask = null;
+        $normalTasks = [];
+        $total_gastos = 0.0;
+
+        foreach ($tasks as $task) {
+            // Sum receipts
+            if (isset($task['receipts']) && is_array($task['receipts'])) {
+                foreach ($task['receipts'] as $receipt) {
+                    $total_gastos += (float) ($receipt['amount'] ?? 0);
+                }
+            }
+
+            if ($task['id'] === 0) {
+                $generalTask = (object) [
+                    'id'             => 0,
+                    'name'           => $task['name'],
+                    'category'       => $task['category'],
+                    'priority'       => $task['priority'],
+                    'status'         => $task['status'],
+                    'completed_at'   => null,
+                    'notes'          => $task['notes'] ?? null,
+                    'photos'         => collect([]),
+                    'receipts'       => collect(array_map(fn($r) => (object)$r, $task['receipts'] ?? [])),
+                    'receipts_total' => array_sum(array_column($task['receipts'] ?? [], 'amount')),
+                ];
+            } else {
+                $normalTasks[] = $task;
+            }
+        }
+
+        // Sort normal tasks
+        usort($normalTasks, function($a, $b) {
             $prioOrder = ['alta' => 1, 'media' => 2, 'baja' => 3];
             $statusOrder = ['pendiente' => 1, 'en_progreso' => 2, 'completada' => 3];
 
@@ -94,26 +147,18 @@ class JJTaskController extends Controller
             return $aStatus <=> $bStatus;
         });
 
-        $total = count($tasks);
+        $total = count($normalTasks);
         $completadas = 0;
         $en_progreso = 0;
         $pendientes = 0;
-        $total_gastos = 0.0;
 
-        foreach ($tasks as $task) {
+        foreach ($normalTasks as $task) {
             if ($task['status'] === 'completada') {
                 $completadas++;
             } elseif ($task['status'] === 'en_progreso') {
                 $en_progreso++;
             } else {
                 $pendientes++;
-            }
-
-            // Sum receipts
-            if (isset($task['receipts']) && is_array($task['receipts'])) {
-                foreach ($task['receipts'] as $receipt) {
-                    $total_gastos += (float) ($receipt['amount'] ?? 0);
-                }
             }
         }
 
@@ -126,7 +171,7 @@ class JJTaskController extends Controller
             'pct'          => $total > 0 ? (int) round(($completadas / $total) * 100) : 0,
         ];
 
-        // Format tasks as objects for Blade compatibility
+        // Format normal tasks as objects for Blade
         $tasksObj = array_map(function($task) {
             $receipts = $task['receipts'] ?? [];
             $receiptsTotal = array_sum(array_column($receipts, 'amount'));
@@ -143,11 +188,12 @@ class JJTaskController extends Controller
                 'receipts'       => collect(array_map(fn($r) => (object)$r, $receipts)),
                 'receipts_total' => $receiptsTotal,
             ];
-        }, $tasks);
+        }, $normalTasks);
 
         return view('jj_20wings_tasks', [
-            'tasks' => $tasksObj,
-            'stats' => $stats
+            'tasks'       => $tasksObj,
+            'generalTask' => $generalTask,
+            'stats'       => $stats
         ]);
     }
 
@@ -248,7 +294,6 @@ class JJTaskController extends Controller
             'filename' => $filename,
         ];
 
-        // Ensure array exists
         if (!isset($tasks[$taskIndex]['photos'])) {
             $tasks[$taskIndex]['photos'] = [];
         }
