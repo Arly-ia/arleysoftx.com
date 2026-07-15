@@ -6,6 +6,11 @@ if (isset($_GET['pull']) && $_GET['pull'] === 'arleysoft') {
     echo "Iniciando actualización desde GitHub (git pull)...\n\n";
     $output = shell_exec('cd /home/arlenoug/repositories/arleysoftx.com && git pull 2>&1');
     echo $output;
+    
+    echo "\nEjecutando migraciones de base de datos...\n";
+    $migrateOutput = shell_exec('cd /home/arlenoug/repositories/arleysoftx.com && php artisan migrate --force 2>&1');
+    echo $migrateOutput;
+
     echo "\nCopiando nuevos archivos públicos a public_html...\n";
     $copyOutput = shell_exec('cp -r /home/arlenoug/repositories/arleysoftx.com/public/* /home/arlenoug/public_html/ 2>&1');
     echo $copyOutput;
