@@ -37,3 +37,23 @@ Route::get('/guia-y-tutoriales-task', [TaskTutorialController::class, 'index'])-
 Route::get('/guia-y-tutoriales-task/admin', [TaskTutorialController::class, 'adminIndex'])->name('tutorial.task.admin');
 Route::post('/guia-y-tutoriales-task/admin/save', [TaskTutorialController::class, 'save'])->name('tutorial.task.save');
 
+Route::get('/guia-y-tutoriales-task/debug-images', function () {
+    $dir = public_path('images');
+    if (!file_exists($dir)) {
+        return response()->json(['error' => 'Directory does not exist']);
+    }
+    $files = scandir($dir);
+    $result = [];
+    foreach ($files as $file) {
+        if ($file === '.' || $file === '..') continue;
+        $path = $dir . '/' . $file;
+        $result[] = [
+            'name' => $file,
+            'size' => filesize($path),
+            'perms' => substr(sprintf('%o', fileperms($path)), -4),
+            'readable' => is_readable($path),
+        ];
+    }
+    return response()->json($result);
+});
+
