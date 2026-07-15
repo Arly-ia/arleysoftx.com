@@ -190,11 +190,14 @@
 
             <!-- Sticky/Bottom Save Panel -->
             <div class="sticky bottom-6 z-20 w-full bg-slate-900/90 border border-slate-800 p-6 rounded-3xl backdrop-blur-md shadow-2xl flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <div class="w-full sm:w-auto space-y-1">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-outfit block">Contraseña de Administrador:</label>
-                    <input type="password" name="admin_password" required placeholder="Contraseña..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-white focus:border-neonBlue focus:outline-none transition">
+                <div class="space-y-1 text-center sm:text-left">
+                    <h4 class="font-outfit font-black text-sm text-white uppercase tracking-wider flex items-center gap-1.5 justify-center sm:justify-start">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Sesión Activa
+                    </h4>
+                    <p class="text-[10px] text-slate-400">Eres administrador. Todos los cambios se aplicarán directamente.</p>
                 </div>
-                <button type="submit" class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-neonBlue/10 hover:bg-neonBlue/20 text-neonBlue hover:text-white font-black font-outfit tracking-wider uppercase text-sm border border-neonBlue/30 hover:border-neonBlue/60 transition duration-300">
+                <button type="submit" class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-neonBlue to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-darkBg font-black font-outfit tracking-wider uppercase text-sm transition duration-300 shadow-[0_0_20px_rgba(0,240,255,0.15)] active:scale-[0.98]">
                     💾 Guardar Todo
                 </button>
             </div>

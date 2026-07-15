@@ -129,12 +129,6 @@ class TaskTutorialController extends Controller
             return redirect()->route('tutorial.task.admin')->with('error', 'Acceso no autorizado. Inicie sesión primero.');
         }
 
-        // Validar contraseña
-        $adminPassword = env('TASK_ADMIN_PASSWORD', 'Sebastian1511+');
-        if ($request->input('admin_password') !== $adminPassword) {
-            return back()->with('error', 'Contraseña de administrador incorrecta. Los cambios no fueron aplicados.')->withInput();
-        }
-
         $tasksData = $request->input('tasks', []);
         $tasks = [];
         $destinationPath = public_path('images');
