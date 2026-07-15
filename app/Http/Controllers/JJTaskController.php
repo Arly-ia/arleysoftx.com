@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JJTask;
-use App\Models\JJTaskPhoto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class JJTaskController extends Controller
 {
@@ -33,36 +32,108 @@ class JJTaskController extends Controller
         ['name' => 'Piso Storage',                                              'category' => 'reparacion',    'priority' => 'media'],
     ];
 
-    /** Seed default tasks on first visit */
-    private function seedIfEmpty(): void
+    protected function getJsonPath(): string
     {
-        if (JJTask::count() === 0) {
-            foreach (self::$defaultTasks as $task) {
-                JJTask::create(array_merge($task, ['status' => 'pendiente']));
+        return storage_path('app/jj_tasks.json');
+    }
+
+    protected function getTasks(): array
+    {
+        $path = $this->getJsonPath();
+
+        if (!File::exists($path)) {
+            $dir = dirname($path);
+            if (!File::exists($dir)) {
+                File::makeDirectory($dir, 0755, true);
             }
+            $tasks = [];
+            foreach (self::$defaultTasks as $idx => $task) {
+                $tasks[] = [
+                    'id'           => $idx + 1,
+                    'name'         => $task['name'],
+                    'category'     => $task['category'],
+                    'priority'     => $task['priority'],
+                    'status'       => 'pendiente',
+                    'completed_at' => null,
+                    'notes'        => null,
+                    'photos'       => [], // Array of {id, type, filename}
+                ];
+            }
+            $this->saveTasks($tasks);
+            return $tasks;
         }
+
+        $content = File::get($path);
+        return json_decode($content, true) ?: [];
+    }
+
+    protected function saveTasks(array $tasks): void
+    {
+        File::put($this->getJsonPath(), json_encode($tasks, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 
     public function index()
     {
-        $this->seedIfEmpty();
+        $tasks = $this->getTasks();
 
-        $tasks = JJTask::with('photos')
-            ->orderByRaw("FIELD(priority, 'alta', 'media', 'baja')")
-            ->orderByRaw("FIELD(status, 'pendiente', 'en_progreso', 'completada')")
-            ->get();
+        // Sort by status: pendiente -> en_progreso -> completada
+        // Sort by priority: alta -> media -> baja
+        usort($tasks, function($a, $b) {
+            $prioOrder = ['alta' => 1, 'media' => 2, 'baja' => 3];
+            $statusOrder = ['pendiente' => 1, 'en_progreso' => 2, 'completada' => 3];
+
+            $aPrio = $prioOrder[$a['priority']] ?? 2;
+            $bPrio = $prioOrder[$b['priority']] ?? 2;
+            if ($aPrio !== $bPrio) {
+                return $aPrio <=> $bPrio;
+            }
+
+            $aStatus = $statusOrder[$a['status']] ?? 2;
+            $bStatus = $statusOrder[$b['status']] ?? 2;
+            return $aStatus <=> $bStatus;
+        });
+
+        $total = count($tasks);
+        $completadas = 0;
+        $en_progreso = 0;
+        $pendientes = 0;
+
+        foreach ($tasks as $task) {
+            if ($task['status'] === 'completada') {
+                $completadas++;
+            } elseif ($task['status'] === 'en_progreso') {
+                $en_progreso++;
+            } else {
+                $pendientes++;
+            }
+        }
 
         $stats = [
-            'total'       => $tasks->count(),
-            'completadas' => $tasks->where('status', 'completada')->count(),
-            'en_progreso' => $tasks->where('status', 'en_progreso')->count(),
-            'pendientes'  => $tasks->where('status', 'pendiente')->count(),
+            'total'       => $total,
+            'completadas' => $completadas,
+            'en_progreso' => $en_progreso,
+            'pendientes'  => $pendientes,
+            'pct'         => $total > 0 ? (int) round(($completadas / $total) * 100) : 0,
         ];
-        $stats['pct'] = $stats['total'] > 0
-            ? (int) round(($stats['completadas'] / $stats['total']) * 100)
-            : 0;
 
-        return view('jj_20wings_tasks', compact('tasks', 'stats'));
+        // Format tasks as objects for Blade compatibility
+        $tasksObj = array_map(function($task) {
+            return (object) [
+                'id'           => $task['id'],
+                'name'         => $task['name'],
+                'category'     => $task['category'],
+                'priority'     => $task['priority'],
+                'status'       => $task['status'],
+                'completed_at' => $task['completed_at'] ? \Carbon\Carbon::parse($task['completed_at']) : null,
+                'notes'        => $task['notes'] ?? null,
+                'photos'       => collect(array_map(fn($p) => (object)$p, $task['photos'] ?? [])),
+            ];
+        }, $tasks);
+
+        return view('jj_20wings_tasks', [
+            'tasks' => $tasksObj,
+            'stats' => $stats
+        ]);
     }
 
     public function store(Request $request)
@@ -74,25 +145,53 @@ class JJTaskController extends Controller
             'notes'    => 'nullable|string|max:1000',
         ]);
 
-        JJTask::create([
-            'name'     => $request->name,
-            'category' => $request->category,
-            'priority' => $request->priority,
-            'status'   => 'pendiente',
-            'notes'    => $request->notes,
-        ]);
+        $tasks = $this->getTasks();
+        $maxId = 0;
+        foreach ($tasks as $t) {
+            if ($t['id'] > $maxId) {
+                $maxId = $t['id'];
+            }
+        }
+
+        $tasks[] = [
+            'id'           => $maxId + 1,
+            'name'         => $request->name,
+            'category'     => $request->category,
+            'priority'     => $request->priority,
+            'status'       => 'pendiente',
+            'completed_at' => null,
+            'notes'        => $request->notes,
+            'photos'       => [],
+        ];
+
+        $this->saveTasks($tasks);
 
         return redirect()->route('jj.20wings.tasks')->with('success', '✓ Tarea creada exitosamente.');
     }
 
     public function updateStatus(Request $request, $id)
     {
-        $task = JJTask::findOrFail($id);
-        $task->status       = $request->status;
-        $task->completed_at = ($request->status === 'completada') ? now() : null;
-        $task->save();
+        $tasks = $this->getTasks();
+        $found = false;
+        $updatedTask = null;
 
-        return response()->json(['success' => true, 'task' => $task]);
+        foreach ($tasks as &$task) {
+            if ($task['id'] == $id) {
+                $task['status'] = $request->status;
+                $task['completed_at'] = ($request->status === 'completada') ? now()->toIso8601String() : null;
+                $updatedTask = $task;
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            return response()->json(['success' => false, 'error' => 'Task not found'], 404);
+        }
+
+        $this->saveTasks($tasks);
+
+        return response()->json(['success' => true, 'task' => $updatedTask]);
     }
 
     public function uploadPhoto(Request $request, $id)
@@ -102,7 +201,19 @@ class JJTaskController extends Controller
             'type'  => 'required|in:antes,despues',
         ]);
 
-        JJTask::findOrFail($id);
+        $tasks = $this->getTasks();
+        $taskIndex = -1;
+
+        foreach ($tasks as $idx => $task) {
+            if ($task['id'] == $id) {
+                $taskIndex = $idx;
+                break;
+            }
+        }
+
+        if ($taskIndex === -1) {
+            return response()->json(['success' => false, 'error' => 'Task not found'], 404);
+        }
 
         $dir = public_path('images/jj_tasks');
         if (!file_exists($dir)) {
@@ -111,20 +222,24 @@ class JJTaskController extends Controller
 
         $file     = $request->file('photo');
         $ext      = $file->getClientOriginalExtension();
-        $filename = 'task_' . $id . '_' . $request->type . '_' . time() . '.' . $ext;
+        $photoId  = time() . rand(100, 999);
+        $filename = 'task_' . $id . '_' . $request->type . '_' . $photoId . '.' . $ext;
         $file->move($dir, $filename);
 
-        $photo = JJTaskPhoto::create([
-            'task_id'  => $id,
+        $newPhoto = [
+            'id'       => (int) $photoId,
             'type'     => $request->type,
             'filename' => $filename,
-        ]);
+        ];
+
+        $tasks[$taskIndex]['photos'][] = $newPhoto;
+        $this->saveTasks($tasks);
 
         return response()->json([
             'success' => true,
             'photo'   => [
-                'id'   => $photo->id,
-                'type' => $photo->type,
+                'id'   => $newPhoto['id'],
+                'type' => $newPhoto['type'],
                 'url'  => asset('images/jj_tasks/' . $filename),
             ],
         ]);
@@ -132,26 +247,60 @@ class JJTaskController extends Controller
 
     public function deletePhoto($id)
     {
-        $photo = JJTaskPhoto::findOrFail($id);
-        $fp    = public_path('images/jj_tasks/' . $photo->filename);
-        if (file_exists($fp)) {
-            unlink($fp);
-        }
-        $photo->delete();
+        $tasks = $this->getTasks();
+        $photoDeleted = false;
 
+        foreach ($tasks as &$task) {
+            foreach ($task['photos'] as $idx => $photo) {
+                if ($photo['id'] == $id) {
+                    $fp = public_path('images/jj_tasks/' . $photo['filename']);
+                    if (file_exists($fp)) {
+                        unlink($fp);
+                    }
+                    unset($task['photos'][$idx]);
+                    $task['photos'] = array_values($task['photos']);
+                    $photoDeleted = true;
+                    break 2;
+                }
+            }
+        }
+
+        if (!$photoDeleted) {
+            return response()->json(['success' => false, 'error' => 'Photo not found'], 404);
+        }
+
+        $this->saveTasks($tasks);
         return response()->json(['success' => true]);
     }
 
     public function destroy($id)
     {
-        $task = JJTask::with('photos')->findOrFail($id);
-        foreach ($task->photos as $photo) {
-            $fp = public_path('images/jj_tasks/' . $photo->filename);
+        $tasks = $this->getTasks();
+        $taskIndex = -1;
+
+        foreach ($tasks as $idx => $task) {
+            if ($task['id'] == $id) {
+                $taskIndex = $idx;
+                break;
+            }
+        }
+
+        if ($taskIndex === -1) {
+            return response()->json(['success' => false, 'error' => 'Task not found'], 404);
+        }
+
+        // Delete all photos from disk
+        foreach ($tasks[$taskIndex]['photos'] as $photo) {
+            $fp = public_path('images/jj_tasks/' . $photo['filename']);
             if (file_exists($fp)) {
                 unlink($fp);
             }
         }
-        $task->delete();
+
+        unset($tasks[$taskIndex]);
+        $tasks = array_values($tasks);
+
+        $this->saveTasks($tasks);
 
         return response()->json(['success' => true]);
     }
