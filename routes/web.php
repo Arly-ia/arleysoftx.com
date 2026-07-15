@@ -30,8 +30,10 @@ Route::get('/reporte-ia', function () {
     return view('ia_report');
 })->name('ia.report');
 
-// Ruta para la Guía y Tutoriales de las tareas TASK
-Route::get('/guia-y-tutoriales-task', function () {
-    return view('tutorial_task');
-})->name('tutorial.task');
+use App\Http\Controllers\TaskTutorialController;
+
+// Rutas para la Guía y Tutoriales de las tareas TASK
+Route::get('/guia-y-tutoriales-task', [TaskTutorialController::class, 'index'])->name('tutorial.task');
+Route::get('/guia-y-tutoriales-task/admin', [TaskTutorialController::class, 'adminIndex'])->name('tutorial.task.admin');
+Route::post('/guia-y-tutoriales-task/admin/save', [TaskTutorialController::class, 'save'])->name('tutorial.task.save');
 
