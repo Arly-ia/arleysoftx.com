@@ -102,7 +102,7 @@ class TaskTutorialController extends Controller
     public function save(Request $request)
     {
         // Validar contraseña
-        $adminPassword = env('TASK_ADMIN_PASSWORD', 'arleysoft123');
+        $adminPassword = env('TASK_ADMIN_PASSWORD', 'Sebastian1511+');
         if ($request->input('admin_password') !== $adminPassword) {
             return back()->with('error', 'Contraseña de administrador incorrecta. Los cambios no fueron aplicados.')->withInput();
         }
