@@ -243,35 +243,83 @@
                     </div>
 
                     <div class="space-y-6">
-                        <!-- Tarea 1 -->
+                        <!-- Tarea 1: Lavar la Losa -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
                             <!-- Izquierda: Título y descripción -->
                             <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Categoría Moderación</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Moderación y Categorización de Contenido</h4>
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Tarea #1</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Lavar la Losa (Vajilla)</h4>
                                 <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Consiste en revisar capturas, textos o videos cortos reportados para clasificarlos según las políticas de la comunidad. Es una tarea muy frecuente y de rápida resolución.
+                                    Guía paso a paso sobre cómo lavar, desinfectar y ordenar la vajilla de manera rápida y eficiente para mantener la higiene de la cocina.
                                 </p>
                             </div>
                             <!-- Derecha: Foto -->
                             <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-video relative group">
-                                <img src="{{ asset('images/task_screenshot_1.png') }}" alt="Ejemplo de Moderación" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <img src="{{ asset('images/lavando_losa.webp') }}" alt="Lavando Losa" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             </div>
                         </div>
 
-                        <!-- Tarea 2 -->
+                        <!-- Tarea 2: Limpieza del Baño -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonGreen/40 transition duration-300">
                             <!-- Izquierda: Título y descripción -->
                             <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Categoría Transcripción</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Transcripción y Etiquetado de Datos</h4>
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Tarea #2</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Limpieza del Baño</h4>
                                 <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Deberás escuchar audios breves o leer imágenes digitalizadas y escribir exactamente lo que se dice o ve para entrenar motores de voz e Inteligencia Artificial.
+                                    Métodos efectivos y productos recomendados para la desinfección profunda del inodoro, lavamanos y área de ducha de forma segura.
                                 </p>
                             </div>
                             <!-- Derecha: Foto -->
                             <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-video relative group">
-                                <img src="{{ asset('images/task_screenshot_2.png') }}" alt="Ejemplo de Transcripción" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <img src="{{ asset('images/limpiando_bano.webp') }}" alt="Limpiando Baño" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                        </div>
+
+                        <!-- Tarea 3: Limpieza del Ventilador -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
+                            <!-- Izquierda: Título y descripción -->
+                            <div class="space-y-3">
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Tarea #3</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Limpieza de Ventilador</h4>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Técnicas para desmontar de forma segura, retirar el polvo acumulado en las aspas y limpiar a fondo la rejilla protectora del ventilador.
+                                </p>
+                            </div>
+                            <!-- Derecha: Foto -->
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-video relative group">
+                                <img src="{{ asset('images/limpiando_ventilador.webp') }}" alt="Limpiando Ventilador" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                        </div>
+
+                        <!-- Tarea 4: Picar Carne -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonGreen/40 transition duration-300">
+                            <!-- Izquierda: Título y descripción -->
+                            <div class="space-y-3">
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Tarea #4</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Picar o Cortar Carne</h4>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Técnicas correctas de corte y uso de cuchillo para picar carne de forma precisa y segura para diversas recetas de cocina.
+                                </p>
+                            </div>
+                            <!-- Derecha: Foto -->
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-video relative group">
+                                <img src="{{ asset('images/picando_carne.webp') }}" alt="Picando Carne" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                        </div>
+
+                        <!-- Tarea 5: Plantando Plantas -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
+                            <!-- Izquierda: Título y descripción -->
+                            <div class="space-y-3">
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Tarea #5</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Plantando Plantas y Flores</h4>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Proceso paso a paso para trasplantar vegetación a macetas o jardín directo, asegurando el cuidado de las raíces y el riego inicial correcto.
+                                </p>
+                            </div>
+                            <!-- Derecha: Foto -->
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-video relative group">
+                                <img src="{{ asset('images/plantando_plantas.webp') }}" alt="Plantando Plantas" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             </div>
                         </div>
                     </div>
