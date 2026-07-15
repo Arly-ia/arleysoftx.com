@@ -271,7 +271,7 @@
                             </div>
                             <!-- Derecha: Foto -->
                             <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/limpiando_bano.webp') }}" alt="Limpiando Baño" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <img src="{{ asset('images/lavando_banos.webp') }}" alt="Limpiando Baño" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             </div>
                         </div>
 
@@ -320,6 +320,22 @@
                             <!-- Derecha: Foto -->
                             <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
                                 <img src="{{ asset('images/sembrando_plantas.webp') }}" alt="Sembrando Plantas" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                        </div>
+
+                        <!-- Tarea 6: Poner Cortina -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonGreen/40 transition duration-300">
+                            <!-- Izquierda: Título y descripción -->
+                            <div class="space-y-3">
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Tarea #6</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Poner Cortina (Instalación)</h4>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Guía paso a paso sobre cómo medir la ventana, instalar los soportes y colgar cortinas de forma perfectamente nivelada y segura.
+                                </p>
+                            </div>
+                            <!-- Derecha: Foto -->
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
+                                <img src="{{ asset('images/colgando_cortina.webp') }}" alt="Poner Cortina" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             </div>
                         </div>
                     </div>
