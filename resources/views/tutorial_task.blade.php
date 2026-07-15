@@ -232,144 +232,256 @@
                 </div>
 
                 <!-- Sección de Ejemplos de Tareas con Fotos en 2 columnas -->
+                @php
+                $tasks = [
+                    [
+                        'title' => 'Cut material',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Continuous cutting, Show result steady',
+                        'image' => 'task_screenshot_1.png'
+                    ],
+                    [
+                        'title' => 'Trim or prune plants',
+                        'pago' => '$20/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Both hands visible, 3 branches, Full motion, Show result steady',
+                        'image' => 'task_screenshot_2.png'
+                    ],
+                    [
+                        'title' => 'Wipe Surfaces',
+                        'pago' => '$15/hour',
+                        'categoria' => 'Chores',
+                        'requisitos' => 'Head mount, Landscape, Visible hand, Continuous wiping, Show cleaned area steady',
+                        'image' => 'lavando_banos.webp'
+                    ],
+                    [
+                        'title' => 'Make a drink',
+                        'pago' => '$15/hour',
+                        'categoria' => 'Chores',
+                        'requisitos' => 'Head mount, Landscape, Both hands visible, 5-20 actions, Show finished drink steady',
+                        'image' => 'batir_huevos.webp'
+                    ],
+                    [
+                        'title' => 'Clean refrigerator shelf',
+                        'pago' => '$15/hour',
+                        'categoria' => 'Chores',
+                        'requisitos' => 'Head mount, Landscape, Both hands visible, Clean 1 full shelf, Show shelf steady',
+                        'image' => 'limpiando_ventilador.webp'
+                    ],
+                    [
+                        'title' => 'Pour liquids',
+                        'pago' => '$15/hour',
+                        'categoria' => 'Cooking',
+                        'requisitos' => 'Head mount, Landscape, Both hands visible, 1 type of liquid, Pour slowly, Show final level steady',
+                        'image' => 'pour_liquids.webp'
+                    ],
+                    [
+                        'title' => 'Unpack grocery bags',
+                        'pago' => '$20/hour',
+                        'categoria' => 'Chores',
+                        'requisitos' => 'Head mount, Landscape, Both hands visible, >2 bags, Sort and store, Show result',
+                        'image' => 'unpack_grocery_bags.webp'
+                    ],
+                    [
+                        'title' => 'Measure and mark surfaces',
+                        'pago' => '$15/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Continuous measuring/marking, Show final marked area steady',
+                        'image' => 'measure_and_mark_surfaces.webp'
+                    ],
+                    [
+                        'title' => 'Install or replace faucets',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show installed faucet steady',
+                        'image' => 'install_or_replace_faucets.webp'
+                    ],
+                    [
+                        'title' => 'Sew, knit or crochet',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show stitches/result steady',
+                        'image' => 'sew_knit_or_crochet.webp'
+                    ],
+                    [
+                        'title' => 'Explore a mall',
+                        'pago' => '$20/hour',
+                        'categoria' => 'Navigation',
+                        'requisitos' => 'Chest mount, Landscape, Level camera, Walk intersections/crowd, Pause at directory',
+                        'image' => 'explore_a_mall.webp'
+                    ],
+                    [
+                        'title' => 'Pot or repot plants',
+                        'pago' => '$20/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Transfer plant + soil, Show final state steady',
+                        'image' => 'sembrando_plantas.webp'
+                    ],
+                    [
+                        'title' => 'Install light fixtures or switch plates',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show installed result steady',
+                        'image' => 'install_light_fixtures_or_switch_plates.webp'
+                    ],
+                    [
+                        'title' => 'Take out the trash & replace liner',
+                        'pago' => '$15/hour',
+                        'categoria' => 'Chores',
+                        'requisitos' => 'Head mount, Landscape, Visible hand, Continuous process, Show bin state steady',
+                        'image' => 'take_out_the_trash_replace_liner.webp'
+                    ],
+                    [
+                        'title' => 'Mix and apply cement or mortar',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show applied surface steady',
+                        'image' => 'mix_and_apply_cement_or_mortar.webp'
+                    ],
+                    [
+                        'title' => 'Drill or fasten materials',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show secured result steady',
+                        'image' => 'drill_or_fasten_materials.webp'
+                    ],
+                    [
+                        'title' => 'Navigate an apartment complex',
+                        'pago' => '$15/hour',
+                        'categoria' => 'Navigation',
+                        'requisitos' => 'Chest mount, Landscape, Level camera, Walk shared spaces, Pause at intersections/entry',
+                        'image' => 'navigate_an_apartment_complex.webp'
+                    ],
+                    [
+                        'title' => 'Cook a dish',
+                        'pago' => '$20/hour',
+                        'categoria' => 'Cooking',
+                        'requisitos' => 'Head mount, Landscape, Visible hand, Continuous process, Show state change result steady',
+                        'image' => 'cook_a_dish.webp'
+                    ],
+                    [
+                        'title' => 'Cut and chop food',
+                        'pago' => '$20/hour',
+                        'categoria' => 'Cooking',
+                        'requisitos' => 'Head mount, Landscape, Both hands visible, Continuous cutting, Show result steady',
+                        'image' => 'cortando_carne.webp'
+                    ],
+                    [
+                        'title' => 'Explore a museum',
+                        'pago' => '$20/hour',
+                        'categoria' => 'Navigation',
+                        'requisitos' => 'Chest mount, Landscape, Level camera, Walk between rooms, Pause at display/transition',
+                        'image' => 'explore_a_museum.webp'
+                    ],
+                    [
+                        'title' => 'Unload and organize dishwasher',
+                        'pago' => '$20/hour',
+                        'categoria' => 'Chores',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show empty dishwasher steady',
+                        'image' => 'lavar_losa.webp'
+                    ],
+                    [
+                        'title' => 'Install or tighten pipes',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hand, Continuous process, Show secured connection steady',
+                        'image' => 'install_or_tighten_pipes.webp'
+                    ],
+                    [
+                        'title' => 'Prepare a meal',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Chores',
+                        'requisitos' => 'Head mount, Landscape, Both hands visible, 5-20 actions, Show finished meal steady',
+                        'image' => 'prepare_a_meal.webp'
+                    ],
+                    [
+                        'title' => 'Install fixtures',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Projects',
+                        'requisitos' => 'Head mount, Landscape, Visible hand, Continuous process, Show installed fixture steady',
+                        'image' => 'colgando_cortina.webp'
+                    ],
+                    [
+                        'title' => 'Record a natural conversation in Spanish',
+                        'pago' => '$20/hour',
+                        'categoria' => 'Language',
+                        'requisitos' => 'Natural/unscripted, Audible voices, No hate/political/PII',
+                        'image' => 'record_a_natural_conversation_in_spanish.webp'
+                    ],
+                    [
+                        'title' => 'Clean kitchen',
+                        'pago' => '$25/hour',
+                        'categoria' => 'Chores',
+                        'requisitos' => 'Head mount, Landscape, Visible hands, Continuous progress, Show result steady',
+                        'image' => 'mapear_piso.webp'
+                    ]
+                ];
+                @endphp
+
                 <div class="pt-8 border-t border-slate-800/80 space-y-6">
                     <div class="space-y-1">
                         <h3 class="font-outfit font-bold text-white text-lg flex items-center gap-2">
-                            📸 Ejemplos Visuales de Tareas TASK
+                            📸 Guía de Grabación y Requisitos por Tarea
                         </h3>
                         <p class="text-slate-400 text-xs sm:text-sm">
-                            Aquí puedes ver el formato y la captura de las tareas reales que realizarás en la plataforma.
+                            Consulta la lista oficial de tareas disponibles, su tasa de pago y las especificaciones técnicas obligatorias para cada grabación.
                         </p>
                     </div>
 
                     <div class="space-y-6">
-                        <!-- Tarea 1: Lavar la Losa -->
+                        @foreach($tasks as $index => $task)
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
-                            <!-- Izquierda: Título y descripción -->
-                            <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Tarea #1</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Lavar la Losa (Vajilla)</h4>
-                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Guía paso a paso sobre cómo lavar, desinfectar y ordenar la vajilla de manera rápida y eficiente para mantener la higiene de la cocina.
-                                </p>
-                            </div>
-                            <!-- Derecha: Foto -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/lavar_losa.webp') }}" alt="Lavar la Losa" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            </div>
-                        </div>
+                            <!-- Izquierda: Información de la Tarea -->
+                            <div class="space-y-4">
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-slate-800/80 text-slate-300 rounded-full border border-slate-700/50">
+                                        Tarea #{{ $index + 1 }}
+                                    </span>
+                                    <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full border border-neonBlue/20">
+                                        {{ $task['categoria'] }}
+                                    </span>
+                                    <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 rounded-full border border-emerald-500/20">
+                                        💵 Pago: {{ $task['pago'] }}
+                                    </span>
+                                </div>
+                                
+                                <h4 class="font-outfit font-black text-xl text-white tracking-tight">
+                                    {{ $task['title'] }}
+                                </h4>
 
-                        <!-- Tarea 2: Limpieza del Baño -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonGreen/40 transition duration-300">
-                            <!-- Izquierda: Título y descripción -->
-                            <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Tarea #2</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Limpieza del Baño</h4>
-                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Métodos efectivos y productos recomendados para la desinfección profunda del inodoro, lavamanos y área de ducha de forma segura.
-                                </p>
+                                <div class="space-y-2">
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest font-outfit">Requisitos de Video:</span>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        @foreach(explode(',', $task['requisitos']) as $req)
+                                            <span class="px-2 py-0.5 text-[10px] font-semibold bg-slate-800/40 text-slate-300 rounded border border-slate-700/45">
+                                                {{ trim($req) }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
-                            <!-- Derecha: Foto -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/lavando_banos.webp') }}" alt="Limpiando Baño" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            </div>
-                        </div>
 
-                        <!-- Tarea 3: Limpieza del Ventilador -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
-                            <!-- Izquierda: Título y descripción -->
-                            <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Tarea #3</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Limpieza de Ventilador</h4>
-                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Técnicas para desmontar de forma segura, retirar el polvo acumulado en las aspas y limpiar a fondo la rejilla protectora del ventilador.
-                                </p>
-                            </div>
-                            <!-- Derecha: Foto -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/limpiando_ventilador.webp') }}" alt="Limpiando Ventilador" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            </div>
-                        </div>
-
-                        <!-- Tarea 4: Picar Carne -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonGreen/40 transition duration-300">
-                            <!-- Izquierda: Título y descripción -->
-                            <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Tarea #4</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Picar o Cortar Carne</h4>
-                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Técnicas correctas de corte y uso de cuchillo para picar carne de forma precisa y segura para diversas recetas de cocina.
-                                </p>
-                            </div>
-                            <!-- Derecha: Foto -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/cortando_carne.webp') }}" alt="Picar o Cortar Carne" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <!-- Derecha: Imagen / Captura vertical -->
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end flex items-center justify-center">
+                                @php
+                                    $imgPath = 'images/' . $task['image'];
+                                    $hasImg = !empty($task['image']) && file_exists(public_path($imgPath));
+                                @endphp
+                                @if($hasImg)
+                                    <img src="{{ asset($imgPath) }}" alt="{{ $task['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                @else
+                                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-600 p-4 select-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mb-2 text-slate-800 animate-pulse">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                                        </svg>
+                                        <span class="text-[10px] font-bold font-outfit uppercase tracking-widest text-slate-800">Foto Pendiente</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-
-                        <!-- Tarea 5: Plantando Plantas -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
-                            <!-- Izquierda: Título y descripción -->
-                            <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Tarea #5</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Sembrando Plantas</h4>
-                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Proceso paso a paso para sembrar y trasplantar vegetación a macetas o jardín directo, asegurando el cuidado de las raíces y el riego inicial correcto.
-                                </p>
-                            </div>
-                            <!-- Derecha: Foto -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/sembrando_plantas.webp') }}" alt="Sembrando Plantas" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            </div>
-                        </div>
-
-                        <!-- Tarea 6: Poner Cortina -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonGreen/40 transition duration-300">
-                            <!-- Izquierda: Título y descripción -->
-                            <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Tarea #6</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Poner Cortina (Instalación)</h4>
-                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Guía paso a paso sobre cómo medir la ventana, instalar los soportes y colgar cortinas de forma perfectamente nivelada y segura.
-                                </p>
-                            </div>
-                            <!-- Derecha: Foto -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/colgando_cortina.webp') }}" alt="Poner Cortina" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            </div>
-                        </div>
-
-                        <!-- Tarea 7: Mapear Piso -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
-                            <!-- Izquierda: Título y descripción -->
-                            <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Tarea #7</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Trapear / Mapear Piso</h4>
-                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Técnicas correctas para el trapeado de superficies, dosificación de productos de limpieza y secado uniforme para dejar pisos impecables.
-                                </p>
-                            </div>
-                            <!-- Derecha: Foto -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/mapear_piso.webp') }}" alt="Mapear Piso" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            </div>
-                        </div>
-
-                        <!-- Tarea 8: Batir Huevos -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonGreen/40 transition duration-300">
-                            <!-- Izquierda: Título y descripción -->
-                            <div class="space-y-3">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Tarea #8</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Batir Huevos</h4>
-                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Técnicas para batir claras o yemas a mano o con batidora eléctrica para lograr la consistencia requerida según la receta.
-                                </p>
-                            </div>
-                            <!-- Derecha: Foto -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/batir_huevos.webp') }}" alt="Batir Huevos" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
