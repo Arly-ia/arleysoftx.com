@@ -579,6 +579,7 @@
 
                 <!-- FAQ Accordion -->
                 <div class="space-y-4">
+                    <!-- Elementos originales -->
                     <div class="border-b border-slate-800 pb-3 space-y-1">
                         <h4 class="font-bold text-white text-sm sm:text-base">¿Cuánto dinero se puede ganar realmente?</h4>
                         <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Esto depende del tiempo dedicado y el nivel de precisión. Usuarios intermedios en Latinoamérica reportan ganancias estables de entre $5 y $15 USD por día trabajando unas pocas horas.</p>
@@ -592,6 +593,82 @@
                     <div class="border-b border-slate-800 pb-3 space-y-1">
                         <h4 class="font-bold text-white text-sm sm:text-base">¿Puedo realizar tareas desde múltiples dispositivos?</h4>
                         <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Sí, puedes iniciar sesión en tu celular y en tu computadora, pero <strong>no uses la misma cuenta de manera simultánea en dos dispositivos distintos</strong>, ya que el sistema podría detectarlo como comportamiento sospechoso.</p>
+                    </div>
+
+                    <!-- Nuevos elementos de WhatsApp -->
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">Casos de éxito</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">Preguntas y respuestas: ¿Qué contiene el curso/guía?</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">¿En cuánto tiempo puede llegar la guía?</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">¿Necesito carro?</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">¿Cómo recibo el dinero?</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">¿Cuánto tiempo se demora en pagar las horas?</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">¿Cuánto tiempo demora en subir los videos?</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">Video: ¿Cómo se hace plata con TASK?</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">Código de referido</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">¿Cuánto se gana por cada venta de la guía?</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">Comunidad</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">¿Trae una guía incluida?</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">Estados / países donde funciona</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">Videos</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
+                    </div>
+
+                    <div class="border-b border-slate-800 pb-3 space-y-1">
+                        <h4 class="font-bold text-white text-sm sm:text-base">Acceso a la comunidad</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed italic">Respuesta pendiente de redacción...</p>
                     </div>
                 </div>
 
