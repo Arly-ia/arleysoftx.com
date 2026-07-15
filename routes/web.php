@@ -19,6 +19,11 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+// JJ Construccion page
+Route::get('/jj-construccion', function () {
+    return view('jj_construccion');
+})->name('jj.construccion');
+
 // Rutas para la venta del tutorial de POV con Stripe (Tutoriales TASK)
 Route::get('/tutoriales-task', [TikTokTutorialController::class, 'showLanding'])->name('tutorial.landing');
 Route::post('/tutoriales-task/checkout', [TikTokTutorialController::class, 'createCheckoutSession'])->name('tutorial.checkout');
