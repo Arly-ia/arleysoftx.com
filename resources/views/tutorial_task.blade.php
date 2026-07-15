@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutorial Completo: Tareas TASK | ArleySoftx</title>
+    <title>Tutorial Completo: Tareas TASK</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,7 +58,7 @@
     <header class="w-full py-6 px-6 max-w-7xl mx-auto flex justify-between items-center relative z-10 border-b border-slate-800/40 bg-darkBg/50 backdrop-blur-md sticky top-0">
         <div class="flex items-center gap-2">
             <a href="{{ url('/') }}" class="text-2xl font-black font-outfit tracking-tighter bg-gradient-to-r from-neonBlue via-white to-neonGreen bg-clip-text text-transparent hover:opacity-90 transition">
-                ARLEYSOFTX TASK
+                TASK
             </a>
         </div>
         <div class="flex items-center gap-3">

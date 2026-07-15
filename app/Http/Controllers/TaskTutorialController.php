@@ -75,8 +75,12 @@ class TaskTutorialController extends Controller
             }
         }
 
-        // Determinar si es vista previa (si no ha pagado, es vista previa)
-        $isPreview = !session('task_tutorial_paid', false);
+        // 2. Si no tiene sesión de pago, redirigir a la landing page de ventas
+        if (!session('task_tutorial_paid')) {
+            return redirect()->route('tutorial.landing')->with('error', 'Debes adquirir la guía para acceder a este contenido.');
+        }
+
+        $isPreview = false;
 
         $tasks = $this->getTasks();
         return view('tutorial_task', compact('tasks', 'isPreview'));
