@@ -379,7 +379,7 @@
                         'pago' => '$20/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show empty dishwasher steady',
-                        'image' => 'lavar_losa.webp'
+                        'image' => 'ordenando_cubiertos.webp'
                     ],
                     [
                         'title' => 'Install or tighten pipes',
@@ -414,7 +414,7 @@
                         'pago' => '$25/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous progress, Show result steady',
-                        'image' => 'mapear_piso.webp'
+                        'image' => 'lavar_losa.webp'
                     ]
                 ];
                 @endphp
