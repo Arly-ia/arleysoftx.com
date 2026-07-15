@@ -7,6 +7,23 @@ if (isset($_GET['pull']) && $_GET['pull'] === 'arleysoft') {
     $output = shell_exec('cd /home/arlenoug/repositories/arleysoftx.com && git pull 2>&1');
     echo $output;
     
+    if (isset($_GET['debug_env'])) {
+        $envPath = '/home/arlenoug/repositories/arleysoftx.com/.env';
+        echo "\nChecking .env at: $envPath\n";
+        echo "Exists: " . (file_exists($envPath) ? 'YES' : 'NO') . "\n";
+        if (file_exists($envPath)) {
+            $lines = file($envPath);
+            foreach ($lines as $line) {
+                if (str_starts_with(trim($line), 'DB_') || str_starts_with(trim($line), 'APP_')) {
+                    echo trim($line) . "\n";
+                }
+            }
+        }
+        $envPath2 = '/home/arlenoug/public_html/.env';
+        echo "\nChecking .env at: $envPath2\n";
+        echo "Exists: " . (file_exists($envPath2) ? 'YES' : 'NO') . "\n";
+    }
+
     echo "\nEjecutando migraciones de base de datos...\n";
     $migrateOutput = shell_exec('cd /home/arlenoug/repositories/arleysoftx.com && php artisan migrate --force 2>&1');
     echo $migrateOutput;
