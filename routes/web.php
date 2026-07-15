@@ -29,3 +29,9 @@ Route::get('/tutoriales-task/cancel', [TikTokTutorialController::class, 'cancel'
 Route::get('/reporte-ia', function () {
     return view('ia_report');
 })->name('ia.report');
+
+// Ruta para la Guía y Tutoriales de las tareas TASK
+Route::get('/guia-y-tutoriales-task', function () {
+    return view('tutorial_task');
+})->name('tutorial.task');
+
