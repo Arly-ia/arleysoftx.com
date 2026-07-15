@@ -39,6 +39,13 @@ Route::post('/guia-y-tutoriales-task/admin/login', [TaskTutorialController::clas
 Route::get('/guia-y-tutoriales-task/admin/logout', [TaskTutorialController::class, 'adminLogout'])->name('tutorial.task.admin.logout');
 Route::post('/guia-y-tutoriales-task/admin/save', [TaskTutorialController::class, 'save'])->name('tutorial.task.save');
 
+// Ruta para resetear sesión de prueba (solo accesible conociendo el path)
+Route::get('/guia-y-tutoriales-task/reset-session-arleysoft', function () {
+    session()->forget('task_tutorial_paid');
+    session()->forget('task_tutorial_session_id');
+    return redirect()->route('tutorial.task')->with('success', 'Sesión de prueba limpiada. Ahora verás el modo preview.');
+});
+
 Route::get('/guia-y-tutoriales-task/debug-images', function () {
     $dir = public_path('images');
     if (!file_exists($dir)) {

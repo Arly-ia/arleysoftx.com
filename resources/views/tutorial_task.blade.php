@@ -286,7 +286,7 @@
                         @php
                             $isLockedTask = $isPreview && ($index > 1);
                         @endphp
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300 relative overflow-hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl md:items-start hover:border-neonBlue/40 transition duration-300 relative overflow-hidden">
                             @if($isLockedTask)
                                 <!-- Lock Overlay -->
                                 <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-[6px] z-20 flex flex-col items-center justify-center p-6 text-center space-y-4">
@@ -344,7 +344,7 @@
                             </div>
 
                             <!-- Derecha: Imagen / Captura vertical -->
-                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end flex items-center justify-center">
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end flex items-center justify-center min-h-[240px] md:min-h-[300px]">
                                 @php
                                     $imgPath = 'images/' . $task['image'];
                                     $hasImg = !empty($task['image']) && file_exists(public_path($imgPath));
