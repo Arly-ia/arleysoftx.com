@@ -280,13 +280,14 @@
         .s-btn.s-prog.active   { border-color: #3b82f6; background: rgba(59,130,246,.2); color: #60a5fa; }
         .s-btn.s-done.active   { border-color: #10b981; background: rgba(16,185,129,.2); color: #34d399; }
 
-        /* PHOTOS SECTION */
-        .photos-section {
+        /* PHOTOS & RECEIPTS SECTION */
+        .photos-section, .receipts-section {
             border-top: 1px solid rgba(255,255,255,.06);
             padding: 10px 14px;
+        }
+        .photos-section {
             display: flex;
             gap: 10px;
-            flex: 1;
         }
         .photo-col { flex: 1; display: flex; flex-direction: column; gap: 5px; }
         .photo-col-label {
@@ -296,7 +297,7 @@
             text-transform: uppercase;
             color: rgba(255,255,255,.35);
         }
-        .thumbs-row {
+        .thumbs-row, .receipts-list {
             display: flex;
             flex-wrap: wrap;
             gap: 4px;
@@ -341,6 +342,50 @@
         }
         .up-btn:hover        { border-color: #e53935; color: #e53935; }
         .up-btn.despues:hover{ border-color: #10b981; color: #10b981; }
+
+        /* RECEIPTS SPECIFIC */
+        .receipts-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .receipt-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-gasto-total {
+            font-size: 12px;
+            font-weight: 700;
+            color: #10b981;
+            background: rgba(16,185,129,0.1);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+        .receipt-thumb {
+            width: 58px; height: 58px;
+        }
+        .rcp-amount {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.8);
+            color: #10b981;
+            font-size: 8px;
+            font-weight: 700;
+            text-align: center;
+            padding: 2px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .up-btn.receipt-btn {
+            border-color: rgba(16,185,129,0.25);
+            color: rgba(16,185,129,0.65);
+        }
+        .up-btn.receipt-btn:hover {
+            border-color: #10b981;
+            color: #10b981;
+        }
 
         /* Card footer */
         .card-foot {
@@ -540,6 +585,10 @@ $cats = [
         <div class="stat-num" id="stat-pend">{{ $stats['pendientes'] }}</div>
         <div class="stat-lbl">○ Pendientes</div>
     </div>
+    <div class="stat-pill stat-gastos" style="min-width: 100px; border-left: 1px solid rgba(255,255,255,0.08); padding-left: 12px;">
+        <div class="stat-num" id="stat-gastos" style="color: #10b981;">${{ number_format($stats['total_gastos'], 2) }}</div>
+        <div class="stat-lbl">💵 Gastos</div>
+    </div>
 </div>
 
 {{-- ===== FLASH ===== --}}
@@ -675,6 +724,30 @@ $cats = [
             </div>
         </div>
 
+        {{-- Receipts / Expenses Section --}}
+        <div class="receipts-section">
+            <div class="receipt-header-row">
+                <span class="photo-col-label">🧾 Recibos / Gastos</span>
+                <span class="task-gasto-total" id="task-gasto-{{ $task->id }}">${{ number_format($task->receipts_total, 2) }}</span>
+            </div>
+            <div class="receipts-list" id="receipts-{{ $task->id }}">
+                @foreach($task->receipts as $receipt)
+                <div class="p-thumb receipt-thumb" data-rcptid="{{ $receipt->id }}">
+                    <img src="{{ asset('images/jj_receipts/'.$receipt->filename) }}"
+                         alt="Recibo"
+                         class="lb-trigger"
+                         data-src="{{ asset('images/jj_receipts/'.$receipt->filename) }}"
+                         data-cap="Recibo: ${{ number_format($receipt->amount, 2) }} — {{ $task->name }}">
+                    <span class="rcp-amount">${{ number_format($receipt->amount, 0) }}</span>
+                    <button class="del-ph" onclick="delReceipt({{ $receipt->id }},this)">×</button>
+                </div>
+                @endforeach
+            </div>
+            <button class="up-btn receipt-btn" onclick="openReceiptModal({{ $task->id }}, '{{ addslashes($task->name) }}')">
+                + Subir Recibo
+            </button>
+        </div>
+
         {{-- Footer --}}
         <div class="card-foot">
             <span class="task-seq">#{{ $loop->iteration }}</span>
@@ -735,6 +808,34 @@ $cats = [
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
                     <button type="submit" class="btn-submit">✓ Crear Tarea</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ===== UPLOAD RECEIPT MODAL ===== --}}
+<div class="m-overlay" id="rOverlay" onclick="overlayReceiptClose(event)">
+    <div class="modal-box modal-box-receipt" style="max-width: 400px;">
+        <div class="modal-hd">
+            <h2 style="color: #10b981;">Subir Recibo</h2>
+            <button class="modal-close" onclick="closeReceiptModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <h4 id="rTaskName" style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; font-weight: 500; line-height: 1.4;"></h4>
+            <form id="receiptForm" onsubmit="submitReceipt(event)">
+                <input type="hidden" id="rTaskId">
+                <div class="fg">
+                    <label>Valor Factura ($) *</label>
+                    <input type="number" id="rAmount" step="0.01" min="0" required placeholder="Ej: 450.00">
+                </div>
+                <div class="fg">
+                    <label>Foto de la Factura *</label>
+                    <input type="file" id="rPhoto" accept="image/*" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeReceiptModal()">Cancelar</button>
+                    <button type="submit" class="btn-submit" style="background: #10b981; box-shadow: 0 4px 16px rgba(16,185,129,0.3);">✓ Subir Recibo</button>
                 </div>
             </form>
         </div>
@@ -936,9 +1037,111 @@ function openModal()  { document.getElementById('mOverlay').classList.add('activ
 function closeModal() { document.getElementById('mOverlay').classList.remove('active'); document.body.style.overflow = ''; }
 function overlayClose(e) { if (e.target.id === 'mOverlay') closeModal(); }
 
+/* ─── RECEIPTS MODAL ─────────────────────── */
+function openReceiptModal(taskId, taskName) {
+    document.getElementById('rTaskId').value = taskId;
+    document.getElementById('rTaskName').textContent = "Tarea: " + taskName;
+    document.getElementById('rOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeReceiptModal() {
+    document.getElementById('rOverlay').classList.remove('active');
+    document.getElementById('receiptForm').reset();
+    document.body.style.overflow = '';
+}
+function overlayReceiptClose(e) { if (e.target.id === 'rOverlay') closeReceiptModal(); }
+
+/* ─── SUBMIT RECEIPT ─────────────────────── */
+async function submitReceipt(e) {
+    e.preventDefault();
+    const id = document.getElementById('rTaskId').value;
+    const amount = document.getElementById('rAmount').value;
+    const file = document.getElementById('rPhoto').files[0];
+
+    if (!file || !amount) return;
+
+    const fd = new FormData();
+    fd.append('photo', file);
+    fd.append('amount', amount);
+    fd.append('_token', csrf);
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const origText = submitBtn.textContent;
+    submitBtn.textContent = 'Subiendo...';
+    submitBtn.disabled = true;
+
+    try {
+        const res = await fetch(`/jj-construccion/20wings-tareas/task/${id}/receipt`, {
+            method: 'POST',
+            body: fd
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            // Append new thumbnail to receipts list
+            const list = document.getElementById(`receipts-${id}`);
+            const div = document.createElement('div');
+            div.className = 'p-thumb receipt-thumb';
+            div.dataset.rcptid = data.receipt.id;
+            div.innerHTML = `
+                <img src="${data.receipt.url}" alt="Recibo" class="lb-trigger"
+                     data-src="${data.receipt.url}" data-cap="Recibo: $${Number(data.receipt.amount).toLocaleString('es-ES', {minimumFractionDigits: 2})} — ${document.getElementById('rTaskName').textContent.replace('Tarea: ', '')}">
+                <span class="rcp-amount">$${Number(data.receipt.amount).toLocaleString('es-ES', {maximumFractionDigits: 0})}</span>
+                <button class="del-ph" onclick="delReceipt(${data.receipt.id},this)">×</button>
+            `;
+            list.appendChild(div);
+
+            // Update task total
+            document.getElementById(`task-gasto-${id}`).textContent = `$${Number(data.task_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;
+
+            // Update stats bar overall total
+            document.getElementById('stat-gastos').textContent = `$${Number(data.overall_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;
+
+            closeReceiptModal();
+        } else {
+            alert('Error al subir el recibo');
+        }
+    } catch(e) {
+        alert('Error de conexión al subir el recibo');
+    } finally {
+        submitBtn.textContent = origText;
+        submitBtn.disabled = false;
+    }
+}
+
+/* ─── DELETE RECEIPT ─────────────────────── */
+async function delReceipt(id, btn) {
+    if (!confirm('¿Eliminar este recibo?')) return;
+    try {
+        const res = await fetch(`/jj-construccion/20wings-tareas/receipt/${id}`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': csrf }
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            const thumb = btn.closest('.p-thumb');
+            const card = thumb.closest('.task-card');
+            const taskId = card.dataset.id;
+
+            thumb.remove();
+
+            // Update task total
+            document.getElementById(`task-gasto-${taskId}`).textContent = `$${Number(data.task_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;
+
+            // Update stats bar overall total
+            document.getElementById('stat-gastos').textContent = `$${Number(data.overall_total).toLocaleString('es-ES', {minimumFractionDigits: 2})}`;
+        } else {
+            alert('Error al eliminar el recibo');
+        }
+    } catch(e) {
+        alert('Error de conexión al eliminar el recibo');
+    }
+}
+
 // ESC to close
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeLb(); }
+    if (e.key === 'Escape') { closeModal(); closeReceiptModal(); closeLb(); }
 });
 </script>
 </body>

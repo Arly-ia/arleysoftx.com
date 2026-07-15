@@ -57,6 +57,7 @@ class JJTaskController extends Controller
                     'completed_at' => null,
                     'notes'        => null,
                     'photos'       => [], // Array of {id, type, filename}
+                    'receipts'     => [], // Array of {id, amount, filename}
                 ];
             }
             $this->saveTasks($tasks);
@@ -97,6 +98,7 @@ class JJTaskController extends Controller
         $completadas = 0;
         $en_progreso = 0;
         $pendientes = 0;
+        $total_gastos = 0.0;
 
         foreach ($tasks as $task) {
             if ($task['status'] === 'completada') {
@@ -106,27 +108,40 @@ class JJTaskController extends Controller
             } else {
                 $pendientes++;
             }
+
+            // Sum receipts
+            if (isset($task['receipts']) && is_array($task['receipts'])) {
+                foreach ($task['receipts'] as $receipt) {
+                    $total_gastos += (float) ($receipt['amount'] ?? 0);
+                }
+            }
         }
 
         $stats = [
-            'total'       => $total,
-            'completadas' => $completadas,
-            'en_progreso' => $en_progreso,
-            'pendientes'  => $pendientes,
-            'pct'         => $total > 0 ? (int) round(($completadas / $total) * 100) : 0,
+            'total'        => $total,
+            'completadas'  => $completadas,
+            'en_progreso'  => $en_progreso,
+            'pendientes'   => $pendientes,
+            'total_gastos' => $total_gastos,
+            'pct'          => $total > 0 ? (int) round(($completadas / $total) * 100) : 0,
         ];
 
         // Format tasks as objects for Blade compatibility
         $tasksObj = array_map(function($task) {
+            $receipts = $task['receipts'] ?? [];
+            $receiptsTotal = array_sum(array_column($receipts, 'amount'));
+
             return (object) [
-                'id'           => $task['id'],
-                'name'         => $task['name'],
-                'category'     => $task['category'],
-                'priority'     => $task['priority'],
-                'status'       => $task['status'],
-                'completed_at' => $task['completed_at'] ? \Carbon\Carbon::parse($task['completed_at']) : null,
-                'notes'        => $task['notes'] ?? null,
-                'photos'       => collect(array_map(fn($p) => (object)$p, $task['photos'] ?? [])),
+                'id'             => $task['id'],
+                'name'           => $task['name'],
+                'category'       => $task['category'],
+                'priority'       => $task['priority'],
+                'status'         => $task['status'],
+                'completed_at'   => $task['completed_at'] ? \Carbon\Carbon::parse($task['completed_at']) : null,
+                'notes'          => $task['notes'] ?? null,
+                'photos'         => collect(array_map(fn($p) => (object)$p, $task['photos'] ?? [])),
+                'receipts'       => collect(array_map(fn($r) => (object)$r, $receipts)),
+                'receipts_total' => $receiptsTotal,
             ];
         }, $tasks);
 
@@ -162,6 +177,7 @@ class JJTaskController extends Controller
             'completed_at' => null,
             'notes'        => $request->notes,
             'photos'       => [],
+            'receipts'     => [],
         ];
 
         $this->saveTasks($tasks);
@@ -232,6 +248,11 @@ class JJTaskController extends Controller
             'filename' => $filename,
         ];
 
+        // Ensure array exists
+        if (!isset($tasks[$taskIndex]['photos'])) {
+            $tasks[$taskIndex]['photos'] = [];
+        }
+
         $tasks[$taskIndex]['photos'][] = $newPhoto;
         $this->saveTasks($tasks);
 
@@ -251,16 +272,18 @@ class JJTaskController extends Controller
         $photoDeleted = false;
 
         foreach ($tasks as &$task) {
-            foreach ($task['photos'] as $idx => $photo) {
-                if ($photo['id'] == $id) {
-                    $fp = public_path('images/jj_tasks/' . $photo['filename']);
-                    if (file_exists($fp)) {
-                        unlink($fp);
+            if (isset($task['photos'])) {
+                foreach ($task['photos'] as $idx => $photo) {
+                    if ($photo['id'] == $id) {
+                        $fp = public_path('images/jj_tasks/' . $photo['filename']);
+                        if (file_exists($fp)) {
+                            unlink($fp);
+                        }
+                        unset($task['photos'][$idx]);
+                        $task['photos'] = array_values($task['photos']);
+                        $photoDeleted = true;
+                        break 2;
                     }
-                    unset($task['photos'][$idx]);
-                    $task['photos'] = array_values($task['photos']);
-                    $photoDeleted = true;
-                    break 2;
                 }
             }
         }
@@ -271,6 +294,118 @@ class JJTaskController extends Controller
 
         $this->saveTasks($tasks);
         return response()->json(['success' => true]);
+    }
+
+    public function uploadReceipt(Request $request, $id)
+    {
+        $request->validate([
+            'photo'  => 'required|image|max:8192',
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        $tasks = $this->getTasks();
+        $taskIndex = -1;
+
+        foreach ($tasks as $idx => $task) {
+            if ($task['id'] == $id) {
+                $taskIndex = $idx;
+                break;
+            }
+        }
+
+        if ($taskIndex === -1) {
+            return response()->json(['success' => false, 'error' => 'Task not found'], 404);
+        }
+
+        $dir = public_path('images/jj_receipts');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $file     = $request->file('photo');
+        $ext      = $file->getClientOriginalExtension();
+        $receiptId = time() . rand(100, 999);
+        $filename = 'receipt_' . $id . '_' . $receiptId . '.' . $ext;
+        $file->move($dir, $filename);
+
+        $newReceipt = [
+            'id'       => (int) $receiptId,
+            'amount'   => (float) $request->amount,
+            'filename' => $filename,
+        ];
+
+        if (!isset($tasks[$taskIndex]['receipts'])) {
+            $tasks[$taskIndex]['receipts'] = [];
+        }
+
+        $tasks[$taskIndex]['receipts'][] = $newReceipt;
+        $this->saveTasks($tasks);
+
+        // Calculate new task total and overall total
+        $taskTotal = array_sum(array_column($tasks[$taskIndex]['receipts'], 'amount'));
+        $overallTotal = 0.0;
+        foreach ($tasks as $t) {
+            if (isset($t['receipts']) && is_array($t['receipts'])) {
+                $overallTotal += array_sum(array_column($t['receipts'], 'amount'));
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'receipt' => [
+                'id'       => $newReceipt['id'],
+                'amount'   => $newReceipt['amount'],
+                'url'      => asset('images/jj_receipts/' . $filename),
+                'filename' => $filename,
+            ],
+            'task_total'    => $taskTotal,
+            'overall_total' => $overallTotal,
+        ]);
+    }
+
+    public function deleteReceipt($id)
+    {
+        $tasks = $this->getTasks();
+        $receiptDeleted = false;
+        $taskTotal = 0.0;
+        $overallTotal = 0.0;
+
+        foreach ($tasks as &$task) {
+            if (isset($task['receipts'])) {
+                foreach ($task['receipts'] as $idx => $receipt) {
+                    if ($receipt['id'] == $id) {
+                        $fp = public_path('images/jj_receipts/' . $receipt['filename']);
+                        if (file_exists($fp)) {
+                            unlink($fp);
+                        }
+                        unset($task['receipts'][$idx]);
+                        $task['receipts'] = array_values($task['receipts']);
+                        $receiptDeleted = true;
+                        $taskTotal = array_sum(array_column($task['receipts'], 'amount'));
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!$receiptDeleted) {
+            return response()->json(['success' => false, 'error' => 'Receipt not found'], 404);
+        }
+
+        $this->saveTasks($tasks);
+
+        // Calculate overall total
+        foreach ($tasks as $t) {
+            if (isset($t['receipts']) && is_array($t['receipts'])) {
+                $overallTotal += array_sum(array_column($t['receipts'], 'amount'));
+            }
+        }
+
+        return response()->json([
+            'success'       => true,
+            'task_total'    => $taskTotal,
+            'overall_total' => $overallTotal,
+        ]);
     }
 
     public function destroy($id)
@@ -290,10 +425,22 @@ class JJTaskController extends Controller
         }
 
         // Delete all photos from disk
-        foreach ($tasks[$taskIndex]['photos'] as $photo) {
-            $fp = public_path('images/jj_tasks/' . $photo['filename']);
-            if (file_exists($fp)) {
-                unlink($fp);
+        if (isset($tasks[$taskIndex]['photos'])) {
+            foreach ($tasks[$taskIndex]['photos'] as $photo) {
+                $fp = public_path('images/jj_tasks/' . $photo['filename']);
+                if (file_exists($fp)) {
+                    unlink($fp);
+                }
+            }
+        }
+
+        // Delete all receipts from disk
+        if (isset($tasks[$taskIndex]['receipts'])) {
+            foreach ($tasks[$taskIndex]['receipts'] as $receipt) {
+                $fp = public_path('images/jj_receipts/' . $receipt['filename']);
+                if (file_exists($fp)) {
+                    unlink($fp);
+                }
             }
         }
 

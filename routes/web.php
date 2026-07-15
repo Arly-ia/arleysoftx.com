@@ -31,6 +31,8 @@ Route::post('/jj-construccion/20wings-tareas/task',                 [JJTaskContr
 Route::patch('/jj-construccion/20wings-tareas/task/{id}/status',    [JJTaskController::class, 'updateStatus'])->name('jj.20wings.updateStatus');
 Route::post('/jj-construccion/20wings-tareas/task/{id}/photo',      [JJTaskController::class, 'uploadPhoto'])->name('jj.20wings.uploadPhoto');
 Route::delete('/jj-construccion/20wings-tareas/photo/{id}',         [JJTaskController::class, 'deletePhoto'])->name('jj.20wings.deletePhoto');
+Route::post('/jj-construccion/20wings-tareas/task/{id}/receipt',    [JJTaskController::class, 'uploadReceipt'])->name('jj.20wings.uploadReceipt');
+Route::delete('/jj-construccion/20wings-tareas/receipt/{id}',       [JJTaskController::class, 'deleteReceipt'])->name('jj.20wings.deleteReceipt');
 Route::delete('/jj-construccion/20wings-tareas/task/{id}',          [JJTaskController::class, 'destroy'])->name('jj.20wings.destroy');
 
 
