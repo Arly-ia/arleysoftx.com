@@ -239,182 +239,182 @@
                         'pago' => '$25/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous cutting, Show result steady',
-                        'image' => 'task_screenshot_1.png'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Trim or prune plants',
                         'pago' => '$20/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Both hands visible, 3 branches, Full motion, Show result steady',
-                        'image' => 'task_screenshot_2.png'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Wipe Surfaces',
                         'pago' => '$15/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Visible hand, Continuous wiping, Show cleaned area steady',
-                        'image' => 'lavando_banos.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Make a drink',
                         'pago' => '$15/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Both hands visible, 5-20 actions, Show finished drink steady',
-                        'image' => 'batir_huevos.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Clean refrigerator shelf',
                         'pago' => '$15/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Both hands visible, Clean 1 full shelf, Show shelf steady',
-                        'image' => 'limpiando_ventilador.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Pour liquids',
                         'pago' => '$15/hour',
                         'categoria' => 'Cooking',
                         'requisitos' => 'Head mount, Landscape, Both hands visible, 1 type of liquid, Pour slowly, Show final level steady',
-                        'image' => 'pour_liquids.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Unpack grocery bags',
                         'pago' => '$20/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Both hands visible, >2 bags, Sort and store, Show result',
-                        'image' => 'unpack_grocery_bags.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Measure and mark surfaces',
                         'pago' => '$15/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous measuring/marking, Show final marked area steady',
-                        'image' => 'measure_and_mark_surfaces.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Install or replace faucets',
                         'pago' => '$25/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show installed faucet steady',
-                        'image' => 'install_or_replace_faucets.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Sew, knit or crochet',
                         'pago' => '$25/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show stitches/result steady',
-                        'image' => 'sew_knit_or_crochet.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Explore a mall',
                         'pago' => '$20/hour',
                         'categoria' => 'Navigation',
                         'requisitos' => 'Chest mount, Landscape, Level camera, Walk intersections/crowd, Pause at directory',
-                        'image' => 'explore_a_mall.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Pot or repot plants',
                         'pago' => '$20/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Transfer plant + soil, Show final state steady',
-                        'image' => 'sembrando_plantas.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Install light fixtures or switch plates',
                         'pago' => '$25/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show installed result steady',
-                        'image' => 'install_light_fixtures_or_switch_plates.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Take out the trash & replace liner',
                         'pago' => '$15/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Visible hand, Continuous process, Show bin state steady',
-                        'image' => 'take_out_the_trash_replace_liner.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Mix and apply cement or mortar',
                         'pago' => '$25/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show applied surface steady',
-                        'image' => 'mix_and_apply_cement_or_mortar.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Drill or fasten materials',
                         'pago' => '$25/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show secured result steady',
-                        'image' => 'drill_or_fasten_materials.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Navigate an apartment complex',
                         'pago' => '$15/hour',
                         'categoria' => 'Navigation',
                         'requisitos' => 'Chest mount, Landscape, Level camera, Walk shared spaces, Pause at intersections/entry',
-                        'image' => 'navigate_an_apartment_complex.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Cook a dish',
                         'pago' => '$20/hour',
                         'categoria' => 'Cooking',
                         'requisitos' => 'Head mount, Landscape, Visible hand, Continuous process, Show state change result steady',
-                        'image' => 'cook_a_dish.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Cut and chop food',
                         'pago' => '$20/hour',
                         'categoria' => 'Cooking',
                         'requisitos' => 'Head mount, Landscape, Both hands visible, Continuous cutting, Show result steady',
-                        'image' => 'cortando_carne.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Explore a museum',
                         'pago' => '$20/hour',
                         'categoria' => 'Navigation',
                         'requisitos' => 'Chest mount, Landscape, Level camera, Walk between rooms, Pause at display/transition',
-                        'image' => 'explore_a_museum.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Unload and organize dishwasher',
                         'pago' => '$20/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous process, Show empty dishwasher steady',
-                        'image' => 'ordenando_cubiertos.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Install or tighten pipes',
                         'pago' => '$25/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hand, Continuous process, Show secured connection steady',
-                        'image' => 'install_or_tighten_pipes.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Prepare a meal',
                         'pago' => '$25/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Both hands visible, 5-20 actions, Show finished meal steady',
-                        'image' => 'prepare_a_meal.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Install fixtures',
                         'pago' => '$25/hour',
                         'categoria' => 'Projects',
                         'requisitos' => 'Head mount, Landscape, Visible hand, Continuous process, Show installed fixture steady',
-                        'image' => 'colgando_cortina.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Record a natural conversation in Spanish',
                         'pago' => '$20/hour',
                         'categoria' => 'Language',
                         'requisitos' => 'Natural/unscripted, Audible voices, No hate/political/PII',
-                        'image' => 'record_a_natural_conversation_in_spanish.webp'
+                        'image' => ''
                     ],
                     [
                         'title' => 'Clean kitchen',
                         'pago' => '$25/hour',
                         'categoria' => 'Chores',
                         'requisitos' => 'Head mount, Landscape, Visible hands, Continuous progress, Show result steady',
-                        'image' => 'lavar_losa.webp'
+                        'image' => ''
                     ]
                 ];
                 @endphp
