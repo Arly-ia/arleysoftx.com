@@ -42,8 +42,42 @@ class TaskTutorialController extends Controller
     /**
      * Muestra la vista pública del tutorial.
      */
-    public function index()
+    public function index(Request $request)
     {
+        // 1. Si viene session_id en la query de la URL, intentamos verificarlo en Stripe
+        if ($request->has('session_id')) {
+            $sessionId = $request->query('session_id');
+            $stripeSecret = config('services.stripe.secret');
+
+            if (!empty($stripeSecret)) {
+                try {
+                    $response = \Illuminate\Support\Facades\Http::withBasicAuth($stripeSecret, '')
+                        ->get("https://api.stripe.com/v1/checkout/sessions/{$sessionId}");
+
+                    if ($response->successful()) {
+                        $sessionData = $response->json();
+                        if ($sessionData['payment_status'] === 'paid') {
+                            session(['task_tutorial_paid' => true]);
+                            session(['task_tutorial_session_id' => $sessionId]);
+                        }
+                    }
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Error validando session_id en index: ' . $e->getMessage());
+                }
+            } else {
+                // Si no hay keys de Stripe en .env, permitimos acceso en desarrollo/local
+                session(['task_tutorial_paid' => true]);
+            }
+        }
+
+        // 2. Si no tiene sesión de pago, redirigir a la landing page de ventas
+        if (!session('task_tutorial_paid')) {
+            $stripeSecret = config('services.stripe.secret');
+            if (!empty($stripeSecret)) {
+                return redirect()->route('tutorial.landing')->with('error', 'Debes adquirir la guía para acceder a este contenido.');
+            }
+        }
+
         $tasks = $this->getTasks();
         return view('tutorial_task', compact('tasks'));
     }

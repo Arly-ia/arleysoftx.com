@@ -107,7 +107,13 @@ class TikTokTutorialController extends Controller
             $isPaid = true;
         }
 
-        return view('stripe.success', compact('isPaid', 'paymentDetails'));
+        if ($isPaid) {
+            session(['task_tutorial_paid' => true]);
+            session(['task_tutorial_session_id' => $sessionId]);
+            return redirect()->route('tutorial.task')->with('success', '¡Acceso Concedido! Tu pago se ha procesado con éxito.');
+        }
+
+        return redirect()->route('tutorial.landing')->with('error', 'El pago no ha sido completado o verificado.');
     }
 
     /**

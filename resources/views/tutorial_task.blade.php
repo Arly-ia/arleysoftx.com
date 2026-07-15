@@ -72,6 +72,16 @@
     <!-- Main Content -->
     <main class="max-w-6xl mx-auto px-6 py-12 relative z-10 flex-grow w-full space-y-10">
         
+        @if(session('success'))
+            <div class="max-w-3xl mx-auto p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm flex items-center justify-between shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                <div class="flex items-center gap-2">
+                    <span class="text-base">✨</span>
+                    <span class="font-medium">{{ session('success') }}</span>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-xs opacity-50 hover:opacity-100 font-bold ml-4">Cerrar</button>
+            </div>
+        @endif
+        
         <!-- Title and Introduction -->
         <div class="text-center space-y-4 max-w-3xl mx-auto">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neonGreen/30 bg-neonGreen/5">
