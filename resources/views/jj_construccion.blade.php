@@ -351,7 +351,7 @@
         </div>
 
         <!-- CUADRO 2: 20 WINGS -->
-        <div class="card card-wings">
+        <div class="card card-wings" onclick="window.location='/jj-construccion/20wings-tareas'" style="cursor:pointer;">
             <div class="card-badge">Cuadro 2</div>
             <div class="card-image-wrap">
                 <img src="{{ asset('images/20wings_logo.png') }}" alt="20 Wings Logo" loading="lazy">
@@ -364,7 +364,7 @@
             </div>
             <div class="card-footer">
                 <span class="card-tag">&#127829; Restaurante</span>
-                <span class="card-tag">&#128293; Best Wings</span>
+                <span class="card-tag">&#128203; Ver Tareas &rarr;</span>
             </div>
         </div>
 

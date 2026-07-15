@@ -24,6 +24,16 @@ Route::get('/jj-construccion', function () {
     return view('jj_construccion');
 })->name('jj.construccion');
 
+// JJ Construccion — 20 Wings Task Manager
+use App\Http\Controllers\JJTaskController;
+Route::get('/jj-construccion/20wings-tareas',                       [JJTaskController::class, 'index'])->name('jj.20wings.tasks');
+Route::post('/jj-construccion/20wings-tareas/task',                 [JJTaskController::class, 'store'])->name('jj.20wings.store');
+Route::patch('/jj-construccion/20wings-tareas/task/{id}/status',    [JJTaskController::class, 'updateStatus'])->name('jj.20wings.updateStatus');
+Route::post('/jj-construccion/20wings-tareas/task/{id}/photo',      [JJTaskController::class, 'uploadPhoto'])->name('jj.20wings.uploadPhoto');
+Route::delete('/jj-construccion/20wings-tareas/photo/{id}',         [JJTaskController::class, 'deletePhoto'])->name('jj.20wings.deletePhoto');
+Route::delete('/jj-construccion/20wings-tareas/task/{id}',          [JJTaskController::class, 'destroy'])->name('jj.20wings.destroy');
+
+
 // Rutas para la venta del tutorial de POV con Stripe (Tutoriales TASK)
 Route::get('/tutoriales-task', [TikTokTutorialController::class, 'showLanding'])->name('tutorial.landing');
 Route::post('/tutoriales-task/checkout', [TikTokTutorialController::class, 'createCheckoutSession'])->name('tutorial.checkout');
