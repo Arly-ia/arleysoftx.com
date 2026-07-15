@@ -131,15 +131,24 @@ class TaskTutorialController extends Controller
 
         $tasksData = $request->input('tasks', []);
         $tasks = [];
-        $destinationPath = public_path('images');
+        
+        // Rutas de destino: public/images local y public_html/images en Namecheap
+        $destinationPaths = [public_path('images')];
+        if (file_exists('/home/arlenoug/public_html/images')) {
+            $destinationPaths[] = '/home/arlenoug/public_html/images';
+        }
 
         foreach ($tasksData as $i => $taskData) {
             // Si el checkbox de eliminar tarea está marcado, se omite
             if (isset($taskData['delete_task']) && $taskData['delete_task'] == '1') {
-                // Eliminar foto física si existía
+                // Eliminar foto física si existía de todas las rutas
                 $oldImageName = $taskData['image_hidden'] ?? '';
-                if (!empty($oldImageName) && file_exists($destinationPath . '/' . $oldImageName)) {
-                    @unlink($destinationPath . '/' . $oldImageName);
+                if (!empty($oldImageName)) {
+                    foreach ($destinationPaths as $dp) {
+                        if (file_exists($dp . '/' . $oldImageName)) {
+                            @unlink($dp . '/' . $oldImageName);
+                        }
+                    }
                 }
                 continue;
             }
@@ -156,8 +165,12 @@ class TaskTutorialController extends Controller
             // Procesar eliminación de imagen si se solicitó
             if (isset($taskData['delete_image']) && $taskData['delete_image'] == '1') {
                 $oldImageName = $task['image'];
-                if (!empty($oldImageName) && file_exists($destinationPath . '/' . $oldImageName)) {
-                    @unlink($destinationPath . '/' . $oldImageName);
+                if (!empty($oldImageName)) {
+                    foreach ($destinationPaths as $dp) {
+                        if (file_exists($dp . '/' . $oldImageName)) {
+                            @unlink($dp . '/' . $oldImageName);
+                        }
+                    }
                 }
                 $task['image'] = '';
             }
@@ -169,8 +182,10 @@ class TaskTutorialController extends Controller
                     $slug = Str::slug($task['title']);
                     $filename = time() . '_' . $slug . '.webp';
 
-                    if (!file_exists($destinationPath)) {
-                        mkdir($destinationPath, 0755, true);
+                    foreach ($destinationPaths as $dp) {
+                        if (!file_exists($dp)) {
+                            @mkdir($dp, 0755, true);
+                        }
                     }
 
                     $tempPath = $file->getRealPath();
@@ -183,7 +198,10 @@ class TaskTutorialController extends Controller
                         if ($image !== false) {
                             imagealphablending($image, false);
                             imagesavealpha($image, true);
-                            imagewebp($image, $destinationPath . '/' . $filename, 75);
+                            
+                            foreach ($destinationPaths as $dp) {
+                                @imagewebp($image, $dp . '/' . $filename, 75);
+                            }
                             imagedestroy($image);
                             $converted = true;
                         }
@@ -192,13 +210,19 @@ class TaskTutorialController extends Controller
                     if (!$converted) {
                         // Fallback: copiar con extensión original
                         $filename = time() . '_' . $slug . '.' . $file->getClientOriginalExtension();
-                        $file->move($destinationPath, $filename);
+                        foreach ($destinationPaths as $dp) {
+                            @copy($tempPath, $dp . '/' . $filename);
+                        }
                     }
 
                     // Eliminar foto anterior si existía
                     $oldImageName = $task['image'];
-                    if (!empty($oldImageName) && file_exists($destinationPath . '/' . $oldImageName)) {
-                        @unlink($destinationPath . '/' . $oldImageName);
+                    if (!empty($oldImageName)) {
+                        foreach ($destinationPaths as $dp) {
+                            if (file_exists($dp . '/' . $oldImageName)) {
+                                @unlink($dp . '/' . $oldImageName);
+                            }
+                        }
                     }
 
                     $task['image'] = $filename;
