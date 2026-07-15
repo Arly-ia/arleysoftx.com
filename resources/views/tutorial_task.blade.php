@@ -312,14 +312,14 @@
                             <!-- Izquierda: Título y descripción -->
                             <div class="space-y-3">
                                 <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Tarea #5</span>
-                                <h4 class="font-outfit font-black text-xl text-white">Plantando Plantas y Flores</h4>
+                                <h4 class="font-outfit font-black text-xl text-white">Sembrando Plantas</h4>
                                 <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    Proceso paso a paso para trasplantar vegetación a macetas o jardín directo, asegurando el cuidado de las raíces y el riego inicial correcto.
+                                    Proceso paso a paso para sembrar y trasplantar vegetación a macetas o jardín directo, asegurando el cuidado de las raíces y el riego inicial correcto.
                                 </p>
                             </div>
                             <!-- Derecha: Foto -->
                             <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/plantando_plantas.webp') }}" alt="Plantando Plantas" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <img src="{{ asset('images/sembrando_plantas.webp') }}" alt="Sembrando Plantas" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             </div>
                         </div>
                     </div>
