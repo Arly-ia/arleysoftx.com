@@ -255,7 +255,7 @@
                             </div>
                             <!-- Derecha: Foto -->
                             <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/lavando_losa.webp') }}" alt="Lavando Losa" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <img src="{{ asset('images/lavar_losa.webp') }}" alt="Lavar la Losa" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             </div>
                         </div>
 
@@ -303,7 +303,7 @@
                             </div>
                             <!-- Derecha: Foto -->
                             <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
-                                <img src="{{ asset('images/picando_carne.webp') }}" alt="Picando Carne" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <img src="{{ asset('images/cortando_carne.webp') }}" alt="Picar o Cortar Carne" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             </div>
                         </div>
 
@@ -336,6 +336,38 @@
                             <!-- Derecha: Foto -->
                             <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
                                 <img src="{{ asset('images/colgando_cortina.webp') }}" alt="Poner Cortina" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                        </div>
+
+                        <!-- Tarea 7: Mapear Piso -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
+                            <!-- Izquierda: Título y descripción -->
+                            <div class="space-y-3">
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonBlue/10 text-neonBlue rounded-full">Tarea #7</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Trapear / Mapear Piso</h4>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Técnicas correctas para el trapeado de superficies, dosificación de productos de limpieza y secado uniforme para dejar pisos impecables.
+                                </p>
+                            </div>
+                            <!-- Derecha: Foto -->
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
+                                <img src="{{ asset('images/mapear_piso.webp') }}" alt="Mapear Piso" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                        </div>
+
+                        <!-- Tarea 8: Batir Huevos -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonGreen/40 transition duration-300">
+                            <!-- Izquierda: Título y descripción -->
+                            <div class="space-y-3">
+                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-neonGreen/10 text-neonGreen rounded-full">Tarea #8</span>
+                                <h4 class="font-outfit font-black text-xl text-white">Batir Huevos</h4>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                    Técnicas para batir claras o yemas a mano o con batidora eléctrica para lograr la consistencia requerida según la receta.
+                                </p>
+                            </div>
+                            <!-- Derecha: Foto -->
+                            <div class="rounded-xl overflow-hidden bg-slate-950 border border-slate-800/60 aspect-[3/4] relative group w-full max-w-[280px] md:max-w-xs justify-self-center md:justify-self-end">
+                                <img src="{{ asset('images/batir_huevos.webp') }}" alt="Batir Huevos" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             </div>
                         </div>
                     </div>
