@@ -61,12 +61,22 @@
                 ARLEYSOFTX TASK
             </a>
         </div>
-        <a href="{{ url('/') }}" class="text-xs font-bold text-slate-400 hover:text-white transition duration-200 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800/60">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-            Volver al Inicio
-        </a>
+        <div class="flex items-center gap-3">
+            @if($isPreview)
+                <form action="{{ route('tutorial.checkout') }}" method="POST" class="hidden sm:block">
+                    @csrf
+                    <button type="submit" class="text-xs font-bold text-neonBlue hover:text-white transition duration-200 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-neonBlue/10 border border-neonBlue/20 shadow-[0_0_15px_rgba(0,240,255,0.1)]">
+                        🚀 Comprar Guía
+                    </button>
+                </form>
+            @endif
+            <a href="{{ url('/') }}" class="text-xs font-bold text-slate-400 hover:text-white transition duration-200 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800/60">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+                Volver al Inicio
+            </a>
+        </div>
     </header>
 
     <!-- Main Content -->
@@ -79,6 +89,26 @@
                     <span class="font-medium">{{ session('success') }}</span>
                 </div>
                 <button onclick="this.parentElement.remove()" class="text-xs opacity-50 hover:opacity-100 font-bold ml-4">Cerrar</button>
+            </div>
+        @endif
+
+        @if($isPreview)
+            <div class="max-w-3xl mx-auto p-6 rounded-3xl bg-gradient-to-r from-neonBlue/15 to-emerald-500/10 border border-neonBlue/30 text-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_0_30px_rgba(0,240,255,0.15)] relative overflow-hidden backdrop-blur-md">
+                <!-- Decorative Glow -->
+                <div class="absolute -right-10 -bottom-10 w-24 h-24 bg-neonBlue/20 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="space-y-1.5 text-center sm:text-left relative z-10">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-neonBlue/40 bg-neonBlue/10 text-[10px] font-bold text-neonBlue uppercase tracking-wider font-outfit font-black">
+                        🔒 Modo Vista Previa
+                    </div>
+                    <h3 class="font-outfit font-black text-lg text-white">Guía y Tutoriales Limitados</h3>
+                    <p class="text-xs text-slate-400 max-w-md">Estás viendo una versión de prueba. Completa tu pago para desbloquear de inmediato todas las 26 labores, videos e instrucciones detalladas.</p>
+                </div>
+                <form action="{{ route('tutorial.checkout') }}" method="POST" class="shrink-0 w-full sm:w-auto relative z-10">
+                    @csrf
+                    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-gradient-to-r from-neonBlue to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-darkBg font-extrabold text-xs uppercase tracking-wider transition duration-300 shadow-[0_0_15px_rgba(0,240,255,0.25)] active:scale-[0.98]">
+                        🚀 Desbloquear Guía ($27 USD)
+                    </button>
+                </form>
             </div>
         @endif
         
@@ -253,7 +283,28 @@
 
                     <div class="space-y-6">
                         @foreach($tasks as $index => $task)
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300">
+                        @php
+                            $isLockedTask = $isPreview && ($index > 1);
+                        @endphp
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800/40 p-6 rounded-2xl items-center hover:border-neonBlue/40 transition duration-300 relative overflow-hidden">
+                            @if($isLockedTask)
+                                <!-- Lock Overlay -->
+                                <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-[6px] z-20 flex flex-col items-center justify-center p-6 text-center space-y-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-neonBlue/10 border border-neonBlue/30 text-neonBlue flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+                                        🔒
+                                    </div>
+                                    <div class="space-y-1">
+                                        <h5 class="font-outfit font-extrabold text-sm text-white uppercase tracking-wider">Labor {{ $index + 1 }}: {{ $task['title'] }}</h5>
+                                        <p class="text-xs text-slate-400 max-w-xs">Contenido exclusivo para clientes. Adquiere la guía completa para desbloquear esta labor y las 23 restantes.</p>
+                                    </div>
+                                    <form action="{{ route('tutorial.checkout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-neonBlue/20 border border-neonBlue/40 hover:bg-neonBlue/30 text-neonBlue text-xs font-bold transition">
+                                            🔑 Desbloquear Labor
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
                             <!-- Izquierda: Información de la Tarea -->
                             <div class="space-y-4">
                                 <div class="flex flex-wrap gap-2">
@@ -337,12 +388,21 @@
                             <p class="text-xs text-slate-400">Guía práctica con imágenes ilustrativas de cómo configurar tu celular para evitar bloqueos y mejorar la recepción de tareas.</p>
                         </div>
                         <div class="pt-4">
-                            <a href="#" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-neonBlue/10 hover:bg-neonBlue/20 text-neonBlue text-xs font-bold transition">
-                                Descargar PDF
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 ml-1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                            </a>
+                            @if($isPreview)
+                                <form action="{{ route('tutorial.checkout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-slate-800 text-slate-500 text-xs font-bold border border-slate-700/50 cursor-pointer hover:bg-neonBlue/10 hover:text-neonBlue hover:border-neonBlue/20 transition">
+                                        🔒 Desbloquear Manual (Premium)
+                                    </button>
+                                </form>
+                            @else
+                                <a href="#" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-neonBlue/10 hover:bg-neonBlue/20 text-neonBlue text-xs font-bold transition">
+                                    Descargar PDF
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 ml-1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                    </svg>
+                                </a>
+                            @endif
                         </div>
                     </div>
 
@@ -354,12 +414,21 @@
                             <p class="text-xs text-slate-400">Lleva un registro ordenado de tus horas dedicadas, tareas realizadas, tasa de precisión y tus cobros acumulados mes a mes.</p>
                         </div>
                         <div class="pt-4">
-                            <a href="#" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-neonGreen/10 hover:bg-neonGreen/20 text-neonGreen text-xs font-bold transition">
-                                Descargar Planilla
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 ml-1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                            </a>
+                            @if($isPreview)
+                                <form action="{{ route('tutorial.checkout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-slate-800 text-slate-500 text-xs font-bold border border-slate-700/50 cursor-pointer hover:bg-neonGreen/10 hover:text-neonGreen hover:border-neonGreen/20 transition">
+                                        🔒 Desbloquear Planilla (Premium)
+                                    </button>
+                                </form>
+                            @else
+                                <a href="#" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-neonGreen/10 hover:bg-neonGreen/20 text-neonGreen text-xs font-bold transition">
+                                    Descargar Planilla
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 ml-1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                    </svg>
+                                </a>
+                            @endif
                         </div>
                     </div>
 

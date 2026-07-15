@@ -35,6 +35,8 @@ use App\Http\Controllers\TaskTutorialController;
 // Rutas para la Guía y Tutoriales de las tareas TASK
 Route::get('/guia-y-tutoriales-task', [TaskTutorialController::class, 'index'])->name('tutorial.task');
 Route::get('/guia-y-tutoriales-task/admin', [TaskTutorialController::class, 'adminIndex'])->name('tutorial.task.admin');
+Route::post('/guia-y-tutoriales-task/admin/login', [TaskTutorialController::class, 'adminLogin'])->name('tutorial.task.admin.login');
+Route::get('/guia-y-tutoriales-task/admin/logout', [TaskTutorialController::class, 'adminLogout'])->name('tutorial.task.admin.logout');
 Route::post('/guia-y-tutoriales-task/admin/save', [TaskTutorialController::class, 'save'])->name('tutorial.task.save');
 
 Route::get('/guia-y-tutoriales-task/debug-images', function () {

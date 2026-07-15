@@ -70,30 +70,53 @@ class TaskTutorialController extends Controller
                     \Illuminate\Support\Facades\Log::error('Error validando session_id en index: ' . $e->getMessage());
                 }
             } else {
-                // Si no hay keys de Stripe en .env, permitimos acceso en desarrollo/local
+                // En desarrollo local sin llaves, si simula un session_id, concedemos acceso completo
                 session(['task_tutorial_paid' => true]);
             }
         }
 
-        // 2. Si no tiene sesión de pago, redirigir a la landing page de ventas
-        if (!session('task_tutorial_paid')) {
-            $stripeSecret = config('services.stripe.secret');
-            if (!empty($stripeSecret)) {
-                return redirect()->route('tutorial.landing')->with('error', 'Debes adquirir la guía para acceder a este contenido.');
-            }
-        }
+        // Determinar si es vista previa (si no ha pagado, es vista previa)
+        $isPreview = !session('task_tutorial_paid', false);
 
         $tasks = $this->getTasks();
-        return view('tutorial_task', compact('tasks'));
+        return view('tutorial_task', compact('tasks', 'isPreview'));
     }
 
     /**
      * Muestra la vista del panel de administración.
      */
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
+        if (session('task_admin_logged') !== true) {
+            return view('tutorial_task_admin_login');
+        }
+
         $tasks = $this->getTasks();
         return view('tutorial_task_admin', compact('tasks'));
+    }
+
+    /**
+     * Procesa el inicio de sesión del administrador.
+     */
+    public function adminLogin(Request $request)
+    {
+        $adminPassword = env('TASK_ADMIN_PASSWORD', 'Sebastian1511+');
+        
+        if ($request->input('password') === $adminPassword) {
+            session(['task_admin_logged' => true]);
+            return redirect()->route('tutorial.task.admin')->with('success', 'Sesión de administrador iniciada correctamente.');
+        }
+
+        return back()->with('error', 'Contraseña incorrecta. Por favor, inténtelo de nuevo.')->withInput();
+    }
+
+    /**
+     * Cierra la sesión de administrador.
+     */
+    public function adminLogout()
+    {
+        session()->forget('task_admin_logged');
+        return redirect()->route('tutorial.landing')->with('success', 'Sesión de administrador cerrada correctamente.');
     }
 
     /**
@@ -101,6 +124,11 @@ class TaskTutorialController extends Controller
      */
     public function save(Request $request)
     {
+        // Validar que el administrador esté logueado
+        if (session('task_admin_logged') !== true) {
+            return redirect()->route('tutorial.task.admin')->with('error', 'Acceso no autorizado. Inicie sesión primero.');
+        }
+
         // Validar contraseña
         $adminPassword = env('TASK_ADMIN_PASSWORD', 'Sebastian1511+');
         if ($request->input('admin_password') !== $adminPassword) {

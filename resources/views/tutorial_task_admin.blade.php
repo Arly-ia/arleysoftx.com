@@ -58,6 +58,9 @@
             <a href="{{ url('/guia-y-tutoriales-task') }}" target="_blank" class="text-xs font-bold text-neonBlue hover:text-white transition duration-200 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-neonBlue/10 border border-neonBlue/20">
                 👁️ Ver Página Pública
             </a>
+            <a href="{{ route('tutorial.task.admin.logout') }}" class="text-xs font-bold text-neonRed hover:text-white transition duration-200 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-neonRed/10 border border-neonRed/20">
+                🚪 Cerrar Sesión
+            </a>
             <a href="{{ url('/') }}" class="text-xs font-bold text-slate-400 hover:text-white transition duration-200 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800/60">
                 Volver al Inicio
             </a>
