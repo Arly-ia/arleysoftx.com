@@ -187,8 +187,6 @@
 
         <!-- Customer Support section -->
         <div class="text-center py-6 border-t border-blue-900/10 text-xs text-slate-400 space-y-2">
-            <p>¿Tienes alguna duda o necesitas ayuda para abrir tus archivos? Escríbenos directamente a:</p>
-            <p class="font-bold text-neonBlue select-all">soporte@magictravelacademy.com</p>
             <div class="pt-4">
                 <a href="{{ route('tutorial.landing') }}" class="px-5 py-2.5 bg-darkCard border border-blue-900/30 rounded-xl text-xs hover:text-white font-medium transition duration-300">
                     ← Volver a la página de inicio

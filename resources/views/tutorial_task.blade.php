@@ -396,12 +396,6 @@
                         <p class="text-xs text-slate-500 italic">No hay preguntas frecuentes registradas.</p>
                     @endforelse
                 </div>
-
-                <!-- Support Box -->
-                <div class="bg-darkBg/60 border border-slate-800 p-5 rounded-2xl text-center space-y-2 mt-6">
-                    <p class="text-xs text-slate-400">¿Tienes dudas adicionales o presentas algún problema técnico con tu acceso?</p>
-                    <p class="text-sm font-bold text-neonBlue">soporte@magictravelacademy.com</p>
-                </div>
             </div>
 
         </div>
