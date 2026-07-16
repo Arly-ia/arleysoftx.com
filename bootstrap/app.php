@@ -15,6 +15,11 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
+// Override public path for Namecheap cPanel hosting
+if (file_exists('/home/arlenoug/public_html')) {
+    $app->usePublicPath('/home/arlenoug/public_html');
+}
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
