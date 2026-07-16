@@ -928,6 +928,58 @@ $cats = [
 const csrf = document.querySelector('meta[name="csrf-token"]').content;
 const activeFilters = { status: 'all', category: 'all', priority: 'all' };
 
+/* ─── IMAGE COMPRESSION ──────────────────── */
+function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8) {
+    return new Promise((resolve) => {
+        if (!file || !file.type.startsWith('image/')) {
+            resolve(file);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth || height > maxHeight) {
+                    if (width > height) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    } else {
+                        width = Math.round((width * maxHeight) / height);
+                        height = maxHeight;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const name = file.name.substring(0, file.name.lastIndexOf('.')) + '.jpg';
+                        const compressedFile = new File([blob], name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        resolve(compressedFile);
+                    } else {
+                        resolve(file);
+                    }
+                }, 'image/jpeg', quality);
+            };
+            img.onerror = () => resolve(file);
+        };
+        reader.onerror = () => resolve(file);
+    });
+}
+
 /* ─── FILTER ─────────────────────────────── */
 function doFilter(type, val, btn) {
     if (activeFilters[type] === val && val !== 'all') {
@@ -1031,15 +1083,27 @@ async function doUpload(taskId, type, input) {
     btn.classList.add('loading');
 
     try {
+        const compressedFile = await compressImage(file);
+
         const fd = new FormData();
-        fd.append('photo', file);
+        fd.append('photo', compressedFile);
         fd.append('type', type);
         fd.append('_token', csrf);
 
-        const res  = await fetch(`/jj-construccion/20wings-tareas/task/${taskId}/photo`, { method:'POST', body: fd });
-        const data = await res.json();
+        const res  = await fetch(`/jj-construccion/20wings-tareas/task/${taskId}/photo`, { 
+            method: 'POST', 
+            headers: { 'Accept': 'application/json' },
+            body: fd 
+        });
 
-        if (data.success) {
+        let data;
+        try {
+            data = await res.json();
+        } catch(jsonErr) {
+            throw new Error('La respuesta del servidor no es válida.');
+        }
+
+        if (res.ok && data.success) {
             const row = document.getElementById(`thumbs-${taskId}-${type}`);
             const div = document.createElement('div');
             div.className = 'p-thumb';
@@ -1051,10 +1115,17 @@ async function doUpload(taskId, type, input) {
             `;
             row.appendChild(div);
         } else {
-            alert('Error al subir foto');
+            let errorMsg = 'Error al subir foto';
+            if (data && data.errors && data.errors.photo) {
+                errorMsg += ': ' + data.errors.photo.join(', ');
+            } else if (data && data.message) {
+                errorMsg += ': ' + data.message;
+            }
+            alert(errorMsg);
         }
     } catch(e) {
-        alert('Error de conexión al subir foto');
+        console.error(e);
+        alert('Error de conexión al subir foto: ' + e.message);
     } finally {
         btn.textContent = orig;
         btn.disabled = false;
@@ -1134,24 +1205,33 @@ async function submitReceipt(e) {
 
     if (!file || !amount) return;
 
-    const fd = new FormData();
-    fd.append('photo', file);
-    fd.append('amount', amount);
-    fd.append('_token', csrf);
-
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const origText = submitBtn.textContent;
     submitBtn.textContent = 'Subiendo...';
     submitBtn.disabled = true;
 
     try {
+        const compressedFile = await compressImage(file);
+
+        const fd = new FormData();
+        fd.append('photo', compressedFile);
+        fd.append('amount', amount);
+        fd.append('_token', csrf);
+
         const res = await fetch(`/jj-construccion/20wings-tareas/task/${id}/receipt`, {
             method: 'POST',
+            headers: { 'Accept': 'application/json' },
             body: fd
         });
-        const data = await res.json();
+        
+        let data;
+        try {
+            data = await res.json();
+        } catch(jsonErr) {
+            throw new Error('La respuesta del servidor no es válida.');
+        }
 
-        if (data.success) {
+        if (res.ok && data.success) {
             // Append new thumbnail to receipts list
             const list = document.getElementById(`receipts-${id}`);
             const div = document.createElement('div');
@@ -1177,10 +1257,17 @@ async function submitReceipt(e) {
 
             closeReceiptModal();
         } else {
-            alert('Error al subir el recibo');
+            let errorMsg = 'Error al subir el recibo';
+            if (data && data.errors && data.errors.photo) {
+                errorMsg += ': ' + data.errors.photo.join(', ');
+            } else if (data && data.message) {
+                errorMsg += ': ' + data.message;
+            }
+            alert(errorMsg);
         }
     } catch(e) {
-        alert('Error de conexión al subir el recibo');
+        console.error(e);
+        alert('Error de conexión al subir el recibo: ' + e.message);
     } finally {
         submitBtn.textContent = origText;
         submitBtn.disabled = false;
