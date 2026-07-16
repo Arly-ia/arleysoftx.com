@@ -213,11 +213,11 @@
                             <div class="space-y-3">
                                 <div class="space-y-1">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-outfit">Pregunta:</label>
-                                    <input type="text" name="faqs[{{ $faqIndex }}][question]" value="{{ $faq['question'] }}" required class="w-full bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 text-sm text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue/40 focus:outline-none transition">
+                                    <input type="text" name="faqs[{{ $faqIndex }}][question]" value="{{ $faq['question'] }}" class="w-full bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 text-sm text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue/40 focus:outline-none transition">
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-outfit">Respuesta:</label>
-                                    <textarea name="faqs[{{ $faqIndex }}][answer]" rows="2" required class="w-full bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 text-sm text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue/40 focus:outline-none transition leading-relaxed">{{ $faq['answer'] }}</textarea>
+                                    <textarea name="faqs[{{ $faqIndex }}][answer]" rows="2" class="w-full bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 text-sm text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue/40 focus:outline-none transition leading-relaxed">{{ $faq['answer'] }}</textarea>
                                 </div>
                             </div>
                         </div>
