@@ -17,6 +17,48 @@ class TaskTutorialController extends Controller
     }
 
     /**
+     * Devuelve la ruta al archivo JSON de preguntas frecuentes.
+     */
+    protected function getFaqsJsonPath()
+    {
+        return storage_path('app/faqs.json');
+    }
+
+    /**
+     * Lee la lista de preguntas frecuentes del archivo JSON. Si no existe, lo crea con la lista por defecto.
+     */
+    protected function getFaqs()
+    {
+        $path = $this->getFaqsJsonPath();
+
+        if (!File::exists($path)) {
+            $dir = dirname($path);
+            if (!File::exists($dir)) {
+                File::makeDirectory($dir, 0755, true);
+            }
+            $defaultFaqs = [
+                [
+                    'question' => '¿Cuánto dinero se puede ganar realmente?',
+                    'answer' => 'Esto depende del tiempo dedicado y el nivel de precisión. Usuarios intermedios en Latinoamérica reportan ganancias estables de entre $5 y $15 USD por día trabajando unas pocas horas.'
+                ],
+                [
+                    'question' => '¿Cuál es el mínimo para retirar y cuándo pagan?',
+                    'answer' => 'El monto mínimo de retiro suele ser muy bajo, usualmente a partir de los $2 o $5 USD. Los pagos se procesan semanalmente o de forma instantánea de acuerdo a tu billetera vinculada.'
+                ],
+                [
+                    'question' => '¿Puedo realizar tareas desde múltiples dispositivos?',
+                    'answer' => 'Sí, puedes iniciar sesión en tu celular y en tu computadora, pero no uses la misma cuenta de manera simultánea en dos dispositivos distintos, ya que el sistema podría detectarlo como comportamiento sospechoso.'
+                ]
+            ];
+            File::put($path, json_encode($defaultFaqs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            return $defaultFaqs;
+        }
+
+        $content = File::get($path);
+        return json_decode($content, true) ?: [];
+    }
+
+    /**
      * Lee la lista de tareas del archivo JSON. Si no existe, lo crea con la lista por defecto.
      */
     protected function getTasks()
@@ -95,8 +137,9 @@ class TaskTutorialController extends Controller
 
         // Combinar dejando las desbloqueadas primero
         $tasks = array_merge($unlockedTasks, $lockedTasks);
+        $faqs = $this->getFaqs();
 
-        return view('tutorial_task', compact('tasks', 'isPreview'));
+        return view('tutorial_task', compact('tasks', 'isPreview', 'faqs'));
     }
 
     /**
@@ -109,7 +152,8 @@ class TaskTutorialController extends Controller
         }
 
         $tasks = $this->getTasks();
-        return view('tutorial_task_admin', compact('tasks'));
+        $faqs = $this->getFaqs();
+        return view('tutorial_task_admin', compact('tasks', 'faqs'));
     }
 
     /**
@@ -252,6 +296,22 @@ class TaskTutorialController extends Controller
         // Guardar de vuelta en el archivo JSON
         $path = $this->getJsonPath();
         File::put($path, json_encode($tasks, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+        // Guardar preguntas frecuentes de vuelta en el archivo JSON
+        $faqsData = $request->input('faqs', []);
+        $faqs = [];
+        foreach ($faqsData as $faqData) {
+            if (isset($faqData['delete_faq']) && $faqData['delete_faq'] == '1') {
+                continue;
+            }
+            if (!empty($faqData['question'])) {
+                $faqs[] = [
+                    'question' => $faqData['question'],
+                    'answer' => $faqData['answer'] ?? ''
+                ];
+            }
+        }
+        File::put($this->getFaqsJsonPath(), json_encode($faqs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         return back()->with('success', 'Cambios y actualizaciones guardados correctamente en el portal.');
     }

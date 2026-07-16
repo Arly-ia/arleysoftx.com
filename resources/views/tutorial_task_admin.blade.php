@@ -190,6 +190,47 @@
                 </button>
             </div>
 
+            <!-- FAQ Section -->
+            <div class="space-y-6 pt-8 border-t border-slate-800/80">
+                <div class="space-y-2">
+                    <h3 class="font-outfit font-black text-xl text-white uppercase tracking-wider">
+                        ❓ Preguntas Frecuentes
+                    </h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Agrega, edita o elimina las preguntas frecuentes que se muestran en el sitio público.
+                    </p>
+                </div>
+
+                <div id="faqs-container" class="space-y-4">
+                    @foreach($faqs as $faqIndex => $faq)
+                        <div class="faq-card bg-slate-900/60 border border-slate-800/80 p-5 rounded-2xl space-y-3 relative" id="faq-card-{{ $faqIndex }}">
+                            <div class="flex justify-between items-center border-b border-slate-850 pb-2">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-outfit">Pregunta #{{ $faqIndex + 1 }}</span>
+                                <button type="button" onclick="removeFaqCard({{ $faqIndex }}, true)" class="text-[10px] text-red-400 hover:text-red-300 font-bold bg-red-500/5 px-2.5 py-1.5 rounded-xl border border-red-500/10 transition">
+                                    🗑️ Eliminar Pregunta
+                                </button>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="space-y-1">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-outfit">Pregunta:</label>
+                                    <input type="text" name="faqs[{{ $faqIndex }}][question]" value="{{ $faq['question'] }}" required class="w-full bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 text-sm text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue/40 focus:outline-none transition">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-outfit">Respuesta:</label>
+                                    <textarea name="faqs[{{ $faqIndex }}][answer]" rows="2" required class="w-full bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 text-sm text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue/40 focus:outline-none transition leading-relaxed">{{ $faq['answer'] }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="pt-2">
+                    <button type="button" onclick="addFaq()" class="w-full sm:w-auto px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-850 border border-slate-800/80 hover:border-neonGreen/30 text-neonGreen font-bold font-outfit text-sm transition flex items-center justify-center gap-2">
+                        ➕ Agregar Pregunta Frecuente
+                    </button>
+                </div>
+            </div>
+
             <!-- Sticky/Bottom Save Panel -->
             <div class="sticky bottom-6 z-20 w-full bg-slate-900/90 border border-slate-800 p-6 rounded-3xl backdrop-blur-md shadow-2xl flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <div class="space-y-1 text-center sm:text-left">
@@ -280,6 +321,50 @@
                     card.appendChild(deleteInput);
                 } else {
                     // Si es nueva y no se ha guardado, se remueve directamente del DOM
+                    card.remove();
+                }
+            }
+        }
+
+        let faqIndex = {{ count($faqs) }};
+        
+        function addFaq() {
+            const container = document.getElementById('faqs-container');
+            const html = 
+                '<div class="faq-card bg-slate-900/60 border border-slate-800/80 p-5 rounded-2xl space-y-3 relative animate-fade-in" id="faq-card-' + faqIndex + '">' +
+                    '<div class="flex justify-between items-center border-b border-slate-850 pb-2">' +
+                        '<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-outfit">Nueva Pregunta (Índice #' + (faqIndex + 1) + ')</span>' +
+                        '<button type="button" onclick="removeFaqCard(' + faqIndex + ', false)" class="text-[10px] text-red-400 hover:text-red-300 font-bold bg-red-500/5 px-2.5 py-1.5 rounded-xl border border-red-500/10 transition">' +
+                            '🗑️ Eliminar Pregunta' +
+                        '</button>' +
+                    '</div>' +
+                    '<div class="space-y-3">' +
+                        '<div class="space-y-1">' +
+                            '<label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-outfit">Pregunta:</label>' +
+                            '<input type="text" name="faqs[' + faqIndex + '][question]" required class="w-full bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 text-sm text-white focus:border-neonBlue focus:outline-none transition">' +
+                        '</div>' +
+                        '<div class="space-y-1">' +
+                            '<label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-outfit">Respuesta:</label>' +
+                            '<textarea name="faqs[' + faqIndex + '][answer]" rows="2" required class="w-full bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 text-sm text-white focus:border-neonBlue focus:outline-none transition leading-relaxed"></textarea>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            container.insertAdjacentHTML('beforeend', html);
+            document.getElementById('faq-card-' + faqIndex).scrollIntoView({ behavior: 'smooth' });
+            faqIndex++;
+        }
+
+        function removeFaqCard(index, isExisting) {
+            if (confirm('¿Estás seguro de que deseas eliminar esta pregunta frecuente?')) {
+                const card = document.getElementById('faq-card-' + index);
+                if (isExisting) {
+                    card.style.display = 'none';
+                    const deleteInput = document.createElement('input');
+                    deleteInput.type = 'hidden';
+                    deleteInput.name = 'faqs[' + index + '][delete_faq]';
+                    deleteInput.value = '1';
+                    card.appendChild(deleteInput);
+                } else {
                     card.remove();
                 }
             }

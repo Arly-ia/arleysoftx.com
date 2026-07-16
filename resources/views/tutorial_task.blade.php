@@ -387,23 +387,14 @@
 
                 <!-- FAQ Accordion -->
                 <div class="space-y-4">
-                    <!-- Elementos originales -->
-                    <div class="border-b border-slate-800 pb-3 space-y-1">
-                        <h4 class="font-bold text-white text-sm sm:text-base">¿Cuánto dinero se puede ganar realmente?</h4>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Esto depende del tiempo dedicado y el nivel de precisión. Usuarios intermedios en Latinoamérica reportan ganancias estables de entre $5 y $15 USD por día trabajando unas pocas horas.</p>
-                    </div>
-
-                    <div class="border-b border-slate-800 pb-3 space-y-1">
-                        <h4 class="font-bold text-white text-sm sm:text-base">¿Cuál es el mínimo para retirar y cuándo pagan?</h4>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">El monto mínimo de retiro suele ser muy bajo, usualmente a partir de los $2 o $5 USD. Los pagos se procesan semanalmente o de forma instantánea de acuerdo a tu billetera vinculada.</p>
-                    </div>
-
-                    <div class="border-b border-slate-800 pb-3 space-y-1">
-                        <h4 class="font-bold text-white text-sm sm:text-base">¿Puedo realizar tareas desde múltiples dispositivos?</h4>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Sí, puedes iniciar sesión en tu celular y en tu computadora, pero <strong>no uses la misma cuenta de manera simultánea en dos dispositivos distintos</strong>, ya que el sistema podría detectarlo como comportamiento sospechoso.</p>
-                    </div>
-
-                    <!-- Nuevos elementos de WhatsApp se agregaran despues -->
+                    @forelse($faqs as $faq)
+                        <div class="border-b border-slate-800 pb-3 space-y-1">
+                            <h4 class="font-bold text-white text-sm sm:text-base">{!! nl2br(e($faq['question'] ?? '')) !!}</h4>
+                            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">{!! nl2br(e($faq['answer'] ?? '')) !!}</p>
+                        </div>
+                    @empty
+                        <p class="text-xs text-slate-500 italic">No hay preguntas frecuentes registradas.</p>
+                    @endforelse
                 </div>
 
                 <!-- Support Box -->
