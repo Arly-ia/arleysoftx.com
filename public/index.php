@@ -3,6 +3,26 @@
 // Actualizador automático seguro: Visita arleysoftx.com/?pull=arleysoft para actualizar desde GitHub
 if (isset($_GET['pull']) && $_GET['pull'] === 'arleysoft') {
     header('Content-Type: text/plain');
+    
+    // Acción: migrar base de datos
+    if (isset($_GET['action']) && $_GET['action'] === 'migrate') {
+        echo "Ejecutando migraciones...\n\n";
+        $output = shell_exec('cd /home/arlenoug/repositories/arleysoftx.com && php artisan migrate --force 2>&1');
+        echo $output;
+        echo "\n¡Listo!";
+        exit;
+    }
+
+    // Acción: ver DB config del .env
+    if (isset($_GET['action']) && $_GET['action'] === 'dbinfo') {
+        $env = file_get_contents('/home/arlenoug/repositories/arleysoftx.com/.env');
+        preg_match_all('/^(DB_[^=]+)=(.*)$/m', $env, $matches, PREG_SET_ORDER);
+        foreach ($matches as $m) {
+            echo $m[1] . "=" . $m[2] . "\n";
+        }
+        exit;
+    }
+
     echo "Iniciando actualización desde GitHub (git pull)...\n\n";
     $output = shell_exec('cd /home/arlenoug/repositories/arleysoftx.com && git pull 2>&1');
     echo $output;
