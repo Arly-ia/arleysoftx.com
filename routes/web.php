@@ -69,7 +69,7 @@ Route::post('/guia-y-tutoriales-task/admin/license/{id}/reset-devices', [TaskAcc
 // Ruta de migración web protegida (para ejecutar en producción desde el browser)
 Route::get('/arleysoft-run-migrations-secure-7x2k', function () {
     $adminToken = request()->query('token');
-    if ($adminToken !== env('TASK_ADMIN_PASSWORD')) {
+    if ($adminToken !== 'arleysoft2026migrate') {
         abort(403, 'Unauthorized');
     }
     try {
@@ -80,6 +80,7 @@ Route::get('/arleysoft-run-migrations-secure-7x2k', function () {
         return response('<pre style="background:#000;color:#f00;padding:20px;font-family:monospace">ERROR: ' . htmlspecialchars($e->getMessage()) . '</pre>');
     }
 });
+
 
 
 // Ruta para resetear sesión de prueba (solo accesible conociendo el path)
