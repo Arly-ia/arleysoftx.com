@@ -56,6 +56,32 @@ Route::post('/guia-y-tutoriales-task/admin/login', [TaskTutorialController::clas
 Route::get('/guia-y-tutoriales-task/admin/logout', [TaskTutorialController::class, 'adminLogout'])->name('tutorial.task.admin.logout');
 Route::post('/guia-y-tutoriales-task/admin/save', [TaskTutorialController::class, 'save'])->name('tutorial.task.save');
 
+// Rutas de acceso con clave de licencia
+use App\Http\Controllers\TaskAccessController;
+Route::get('/guia-y-tutoriales-task/acceso',  [TaskAccessController::class, 'showAccessPage'])->name('task.access');
+Route::post('/guia-y-tutoriales-task/acceso', [TaskAccessController::class, 'verifyKey'])->name('task.access.verify');
+
+// Rutas de administración de licencias (protegidas por sesión de admin)
+Route::post('/guia-y-tutoriales-task/admin/license/{id}/revoke', [TaskAccessController::class, 'revokeLicense'])->name('task.license.revoke');
+Route::post('/guia-y-tutoriales-task/admin/license/{id}/reset-devices', [TaskAccessController::class, 'resetDevices'])->name('task.license.reset');
+
+
+// Ruta de migración web protegida (para ejecutar en producción desde el browser)
+Route::get('/arleysoft-run-migrations-secure-7x2k', function () {
+    $adminToken = request()->query('token');
+    if ($adminToken !== env('TASK_ADMIN_PASSWORD')) {
+        abort(403, 'Unauthorized');
+    }
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        return response('<pre style="background:#000;color:#0f0;padding:20px;font-family:monospace">' . htmlspecialchars($output) . '</pre>');
+    } catch (\Exception $e) {
+        return response('<pre style="background:#000;color:#f00;padding:20px;font-family:monospace">ERROR: ' . htmlspecialchars($e->getMessage()) . '</pre>');
+    }
+});
+
+
 // Ruta para resetear sesión de prueba (solo accesible conociendo el path)
 Route::get('/guia-y-tutoriales-task/reset-session-arleysoft', function () {
     session()->forget('task_tutorial_paid');

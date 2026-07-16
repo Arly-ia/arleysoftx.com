@@ -3,205 +3,177 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>¡Acceso Concedido! - Guía y Tutoriales Task</title>
+    <title>¡Pago Exitoso! Tu Clave de Acceso - TASK Tutorial</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        outfit: ['Outfit', 'sans-serif'],
-                    },
+                    fontFamily: { outfit: ['Outfit', 'sans-serif'] },
                     colors: {
-                        neonGreen: '#39FF14',
-                        neonBlue: '#00F0FF',
-                        darkBg: '#050B14',
-                        darkCard: '#0D1B2A',
+                        neonGreen: '#10b981',
+                        neonBlue:  '#00f0ff',
+                        darkBg:    '#080c14',
+                        darkCard:  '#0f172a',
                     }
                 }
             }
         }
     </script>
-
     <style>
-        body {
-            background-color: #050B14;
-            background-image: 
-                radial-gradient(circle at 50% -20%, rgba(0, 240, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 120%, rgba(57, 255, 20, 0.1) 0%, transparent 50%);
-            background-attachment: fixed;
-        }
-        .bounce-glow {
-            animation: bounce 2.5s infinite;
-        }
-        @keyframes bounce {
+        body { background-color: #080c14; }
+        @keyframes bounce-slow {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
+            50%       { transform: translateY(-8px); }
         }
+        @keyframes key-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0,240,255,0.15), 0 0 0 1px rgba(0,240,255,0.2); }
+            50%       { box-shadow: 0 0 50px rgba(0,240,255,0.35), 0 0 0 1px rgba(0,240,255,0.4); }
+        }
+        .bounce-slow { animation: bounce-slow 3s ease-in-out infinite; }
+        .key-glow    { animation: key-glow 2.5s ease-in-out infinite; }
+        .key-font    { font-family: 'Courier New', monospace; letter-spacing: 0.25em; }
     </style>
 </head>
-<body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-neonBlue selection:text-black antialiased">
+<body class="min-h-screen font-outfit text-slate-100 antialiased">
 
-    <!-- Header Navigation -->
-    <header class="w-full py-6 px-6 max-w-7xl mx-auto flex justify-between items-center relative z-10 border-b border-blue-950/40">
-        <div class="flex items-center gap-2">
-            <a href="{{ url('/') }}" class="text-2xl font-black font-outfit tracking-tighter bg-gradient-to-r from-neonBlue via-white to-neonGreen bg-clip-text text-transparent hover:opacity-90">
-                GUIA Y TUTORIALES TASK
-            </a>
-        </div>
-        <div class="flex items-center gap-4">
-            <a href="{{ url('/') }}" class="text-xs font-bold text-slate-400 hover:text-white transition duration-200 flex items-center gap-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                </svg>
-                Volver al Inicio
-            </a>
-            <span class="text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1.5 rounded-full font-semibold flex items-center gap-1.5">
+    <!-- Header -->
+    <header class="relative z-10 border-b border-slate-900/60 bg-darkBg/90 py-5">
+        <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
+            <span class="font-outfit font-black text-lg text-white tracking-wider">ArleySoftx</span>
+            <span class="text-[11px] font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1.5 rounded-full flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                Acceso Verificado
+                Pago Verificado
             </span>
         </div>
     </header>
 
-    <!-- Success Content -->
-    <main class="max-w-4xl mx-auto px-6 py-12 relative z-10 flex-grow w-full space-y-12">
-        
-        <!-- Header Success Message -->
-        <div class="text-center space-y-4">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-tr from-neonBlue to-neonGreen p-1 bounce-glow">
-                <div class="w-full h-full bg-[#050B14] rounded-full flex items-center justify-center text-3xl">
-                    🌟
-                </div>
+    <!-- Main -->
+    <main class="max-w-2xl mx-auto px-6 py-16 space-y-10">
+
+        <!-- Success Icon + Title -->
+        <div class="text-center space-y-4 bounce-slow">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-neonBlue/20 to-neonGreen/20 border border-neonBlue/30 text-4xl">
+                🎉
             </div>
-            <h1 class="text-3xl sm:text-5xl font-black font-outfit text-white leading-tight">
-                ¡Acceso Concedido a tus Videos y Guías!
+            <h1 class="font-outfit font-black text-3xl sm:text-4xl text-white leading-tight">
+                ¡Gracias por tu compra!
             </h1>
-            <p class="text-slate-300 max-w-xl mx-auto text-base">
-                Ya tienes acceso a tu material. Abajo puedes ver el video explicativo y descargar tus guías de ayuda en tu celular de forma sencilla.
+            <p class="text-slate-400 text-base leading-relaxed max-w-md mx-auto">
+                Tu pago fue procesado exitosamente.
+                @if(isset($buyerEmail) && $buyerEmail)
+                    Tu clave también fue enviada a <strong class="text-white">{{ $buyerEmail }}</strong>.
+                @endif
             </p>
         </div>
 
-        <!-- Video Player Section -->
-        <div class="bg-darkCard/80 rounded-3xl border border-blue-900/40 p-4 sm:p-6 shadow-2xl relative">
-            <div class="absolute top-4 right-6 bg-neonBlue/15 text-neonBlue text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                Exclusivo Alumnos
-            </div>
-            
-            <h2 class="font-outfit font-bold text-white text-xl sm:text-2xl mb-4 pr-24 flex items-center gap-2">
-                🎬 Video Instructivo: Cómo Abrir la Cuenta de Aplicación TASK
-            </h2>
+        <!-- Key Box -->
+        <div class="bg-darkCard/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-8 space-y-6">
 
-            <!-- Video Player Container (Insert unlisted tutorial URL here) -->
-            <div class="aspect-video w-full rounded-2xl overflow-hidden bg-black/90 border border-blue-950 shadow-inner relative">
-                
-                <!-- IFRAME PLACEHOLDER: Enlace del video de YouTube, Vimeo, Drive, etc. -->
-                <iframe 
-                    class="w-full h-full" 
-                    src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" 
-                    title="Task Video Tutorial" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-                </iframe>
-                
+            <div class="text-center space-y-1">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tu Clave de Acceso Personal</p>
+                <p class="text-[11px] text-slate-600">Guárdala bien — la necesitarás cada vez que entres</p>
             </div>
 
-            <!-- Video instructions -->
-            <div class="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-slate-400 pt-4 border-t border-blue-900/20">
-                <p>💡 <em>Consejo: Si te pierdes, ponle pausa al video y míralo con calma.</em></p>
-                <div class="flex items-center gap-3">
-                    <span>1080p FHD</span>
+            @if(isset($licenseKey) && $licenseKey)
+                <!-- Key Display -->
+                <div class="key-glow bg-slate-950 rounded-2xl p-6 text-center border border-neonBlue/20">
+                    <div id="key-display" class="key-font text-3xl sm:text-4xl font-black text-neonBlue tracking-widest select-all">
+                        {{ $licenseKey }}
+                    </div>
+                </div>
+
+                <!-- Copy Button -->
+                <button
+                    onclick="copyKey('{{ $licenseKey }}')"
+                    id="copy-btn"
+                    class="w-full py-3.5 rounded-2xl border border-neonBlue/30 bg-neonBlue/5 text-neonBlue font-bold text-sm uppercase tracking-wider hover:bg-neonBlue/10 transition duration-200 flex items-center justify-center gap-2"
+                >
+                    📋 Copiar Clave al Portapapeles
+                </button>
+            @else
+                <div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 text-center">
+                    <p class="text-red-400 text-sm">Hubo un error generando tu clave. Contacta al soporte con tu comprobante de pago.</p>
+                </div>
+            @endif
+
+            <!-- Divider -->
+            <div class="flex items-center gap-3">
+                <div class="flex-1 border-t border-slate-800"></div>
+                <span class="text-[10px] text-slate-600 uppercase tracking-widest">próximo paso</span>
+                <div class="flex-1 border-t border-slate-800"></div>
+            </div>
+
+            <!-- Access CTA -->
+            <a
+                href="{{ url('/guia-y-tutoriales-task/acceso') }}"
+                class="block text-center w-full py-4 rounded-2xl bg-gradient-to-r from-neonBlue to-neonGreen text-darkBg font-black text-base uppercase tracking-wider hover:from-cyan-400 hover:to-emerald-400 transition duration-300 shadow-[0_0_30px_rgba(0,240,255,0.15)] active:scale-[0.98]"
+            >
+                🔓 Ingresar al Tutorial con mi Clave
+            </a>
+
+            <!-- Instructions -->
+            <div class="bg-slate-900/60 rounded-2xl p-4 space-y-3">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">¿Cómo acceder?</p>
+                <div class="flex items-start gap-3">
+                    <span class="text-neonBlue font-black text-sm min-w-[16px]">1.</span>
+                    <p class="text-slate-400 text-sm leading-relaxed">Haz clic en "Ingresar al Tutorial" o ve a <strong class="text-slate-300">arleysoftx.com/guia-y-tutoriales-task/acceso</strong></p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-neonBlue font-black text-sm min-w-[16px]">2.</span>
+                    <p class="text-slate-400 text-sm leading-relaxed">Escribe o pega tu clave de acceso personal</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-neonBlue font-black text-sm min-w-[16px]">3.</span>
+                    <p class="text-slate-400 text-sm leading-relaxed">¡Listo! Tendrás acceso completo. La clave funciona en hasta <strong class="text-slate-300">2 dispositivos</strong>.</p>
                 </div>
             </div>
+
         </div>
 
-        <!-- Resources & Downloadables -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            <!-- Downloadable Resource 1 -->
-            <div class="bg-darkCard/40 p-6 rounded-2xl border border-blue-900/20 hover:border-neonBlue/50 transition duration-300 flex items-start gap-4">
-                <div class="text-3xl p-3 bg-neonBlue/10 rounded-xl text-neonBlue">
-                    📄
-                </div>
-                <div class="space-y-1">
-                    <h3 class="font-outfit font-bold text-white text-base">Guía de Ayuda Sencilla (PDF)</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Archivo fácil de leer que te explica paso a paso cómo configurar todo desde cero en tu celular.
-                    </p>
-                    <a href="#" class="inline-flex items-center gap-1 text-xs text-neonBlue font-bold hover:underline pt-2">
-                        Descargar Guía PDF para celular
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Downloadable Resource 2 -->
-            <div class="bg-darkCard/40 p-6 rounded-2xl border border-blue-900/20 hover:border-neonGreen/50 transition duration-300 flex items-start gap-4">
-                <div class="text-3xl p-3 bg-neonGreen/10 rounded-xl text-neonGreen">
-                    📊
-                </div>
-                <div class="space-y-1">
-                    <h3 class="font-outfit font-bold text-white text-base">Lista de Ayuda y Control</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Una lista simple en Excel para ver lo que debes hacer y controlar tus ganancias diarias.
-                    </p>
-                    <a href="#" class="inline-flex items-center gap-1 text-xs text-neonGreen font-bold hover:underline pt-2">
-                        Descargar Lista en Excel
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            
+        <!-- Warning -->
+        <div class="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5">
+            <p class="text-amber-400/80 text-sm leading-relaxed">
+                ⚠️ <strong>Importante:</strong> Esta clave es personal e intransferible. Si la compartes y alguien más la usa en otro dispositivo, tu acceso podría bloquearse automáticamente. Si necesitas resetear tu dispositivo, contáctanos.
+            </p>
         </div>
 
-        <!-- Order Summary Details -->
-        @if(isset($paymentDetails))
-            <div class="bg-darkCard/20 p-5 rounded-2xl border border-blue-900/10 text-xs text-slate-400 space-y-2">
-                <h4 class="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Resumen de tu Compra</h4>
-                <div class="grid grid-cols-2 gap-1.5">
-                    <div>Código de Pago:</div>
-                    <div class="text-slate-300 text-right select-all font-mono">{{ $paymentDetails['id'] }}</div>
-                    
-                    <div>Monto Cobrado:</div>
-                    <div class="text-slate-300 text-right">${{ number_format($paymentDetails['amount_total'] / 100, 2) }} {{ strtoupper($paymentDetails['currency']) }}</div>
-                    
-                    @if(isset($paymentDetails['customer_details']['email']))
-                        <div>Tu Correo:</div>
-                        <div class="text-slate-300 text-right">{{ $paymentDetails['customer_details']['email'] }}</div>
-                    @endif
-                </div>
-            </div>
-        @endif
-
-        <!-- Customer Support section -->
-        <div class="text-center py-6 border-t border-blue-900/10 text-xs text-slate-400 space-y-2">
-            <div class="pt-4">
-                <a href="{{ route('tutorial.landing') }}" class="px-5 py-2.5 bg-darkCard border border-blue-900/30 rounded-xl text-xs hover:text-white font-medium transition duration-300">
-                    ← Volver a la página de inicio
-                </a>
-            </div>
+        <!-- Back link -->
+        <div class="text-center">
+            <a href="{{ url('/') }}" class="text-xs text-slate-600 hover:text-slate-400 transition">
+                ← Volver al inicio
+            </a>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="w-full py-8 border-t border-blue-950/40 bg-[#02050a] text-center text-xs text-slate-500 relative z-10">
-        <div class="max-w-6xl mx-auto px-6">
-            <p>© 2026 Guías y Tutoriales Task. Todos los derechos reservados.</p>
-        </div>
+    <footer class="border-t border-slate-900/60 py-6 text-center text-xs text-slate-600">
+        <p>&copy; {{ date('Y') }} ArleySoftx. Todos los derechos reservados.</p>
     </footer>
+
+    <script>
+        function copyKey(key) {
+            navigator.clipboard.writeText(key).then(() => {
+                const btn = document.getElementById('copy-btn');
+                btn.textContent = '✅ ¡Clave Copiada!';
+                setTimeout(() => { btn.textContent = '📋 Copiar Clave al Portapapeles'; }, 3000);
+            }).catch(() => {
+                const el = document.createElement('textarea');
+                el.value = key;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                document.getElementById('copy-btn').textContent = '✅ ¡Clave Copiada!';
+            });
+        }
+    </script>
 
 </body>
 </html>

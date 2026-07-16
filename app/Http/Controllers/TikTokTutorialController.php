@@ -73,6 +73,7 @@ class TikTokTutorialController extends Controller
 
     /**
      * Muestra la página de éxito tras el pago completado.
+     * Genera una clave de licencia única y la envía por email al comprador.
      */
     public function success(Request $request)
     {
@@ -82,9 +83,10 @@ class TikTokTutorialController extends Controller
             return redirect()->route('tutorial.landing')->with('error', 'Sesión de pago no válida o incompleta.');
         }
 
-        $stripeSecret = config('services.stripe.secret');
-        $paymentDetails = null;
-        $isPaid = false;
+        $stripeSecret  = config('services.stripe.secret');
+        $isPaid        = false;
+        $buyerEmail    = null;
+        $sessionData   = null;
 
         if (!empty($stripeSecret)) {
             try {
@@ -94,9 +96,9 @@ class TikTokTutorialController extends Controller
 
                 if ($response->successful()) {
                     $sessionData = $response->json();
-                    $paymentDetails = $sessionData;
                     if ($sessionData['payment_status'] === 'paid') {
-                        $isPaid = true;
+                        $isPaid     = true;
+                        $buyerEmail = $sessionData['customer_details']['email'] ?? null;
                     }
                 }
             } catch (\Exception $e) {
@@ -104,16 +106,78 @@ class TikTokTutorialController extends Controller
             }
         } else {
             // Si el desarrollador entra directamente sin llaves, permitimos ver la demo
-            $isPaid = true;
+            $isPaid     = true;
+            $buyerEmail = 'demo@arleysoftx.com';
         }
 
         if ($isPaid) {
-            session(['task_tutorial_paid' => true]);
-            session(['task_tutorial_session_id' => $sessionId]);
-            return redirect()->route('tutorial.task')->with('success', '¡Acceso Concedido! Tu pago se ha procesado con éxito.');
+            // Generar o recuperar la clave de licencia para esta sesión de Stripe
+            $licenseKey = $this->getOrCreateLicense($sessionId, $buyerEmail);
+
+            // Enviar email con la clave (si SMTP está configurado)
+            if ($buyerEmail && $licenseKey) {
+                $this->sendLicenseEmail($buyerEmail, $licenseKey);
+            }
+
+            // Redirigir a la página de éxito mostrando la clave
+            return view('stripe.success', [
+                'licenseKey' => $licenseKey,
+                'buyerEmail' => $buyerEmail,
+            ]);
         }
 
         return redirect()->route('tutorial.landing')->with('error', 'El pago no ha sido completado o verificado.');
+    }
+
+    /**
+     * Obtiene la licencia existente para una sesión de Stripe o crea una nueva.
+     */
+    private function getOrCreateLicense(string $sessionId, ?string $email): ?string
+    {
+        try {
+            $license = \App\Models\TaskLicense::where('stripe_session_id', $sessionId)->first();
+
+            if ($license) {
+                return $license->license_key;
+            }
+
+            $key     = \App\Models\TaskLicense::generateKey();
+            $license = \App\Models\TaskLicense::create([
+                'license_key'       => $key,
+                'email'             => $email,
+                'stripe_session_id' => $sessionId,
+                'is_active'         => true,
+                'max_devices'       => 2,
+            ]);
+
+            Log::info("TaskLicense created: key={$key} email={$email} session={$sessionId}");
+            return $key;
+
+        } catch (\Exception $e) {
+            Log::error('Error creating TaskLicense: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Envía el email con la clave de acceso al comprador.
+     */
+    private function sendLicenseEmail(string $email, string $licenseKey): void
+    {
+        try {
+            \Illuminate\Support\Facades\Mail::send(
+                'emails.task_license',
+                ['licenseKey' => $licenseKey],
+                function ($message) use ($email, $licenseKey) {
+                    $message->to($email)
+                            ->subject("🔐 Tu Clave de Acceso: {$licenseKey} — Tutorial TASK");
+                }
+            );
+            Log::info("License email sent to {$email} with key {$licenseKey}");
+        } catch (\Exception $e) {
+            Log::warning("Could not send license email to {$email}: " . $e->getMessage());
+            // No interrumpimos el flujo si el email falla
+        }
     }
 
     /**

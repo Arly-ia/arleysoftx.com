@@ -247,6 +247,81 @@
 
         </form>
 
+        <!-- ─────────── Licencias de Compradores ─────────── -->
+        <section class="mt-12 space-y-6 pb-12">
+            <div class="space-y-2">
+                <h3 class="font-outfit font-black text-xl text-white uppercase tracking-wider">
+                    🔑 Licencias de Compradores
+                </h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Lista de claves generadas. Aquí puedes revocar accesos o resetear dispositivos.
+                </p>
+            </div>
+
+            @if(session('success'))
+                <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4">
+                    <p class="text-emerald-400 text-sm font-medium">{{ session('success') }}</p>
+                </div>
+            @endif
+
+            @if(empty($licenses))
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-8 text-center">
+                    <p class="text-slate-500 text-sm">Aún no hay compras registradas.</p>
+                    @php
+                        $migrationUrl = url('/arleysoft-run-migrations-secure-7x2k?token=' . env('TASK_ADMIN_PASSWORD', 'Sebastian1511+'));
+                    @endphp
+                    <p class="text-slate-600 text-xs mt-2">
+                        Si la tabla no existe aún, <a href="{{ $migrationUrl }}" class="text-neonBlue underline" target="_blank">haz clic aquí para crear la tabla</a>.
+                    </p>
+                </div>
+            @else
+                <div class="space-y-3">
+                    @foreach($licenses as $license)
+                        <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div class="space-y-1 flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="font-mono text-base font-black text-neonBlue tracking-wider">{{ $license['license_key'] }}</span>
+                                    @if($license['is_active'])
+                                        <span class="text-[9px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full uppercase tracking-widest">Activa</span>
+                                    @else
+                                        <span class="text-[9px] font-bold bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full uppercase tracking-widest">Revocada</span>
+                                    @endif
+                                </div>
+                                <p class="text-slate-400 text-xs truncate">
+                                    📧 {{ $license['email'] ?? '(sin email)' }}
+                                </p>
+                                <p class="text-slate-500 text-xs">
+                                    📱 Dispositivos registrados: {{ count($license['device_fingerprints'] ?? []) }}/{{ $license['max_devices'] ?? 2 }}
+                                    &nbsp;|&nbsp;
+                                    🗓️ {{ $license['created_at'] ? \Carbon\Carbon::parse($license['created_at'])->format('d/m/Y H:i') : 'N/A' }}
+                                </p>
+                            </div>
+
+                            <div class="flex gap-2 flex-shrink-0">
+                                <!-- Resetear Dispositivos -->
+                                <form method="POST" action="{{ route('task.license.reset', $license['id']) }}" onsubmit="return confirm('¿Resetear dispositivos de esta clave?')">
+                                    @csrf
+                                    <button type="submit" class="text-[10px] text-sky-400 font-bold bg-sky-500/5 hover:bg-sky-500/15 px-3 py-2 rounded-xl border border-sky-500/20 transition">
+                                        📱 Resetear Dispositivos
+                                    </button>
+                                </form>
+
+                                @if($license['is_active'])
+                                    <!-- Revocar -->
+                                    <form method="POST" action="{{ route('task.license.revoke', $license['id']) }}" onsubmit="return confirm('¿Seguro que quieres REVOCAR esta clave? El comprador perderá acceso.')">
+                                        @csrf
+                                        <button type="submit" class="text-[10px] text-red-400 font-bold bg-red-500/5 hover:bg-red-500/15 px-3 py-2 rounded-xl border border-red-500/20 transition">
+                                            🚫 Revocar Clave
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </section>
+
     </main>
 
     <!-- Footer -->

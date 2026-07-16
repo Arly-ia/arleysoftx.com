@@ -152,9 +152,19 @@ class TaskTutorialController extends Controller
         }
 
         $tasks = $this->getTasks();
-        $faqs = $this->getFaqs();
-        return view('tutorial_task_admin', compact('tasks', 'faqs'));
+        $faqs  = $this->getFaqs();
+
+        // Cargar licencias (si la tabla existe)
+        $licenses = [];
+        try {
+            $licenses = \App\Models\TaskLicense::orderBy('created_at', 'desc')->get()->toArray();
+        } catch (\Exception $e) {
+            // La tabla aún no existe en este entorno — ignorar
+        }
+
+        return view('tutorial_task_admin', compact('tasks', 'faqs', 'licenses'));
     }
+
 
     /**
      * Procesa el inicio de sesión del administrador.
