@@ -141,9 +141,6 @@
                 <button onclick="switchTab('tab-work')" id="btn-tab-work" class="tab-btn px-4 py-2.5 text-sm font-semibold rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all duration-200">
                     💼 Guía de Trabajo
                 </button>
-                <button onclick="switchTab('tab-downloads')" id="btn-tab-downloads" class="tab-btn px-4 py-2.5 text-sm font-semibold rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all duration-200">
-                    📥 Recursos y Descargas
-                </button>
                 <button onclick="switchTab('tab-faqs')" id="btn-tab-faqs" class="tab-btn px-4 py-2.5 text-sm font-semibold rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all duration-200">
                     ❓ Preguntas y Soporte
                 </button>
@@ -172,20 +169,6 @@
                     </ul>
                 </div>
 
-                <!-- Video Overview Mockup -->
-                <div class="space-y-4 pt-4">
-                    <h3 class="font-outfit font-bold text-white text-lg">🎬 Video de Introducción general:</h3>
-                    <div class="aspect-video w-full rounded-2xl overflow-hidden bg-black/90 border border-slate-800 shadow-inner relative">
-                        <iframe 
-                            class="w-full h-full" 
-                            src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" 
-                            title="Task Intro Video" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                </div>
             </div>
 
             <!-- Tab 2: Registro y Configuración -->
@@ -390,73 +373,7 @@
                 </div>
             </div>
 
-            <!-- Tab 4: Recursos y Descargas -->
-            <div id="tab-downloads" class="tab-content hidden space-y-6">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">📥</span>
-                    <h2 class="font-outfit font-black text-2xl text-white">Manuales y Recursos de Apoyo</h2>
-                </div>
-                <p class="text-slate-300 text-sm sm:text-base">
-                    Hemos preparado material didáctico específico para acelerar tu aprendizaje. Descárgalo y utilízalo como referencia mientras trabajas.
-                </p>
 
-                <!-- Downloadable items -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-                    
-                    <!-- Item 1 -->
-                    <div class="bg-slate-900 border border-slate-800 hover:border-neonBlue/50 transition duration-300 rounded-2xl p-6 flex flex-col justify-between h-full">
-                        <div class="space-y-2">
-                            <span class="text-3xl block">📄</span>
-                            <h4 class="font-bold text-white text-sm sm:text-base">Manual de Optimización (PDF)</h4>
-                            <p class="text-xs text-slate-400">Guía práctica con imágenes ilustrativas de cómo configurar tu celular para evitar bloqueos y mejorar la recepción de tareas.</p>
-                        </div>
-                        <div class="pt-4">
-                            @if($isPreview)
-                                <form action="{{ route('tutorial.checkout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-slate-800 text-slate-500 text-xs font-bold border border-slate-700/50 cursor-pointer hover:bg-neonBlue/10 hover:text-neonBlue hover:border-neonBlue/20 transition">
-                                        🔒 Desbloquear Manual (Premium)
-                                    </button>
-                                </form>
-                            @else
-                                <a href="#" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-neonBlue/10 hover:bg-neonBlue/20 text-neonBlue text-xs font-bold transition">
-                                    Descargar PDF
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 ml-1.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                    </svg>
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Item 2 -->
-                    <div class="bg-slate-900 border border-slate-800 hover:border-neonGreen/50 transition duration-300 rounded-2xl p-6 flex flex-col justify-between h-full">
-                        <div class="space-y-2">
-                            <span class="text-3xl block">📊</span>
-                            <h4 class="font-bold text-white text-sm sm:text-base">Planilla de Control (Excel)</h4>
-                            <p class="text-xs text-slate-400">Lleva un registro ordenado de tus horas dedicadas, tareas realizadas, tasa de precisión y tus cobros acumulados mes a mes.</p>
-                        </div>
-                        <div class="pt-4">
-                            @if($isPreview)
-                                <form action="{{ route('tutorial.checkout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-slate-800 text-slate-500 text-xs font-bold border border-slate-700/50 cursor-pointer hover:bg-neonGreen/10 hover:text-neonGreen hover:border-neonGreen/20 transition">
-                                        🔒 Desbloquear Planilla (Premium)
-                                    </button>
-                                </form>
-                            @else
-                                <a href="#" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-neonGreen/10 hover:bg-neonGreen/20 text-neonGreen text-xs font-bold transition">
-                                    Descargar Planilla
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 ml-1.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                    </svg>
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-
-                </div>
-            </div>
 
             <!-- Tab 5: Preguntas y Soporte -->
             <div id="tab-faqs" class="tab-content hidden space-y-6">
