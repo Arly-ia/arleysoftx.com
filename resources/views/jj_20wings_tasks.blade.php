@@ -627,93 +627,32 @@
         .btn-submit { background: #e53935; color: #fff; box-shadow: 0 4px 16px rgba(229,57,53,.35); }
         .btn-submit:hover { background: #c62828; }
 
-        /* ── FULLSCREEN GALLERY LIGHTBOX ──────────────── */
+        /* ── LIGHTBOX ────────────────────────────────── */
         .lightbox {
             display: none;
             position: fixed; inset: 0;
-            background: rgba(4,4,12,.96);
-            backdrop-filter: blur(12px);
+            background: rgba(0,0,0,.96);
             z-index: 500;
             align-items: center;
             justify-content: center;
-            padding: 12px;
         }
         .lightbox.active { display: flex; }
+        .lb-img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 24px 80px rgba(0,0,0,.8); display: block; }
         .lb-close {
-            position: absolute; top: 16px; right: 16px;
-            background: rgba(255,255,255,.15); border: none;
-            color: #fff; width: 44px; height: 44px;
-            border-radius: 50%; font-size: 26px; line-height: 1;
+            position: absolute; top: 14px; right: 14px;
+            background: rgba(255,255,255,.1); border: none;
+            color: #fff; width: 40px; height: 40px;
+            border-radius: 50%; font-size: 22px;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all .2s; z-index: 10;
+            transition: background .2s; z-index: 10;
         }
-        .lb-close:hover { background: rgba(220,38,38,.9); transform: scale(1.1); }
-
-        .lb-gallery-container {
-            width: 100%; height: 100%;
-            max-width: 1200px; max-height: 94vh;
-            display: flex; flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .lb-gallery-header {
-            display: flex; align-items: center; justify-content: space-between;
-            width: 100%; padding: 4px 12px;
-        }
-        .lb-gallery-title {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 22px; letter-spacing: 2px;
-            color: #fff;
-        }
-        .lb-gallery-counter {
-            background: rgba(255,255,255,.12);
-            color: #fff; font-size: 12px; font-weight: 700;
-            padding: 4px 14px; border-radius: 20px;
-            letter-spacing: 1px;
-        }
-
-        .lb-stage {
-            flex: 1; width: 100%;
-            display: flex; align-items: center; justify-content: space-between;
-            position: relative; min-height: 0;
-        }
-        .lb-img-box {
-            flex: 1; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden; padding: 0 10px;
-        }
-        .lb-img-box img {
-            max-width: 100%; max-height: 75vh;
-            object-fit: contain; border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            transition: opacity 0.2s ease;
-        }
-
-        .lb-nav-btn {
-            background: rgba(255,255,255,.12); border: none;
-            color: #fff; width: 48px; height: 48px;
-            border-radius: 50%; font-size: 30px; line-height: 1;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all .2s; flex-shrink: 0; z-index: 5;
-        }
-        .lb-nav-btn:hover { background: rgba(255,255,255,.25); transform: scale(1.1); }
-        .lb-nav-btn:disabled { opacity: 0.15; cursor: default; transform: none; }
-
-        .lb-thumbs-strip {
-            display: flex; gap: 8px; justify-content: center;
-            width: 100%; overflow-x: auto; padding: 6px 0;
-            min-height: 60px;
-        }
-        .lb-strip-thumb {
-            width: 54px; height: 54px;
-            border-radius: 10px; object-fit: cover;
-            cursor: pointer; border: 2px solid transparent;
-            opacity: 0.4; transition: all .2s; flex-shrink: 0;
-        }
-        .lb-strip-thumb.active, .lb-strip-thumb:hover {
-            opacity: 1; border-color: #e53935; transform: scale(1.08);
+        .lb-close:hover { background: rgba(255,255,255,.2); }
+        .lb-caption {
+            position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,.6);
+            color: rgba(255,255,255,.7);
+            font-size: 11px; font-weight: 700; letter-spacing: 2px;
+            padding: 5px 14px; border-radius: 20px;
         }
 
         /* ── NO TASKS ────────────────────────────────── */
@@ -1098,31 +1037,11 @@ $cats = [
     </div>
 </div>
 
-{{-- ===== FULLSCREEN GALLERY LIGHTBOX ===== --}}
+{{-- ===== LIGHTBOX ===== --}}
 <div class="lightbox" id="lightbox" onclick="lbClick(event)">
-    <button class="lb-close" onclick="closeLb()" type="button" title="Cerrar (Esc)">×</button>
-
-    <div class="lb-gallery-container" onclick="event.stopPropagation()">
-        {{-- Header counter & info --}}
-        <div class="lb-gallery-header">
-            <span class="lb-gallery-title" id="lbGalleryTitle">Fotos</span>
-            <span class="lb-gallery-counter" id="lbGalleryCounter">1 / 1</span>
-        </div>
-
-        {{-- Main image view with Nav buttons --}}
-        <div class="lb-stage">
-            <button class="lb-nav-btn lb-prev" id="lbPrevBtn" onclick="lbNav(-1)" type="button" title="Anterior (←)">‹</button>
-
-            <div class="lb-img-box" id="lbImgBox">
-                <img src="" id="lbMainImg" alt="Foto">
-            </div>
-
-            <button class="lb-nav-btn lb-next" id="lbNextBtn" onclick="lbNav(1)" type="button" title="Siguiente (→)">›</button>
-        </div>
-
-        {{-- Bottom thumbnail strip --}}
-        <div class="lb-thumbs-strip" id="lbThumbsStrip"></div>
-    </div>
+    <button class="lb-close" onclick="closeLb()">×</button>
+    <img src="" id="lbImg" class="lb-img" alt="Foto ampliada">
+    <div class="lb-caption" id="lbCap"></div>
 </div>
 
 {{-- ===== ACTION SHEET (post-upload) ===== --}}
@@ -1418,128 +1337,20 @@ async function doUpload(taskId, type, input) {
 }
 
 
-/* ─── FULLSCREEN GALLERY LIGHTBOX SLIDER ───────────── */
-let _lbPhotos = [];
-let _lbCurrentIndex = 0;
-let _touchStartX = 0;
-let _touchEndX = 0;
-
+/* ─── LIGHTBOX ───────────────────────────── */
 document.addEventListener('click', e => {
     if (e.target.classList.contains('lb-trigger')) {
-        const card = e.target.closest('.task-card');
-        const clickedSrc = e.target.dataset.src || e.target.src;
-
-        if (card) {
-            const taskName = card.querySelector('.task-name')?.textContent.trim() || 'Tarea';
-
-            const antesCol   = e.target.closest('[id*="-antes"]');
-            const despuesCol = e.target.closest('[id*="-despues"]');
-
-            let groupType = 'Fotos';
-            let targetSelector = '.lb-trigger';
-
-            if (antesCol) {
-                groupType = '📷 Antes';
-                targetSelector = '[id*="-antes"] .lb-trigger';
-            } else if (despuesCol) {
-                groupType = '🏆 Después';
-                targetSelector = '[id*="-despues"] .lb-trigger';
-            } else {
-                groupType = '🧾 Recibo';
-                targetSelector = '.receipts-list .lb-trigger';
-            }
-
-            const imgs = [...card.querySelectorAll(targetSelector)];
-            _lbPhotos = imgs.map(img => ({
-                src: img.dataset.src || img.src,
-                cap: img.dataset.cap || ''
-            }));
-
-            _lbCurrentIndex = _lbPhotos.findIndex(p => p.src === clickedSrc);
-            if (_lbCurrentIndex === -1) _lbCurrentIndex = 0;
-
-            document.getElementById('lbGalleryTitle').textContent = `${groupType} — ${taskName}`;
-        } else {
-            _lbPhotos = [{ src: clickedSrc, cap: e.target.dataset.cap || '' }];
-            _lbCurrentIndex = 0;
-            document.getElementById('lbGalleryTitle').textContent = e.target.dataset.cap || 'Foto';
-        }
-
-        renderLbSlide();
+        document.getElementById('lbImg').src = e.target.dataset.src || e.target.src;
+        document.getElementById('lbCap').textContent = e.target.dataset.cap || '';
         document.getElementById('lightbox').classList.add('active');
         document.body.style.overflow = 'hidden';
-    }
-});
-
-function renderLbSlide() {
-    if (!_lbPhotos.length) return;
-    const current = _lbPhotos[_lbCurrentIndex];
-
-    const mainImg = document.getElementById('lbMainImg');
-    mainImg.style.opacity = 0;
-    setTimeout(() => {
-        mainImg.src = current.src;
-        mainImg.style.opacity = 1;
-    }, 80);
-
-    document.getElementById('lbGalleryCounter').textContent = `${_lbCurrentIndex + 1} / ${_lbPhotos.length}`;
-
-    // Nav buttons state
-    document.getElementById('lbPrevBtn').disabled = (_lbCurrentIndex === 0);
-    document.getElementById('lbNextBtn').disabled = (_lbCurrentIndex === _lbPhotos.length - 1);
-
-    // Thumbnails strip
-    const strip = document.getElementById('lbThumbsStrip');
-    strip.innerHTML = '';
-
-    if (_lbPhotos.length > 1) {
-        _lbPhotos.forEach((p, idx) => {
-            const thumb = document.createElement('img');
-            thumb.src = p.src;
-            thumb.className = `lb-strip-thumb ${idx === _lbCurrentIndex ? 'active' : ''}`;
-            thumb.onclick = () => {
-                _lbCurrentIndex = idx;
-                renderLbSlide();
-            };
-            strip.appendChild(thumb);
-        });
-    }
-}
-
-function lbNav(dir) {
-    const newIdx = _lbCurrentIndex + dir;
-    if (newIdx >= 0 && newIdx < _lbPhotos.length) {
-        _lbCurrentIndex = newIdx;
-        renderLbSlide();
-    }
-}
-
-// Keyboard Navigation
-document.addEventListener('keydown', e => {
-    const lb = document.getElementById('lightbox');
-    if (!lb || !lb.classList.contains('active')) return;
-    if (e.key === 'ArrowLeft') lbNav(-1);
-    if (e.key === 'ArrowRight') lbNav(1);
-    if (e.key === 'Escape') closeLb();
-});
-
-// Touch Swipe Navigation for Mobile
-document.addEventListener('DOMContentLoaded', () => {
-    const imgBox = document.getElementById('lbImgBox');
-    if (imgBox) {
-        imgBox.addEventListener('touchstart', e => { _touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-        imgBox.addEventListener('touchend', e => {
-            _touchEndX = e.changedTouches[0].screenX;
-            if (_touchStartX - _touchEndX > 45) lbNav(1);  // Swipe left -> next
-            if (_touchEndX - _touchStartX > 45) lbNav(-1); // Swipe right -> prev
-        }, {passive: true});
     }
 });
 
 function lbClick(e) { if (e.target.id === 'lightbox') closeLb(); }
 function closeLb() {
     document.getElementById('lightbox').classList.remove('active');
-    document.getElementById('lbMainImg').src = '';
+    document.getElementById('lbImg').src = '';
     document.body.style.overflow = '';
 }
 
