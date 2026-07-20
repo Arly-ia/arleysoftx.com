@@ -627,32 +627,174 @@
         .btn-submit { background: #e53935; color: #fff; box-shadow: 0 4px 16px rgba(229,57,53,.35); }
         .btn-submit:hover { background: #c62828; }
 
-        /* ── LIGHTBOX ────────────────────────────────── */
+        /* ── LIGHTBOX (Comparativa / Modal) ────────────── */
         .lightbox {
             display: none;
             position: fixed; inset: 0;
-            background: rgba(0,0,0,.96);
-            z-index: 300;
+            background: rgba(5,5,15,.96);
+            backdrop-filter: blur(10px);
+            z-index: 450;
             align-items: center;
             justify-content: center;
+            padding: 16px;
         }
         .lightbox.active { display: flex; }
-        .lb-img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 24px 80px rgba(0,0,0,.8); display: block; }
         .lb-close {
-            position: absolute; top: 14px; right: 14px;
-            background: rgba(255,255,255,.1); border: none;
-            color: #fff; width: 40px; height: 40px;
-            border-radius: 50%; font-size: 22px;
+            position: absolute; top: 16px; right: 16px;
+            background: rgba(255,255,255,.12); border: none;
+            color: #fff; width: 44px; height: 44px;
+            border-radius: 50%; font-size: 24px;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: background .2s;
+            transition: background .2s; z-index: 10;
         }
-        .lb-close:hover { background: rgba(255,255,255,.2); }
+        .lb-close:hover { background: rgba(220,38,38,.8); }
+
+        .lb-content {
+            width: 100%; max-width: 1100px;
+            max-height: 94vh;
+            display: flex; flex-direction: column;
+            gap: 12px;
+        }
+        .lb-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .lb-task-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 24px;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        .lb-mode-toggles {
+            display: flex;
+            gap: 6px;
+            background: rgba(255,255,255,.08);
+            padding: 3px;
+            border-radius: 10px;
+        }
+        .lb-mode-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,.5);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .lb-mode-btn.active {
+            background: rgba(255,255,255,.18);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,.3);
+        }
+
+        .lb-compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+        }
+        @media (max-width: 768px) {
+            .lb-compare-grid {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+        }
+
+        .lb-col {
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 0;
+        }
+        .lb-col-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 17px;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,.6);
+            text-align: center;
+        }
+        .lb-img-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 240px;
+            max-height: 60vh;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+            background: rgba(0,0,0,.4);
+        }
+        .lb-img-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+        .lb-no-photo {
+            color: rgba(255,255,255,.3);
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .lb-thumbs-picker {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            overflow-x: auto;
+            padding: 4px 0;
+            min-height: 52px;
+        }
+        .lb-mini-thumb {
+            width: 48px; height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            opacity: 0.5;
+            transition: all .2s;
+            flex-shrink: 0;
+        }
+        .lb-mini-thumb.active, .lb-mini-thumb:hover {
+            opacity: 1;
+            border-color: #e53935;
+            transform: scale(1.05);
+        }
+        .lb-col:nth-child(2) .lb-mini-thumb.active {
+            border-color: #10b981;
+        }
+
+        .lb-single-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex: 1;
+            min-height: 350px;
+        }
+        .lb-single-view.hidden { display: none !important; }
+        .lb-compare-grid.hidden { display: none !important; }
+
+        .lb-img { max-width: 90vw; max-height: 75vh; object-fit: contain; border-radius: 8px; box-shadow: 0 24px 80px rgba(0,0,0,.8); display: block; }
         .lb-caption {
-            position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
             background: rgba(0,0,0,.6);
             color: rgba(255,255,255,.7);
-            font-size: 11px; font-weight: 700; letter-spacing: 2px;
-            padding: 5px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 700; letter-spacing: 2px;
+            padding: 6px 16px; border-radius: 20px;
+            margin-top: 10px;
         }
 
         /* ── NO TASKS ────────────────────────────────── */
@@ -1040,8 +1182,41 @@ $cats = [
 {{-- ===== LIGHTBOX ===== --}}
 <div class="lightbox" id="lightbox" onclick="lbClick(event)">
     <button class="lb-close" onclick="closeLb()">×</button>
-    <img src="" id="lbImg" class="lb-img" alt="Foto ampliada">
-    <div class="lb-caption" id="lbCap"></div>
+    <div class="lb-content" onclick="event.stopPropagation()">
+        <div class="lb-header">
+            <span class="lb-task-title" id="lbTaskTitle">Tarea</span>
+            <div class="lb-mode-toggles">
+                <button class="lb-mode-btn active" id="lbBtnCompare" onclick="setLbMode('compare')">↔️ Comparar (Antes / Después)</button>
+                <button class="lb-mode-btn" id="lbBtnSingle" onclick="setLbMode('single')">🔍 Foto Individual</button>
+            </div>
+        </div>
+
+        {{-- COMPARISON VIEW --}}
+        <div class="lb-compare-grid" id="lbCompareView">
+            <div class="lb-col">
+                <div class="lb-col-title">📷 ANTES</div>
+                <div class="lb-img-wrapper">
+                    <img src="" id="lbImgAntes" alt="Antes" style="display:none;">
+                    <div class="lb-no-photo" id="lbNoAntes">Sin foto "Antes"</div>
+                </div>
+                <div class="lb-thumbs-picker" id="lbThumbsAntes"></div>
+            </div>
+            <div class="lb-col">
+                <div class="lb-col-title">🏆 DESPUÉS</div>
+                <div class="lb-img-wrapper">
+                    <img src="" id="lbImgDespues" alt="Después" style="display:none;">
+                    <div class="lb-no-photo" id="lbNoDespues">Sin foto "Después"</div>
+                </div>
+                <div class="lb-thumbs-picker" id="lbThumbsDespues"></div>
+            </div>
+        </div>
+
+        {{-- SINGLE VIEW --}}
+        <div class="lb-single-view hidden" id="lbSingleView">
+            <img src="" id="lbImgSingle" class="lb-img" alt="Foto ampliada">
+            <div class="lb-caption" id="lbCapSingle"></div>
+        </div>
+    </div>
 </div>
 
 {{-- ===== ACTION SHEET (post-upload) ===== --}}
@@ -1337,11 +1512,109 @@ async function doUpload(taskId, type, input) {
 }
 
 
-/* ─── LIGHTBOX ───────────────────────────── */
+/* ─── LIGHTBOX (Comparativa & Single) ───────────── */
+function setLbMode(mode) {
+    const compareView = document.getElementById('lbCompareView');
+    const singleView  = document.getElementById('lbSingleView');
+    const btnCompare  = document.getElementById('lbBtnCompare');
+    const btnSingle   = document.getElementById('lbBtnSingle');
+
+    if (mode === 'compare') {
+        compareView.classList.remove('hidden');
+        singleView.classList.add('hidden');
+        btnCompare.classList.add('active');
+        btnSingle.classList.remove('active');
+    } else {
+        compareView.classList.add('hidden');
+        singleView.classList.remove('hidden');
+        btnCompare.classList.remove('active');
+        btnSingle.classList.add('active');
+    }
+}
+
 document.addEventListener('click', e => {
     if (e.target.classList.contains('lb-trigger')) {
-        document.getElementById('lbImg').src = e.target.dataset.src;
-        document.getElementById('lbCap').textContent = e.target.dataset.cap || '';
+        const card = e.target.closest('.task-card');
+        const clickedSrc = e.target.dataset.src || e.target.src;
+        const clickedCap = e.target.dataset.cap || '';
+
+        // Single mode setup
+        document.getElementById('lbImgSingle').src = clickedSrc;
+        document.getElementById('lbCapSingle').textContent = clickedCap;
+
+        if (card) {
+            // Task Title
+            const nameEl = card.querySelector('.task-name');
+            document.getElementById('lbTaskTitle').textContent = nameEl ? nameEl.textContent.trim() : 'Tarea';
+
+            // Gather Antes & Después photos
+            const antesImgs   = [...card.querySelectorAll('[id*="-antes"] .lb-trigger')].map(img => img.dataset.src || img.src);
+            const despuesImgs = [...card.querySelectorAll('[id*="-despues"] .lb-trigger')].map(img => img.dataset.src || img.src);
+
+            // ANTES setup
+            const imgAntes   = document.getElementById('lbImgAntes');
+            const noAntes    = document.getElementById('lbNoAntes');
+            const thumbsAntes= document.getElementById('lbThumbsAntes');
+            thumbsAntes.innerHTML = '';
+
+            if (antesImgs.length > 0) {
+                // If clicked photo is in antes, select it, otherwise select first
+                const activeIndex = antesImgs.indexOf(clickedSrc) !== -1 ? antesImgs.indexOf(clickedSrc) : 0;
+                imgAntes.src = antesImgs[activeIndex];
+                imgAntes.style.display = 'block';
+                noAntes.style.display = 'none';
+
+                antesImgs.forEach((src, idx) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = src;
+                    thumb.className = `lb-mini-thumb ${idx === activeIndex ? 'active' : ''}`;
+                    thumb.onclick = () => {
+                        imgAntes.src = src;
+                        thumbsAntes.querySelectorAll('.lb-mini-thumb').forEach(t => t.classList.remove('active'));
+                        thumb.classList.add('active');
+                    };
+                    thumbsAntes.appendChild(thumb);
+                });
+            } else {
+                imgAntes.style.display = 'none';
+                noAntes.style.display = 'block';
+            }
+
+            // DESPUÉS setup
+            const imgDespues   = document.getElementById('lbImgDespues');
+            const noDespues    = document.getElementById('lbNoDespues');
+            const thumbsDespues= document.getElementById('lbThumbsDespues');
+            thumbsDespues.innerHTML = '';
+
+            if (despuesImgs.length > 0) {
+                const activeIndex = despuesImgs.indexOf(clickedSrc) !== -1 ? despuesImgs.indexOf(clickedSrc) : 0;
+                imgDespues.src = despuesImgs[activeIndex];
+                imgDespues.style.display = 'block';
+                noDespues.style.display = 'none';
+
+                despuesImgs.forEach((src, idx) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = src;
+                    thumb.className = `lb-mini-thumb ${idx === activeIndex ? 'active' : ''}`;
+                    thumb.onclick = () => {
+                        imgDespues.src = src;
+                        thumbsDespues.querySelectorAll('.lb-mini-thumb').forEach(t => t.classList.remove('active'));
+                        thumb.classList.add('active');
+                    };
+                    thumbsDespues.appendChild(thumb);
+                });
+            } else {
+                imgDespues.style.display = 'none';
+                noDespues.style.display = 'block';
+            }
+
+            setLbMode('compare');
+        } else {
+            // Standalone photo (e.g. receipt)
+            document.getElementById('lbTaskTitle').textContent = clickedCap || 'Foto';
+            setLbMode('single');
+        }
+
         document.getElementById('lightbox').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -1350,7 +1623,9 @@ document.addEventListener('click', e => {
 function lbClick(e) { if (e.target.id === 'lightbox') closeLb(); }
 function closeLb() {
     document.getElementById('lightbox').classList.remove('active');
-    document.getElementById('lbImg').src = '';
+    document.getElementById('lbImgSingle').src = '';
+    document.getElementById('lbImgAntes').src = '';
+    document.getElementById('lbImgDespues').src = '';
     document.body.style.overflow = '';
 }
 
