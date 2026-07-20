@@ -330,6 +330,11 @@
             gap: 10px;
         }
         .photo-col { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        .photo-col-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
         .photo-col-label {
             font-size: 9px;
             font-weight: 700;
@@ -337,51 +342,82 @@
             text-transform: uppercase;
             color: rgba(255,255,255,.35);
         }
+        /* Edit mode toggle */
+        .edit-mode-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            opacity: 0.35;
+            transition: opacity .2s;
+            padding: 2px 4px;
+            line-height: 1;
+        }
+        .edit-mode-btn:hover { opacity: 0.8; }
+        .edit-mode-btn.active { opacity: 1; }
         .thumbs-row, .receipts-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 6px;
             min-height: 8px;
         }
         .p-thumb {
             position: relative;
-            width: 52px; height: 52px;
-            border-radius: 8px;
+            width: 64px; height: 64px;
+            border-radius: 10px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,.12);
             cursor: pointer;
             transition: transform .2s;
             flex-shrink: 0;
         }
-        .p-thumb:hover { transform: scale(1.06); }
+        .p-thumb:hover { transform: scale(1.04); }
         .p-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        /* Delete button — hidden by default, shown only in edit mode */
         .p-thumb .del-ph {
             position: absolute;
-            top: 1px; right: 1px;
-            width: 16px; height: 16px;
-            background: rgba(0,0,0,.75);
+            top: 2px; right: 2px;
+            width: 20px; height: 20px;
+            background: rgba(220,38,38,.9);
             border: none; border-radius: 50%;
-            color: #fff; font-size: 12px; line-height: 16px;
+            color: #fff; font-size: 14px; line-height: 20px;
             text-align: center; cursor: pointer;
             display: none; padding: 0;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(0,0,0,.5);
+            transition: transform .15s;
         }
-        .p-thumb:hover .del-ph { display: block; }
+        .p-thumb .del-ph:hover { transform: scale(1.15); }
+        /* Show X only when parent thumbs-row has edit-mode class */
+        .thumbs-row.edit-mode .p-thumb .del-ph { display: block; }
+        .thumbs-row.edit-mode .p-thumb { border-color: rgba(220,38,38,.35); }
+        /* Upload buttons row */
+        .up-btns-row {
+            display: flex;
+            gap: 5px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
         .up-btn {
-            margin-top: 2px;
-            padding: 5px 8px;
+            flex: 1;
+            padding: 6px 6px;
             border-radius: 7px;
             border: 1px dashed rgba(255,255,255,.18);
             background: transparent;
-            color: rgba(255,255,255,.35);
+            color: rgba(255,255,255,.4);
             font-size: 10px;
             cursor: pointer;
             transition: all .2s;
             font-family: 'Montserrat', sans-serif;
-            text-align: left;
-            font-weight: 600;
+            text-align: center;
+            font-weight: 700;
+            white-space: nowrap;
+            min-width: 0;
         }
-        .up-btn:hover        { border-color: #e53935; color: #e53935; }
-        .up-btn.despues:hover{ border-color: #10b981; color: #10b981; }
+        .up-btn.cam-btn:hover        { border-color: #e53935; color: #e53935; background: rgba(229,57,53,.06); }
+        .up-btn.gal-btn:hover        { border-color: #f59e0b; color: #f59e0b; background: rgba(245,158,11,.06); }
+        .up-btn.cam-btn.despues:hover{ border-color: #10b981; color: #10b981; background: rgba(16,185,129,.06); }
+        .up-btn.gal-btn.despues:hover{ border-color: #3b82f6; color: #3b82f6; background: rgba(59,130,246,.06); }
 
         /* RECEIPTS SPECIFIC */
         .receipts-section {
@@ -403,12 +439,12 @@
             border-radius: 6px;
         }
         .receipt-thumb {
-            width: 58px; height: 58px;
+            width: 64px; height: 64px;
         }
         .rcp-amount {
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             color: #10b981;
             font-size: 8px;
             font-weight: 700;
@@ -426,6 +462,71 @@
             border-color: #10b981;
             color: #10b981;
         }
+
+        /* ── POST-UPLOAD ACTION SHEET ────────────── */
+        .action-sheet-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.65);
+            backdrop-filter: blur(6px);
+            z-index: 400;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .action-sheet-overlay.active { display: flex; }
+        .action-sheet {
+            background: #1a1a30;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px 20px 36px;
+            animation: slideUpSheet .3s ease;
+        }
+        @keyframes slideUpSheet {
+            from { transform: translateY(100%); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        .action-sheet-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 18px;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,.5);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+        .action-sheet-subtitle {
+            font-size: 11px;
+            color: rgba(255,255,255,.35);
+            text-align: center;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        .action-sheet-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .as-btn {
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,.1);
+            background: rgba(255,255,255,.05);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            text-align: center;
+        }
+        .as-btn:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.2); }
+        .as-btn.as-cam  { border-color: rgba(229,57,53,.4); color: #f87171; }
+        .as-btn.as-cam:hover  { background: rgba(229,57,53,.12); border-color: #e53935; }
+        .as-btn.as-gal  { border-color: rgba(245,158,11,.4); color: #fbbf24; }
+        .as-btn.as-gal:hover  { background: rgba(245,158,11,.12); border-color: #f59e0b; }
+        .as-btn.as-done { border-color: rgba(16,185,129,.4); color: #34d399; }
+        .as-btn.as-done:hover { background: rgba(16,185,129,.12); border-color: #10b981; }
 
         /* Card footer */
         .card-foot {
@@ -754,7 +855,11 @@ $cats = [
         <div class="photos-section">
             {{-- ANTES --}}
             <div class="photo-col">
-                <div class="photo-col-label">📷 Antes</div>
+                <div class="photo-col-header">
+                    <span class="photo-col-label">📷 Antes</span>
+                    <button class="edit-mode-btn" title="Activar modo eliminar"
+                            onclick="toggleEditMode('thumbs-{{ $task->id }}-antes', this)" type="button">🗑️</button>
+                </div>
                 <div class="thumbs-row" id="thumbs-{{ $task->id }}-antes">
                     @foreach($task->photos->where('type','antes') as $photo)
                     <div class="p-thumb" data-phid="{{ $photo->id }}">
@@ -763,20 +868,30 @@ $cats = [
                              class="lb-trigger"
                              data-src="{{ asset('images/jj_tasks/'.$photo->filename) }}"
                              data-cap="Antes — {{ $task->name }}">
-                        <button class="del-ph" onclick="delPhoto({{ $photo->id }},this)">×</button>
+                        <button class="del-ph" onclick="delPhoto({{ $photo->id }},this)" type="button">×</button>
                     </div>
                     @endforeach
                 </div>
-                <button class="up-btn" id="upbtn-{{ $task->id }}-antes"
-                        onclick="document.getElementById('fi-{{ $task->id }}-antes').click()">
-                    + Foto antes
-                </button>
-                <input type="file" id="fi-{{ $task->id }}-antes" accept="image/*" style="display:none"
+                <div class="up-btns-row">
+                    <button class="up-btn cam-btn" type="button"
+                            onclick="document.getElementById('fi-{{ $task->id }}-antes-cam').click()">📷 Cámara</button>
+                    <button class="up-btn gal-btn" type="button"
+                            onclick="document.getElementById('fi-{{ $task->id }}-antes-gal').click()">🖼️ Galería</button>
+                </div>
+                {{-- Camera (capture) --}}
+                <input type="file" id="fi-{{ $task->id }}-antes-cam" accept="image/*" capture="environment" style="display:none"
+                       onchange="doUpload({{ $task->id }},'antes',this)">
+                {{-- Gallery (multiple) --}}
+                <input type="file" id="fi-{{ $task->id }}-antes-gal" accept="image/*" multiple style="display:none"
                        onchange="doUpload({{ $task->id }},'antes',this)">
             </div>
             {{-- DESPUÉS --}}
             <div class="photo-col">
-                <div class="photo-col-label">🏆 Después</div>
+                <div class="photo-col-header">
+                    <span class="photo-col-label">🏆 Después</span>
+                    <button class="edit-mode-btn" title="Activar modo eliminar"
+                            onclick="toggleEditMode('thumbs-{{ $task->id }}-despues', this)" type="button">🗑️</button>
+                </div>
                 <div class="thumbs-row" id="thumbs-{{ $task->id }}-despues">
                     @foreach($task->photos->where('type','despues') as $photo)
                     <div class="p-thumb" data-phid="{{ $photo->id }}">
@@ -785,15 +900,21 @@ $cats = [
                              class="lb-trigger"
                              data-src="{{ asset('images/jj_tasks/'.$photo->filename) }}"
                              data-cap="Después — {{ $task->name }}">
-                        <button class="del-ph" onclick="delPhoto({{ $photo->id }},this)">×</button>
+                        <button class="del-ph" onclick="delPhoto({{ $photo->id }},this)" type="button">×</button>
                     </div>
                     @endforeach
                 </div>
-                <button class="up-btn despues" id="upbtn-{{ $task->id }}-despues"
-                        onclick="document.getElementById('fi-{{ $task->id }}-despues').click()">
-                    + Foto después
-                </button>
-                <input type="file" id="fi-{{ $task->id }}-despues" accept="image/*" style="display:none"
+                <div class="up-btns-row">
+                    <button class="up-btn cam-btn despues" type="button"
+                            onclick="document.getElementById('fi-{{ $task->id }}-despues-cam').click()">📷 Cámara</button>
+                    <button class="up-btn gal-btn despues" type="button"
+                            onclick="document.getElementById('fi-{{ $task->id }}-despues-gal').click()">🖼️ Galería</button>
+                </div>
+                {{-- Camera (capture) --}}
+                <input type="file" id="fi-{{ $task->id }}-despues-cam" accept="image/*" capture="environment" style="display:none"
+                       onchange="doUpload({{ $task->id }},'despues',this)">
+                {{-- Gallery (multiple) --}}
+                <input type="file" id="fi-{{ $task->id }}-despues-gal" accept="image/*" multiple style="display:none"
                        onchange="doUpload({{ $task->id }},'despues',this)">
             </div>
         </div>
@@ -923,10 +1044,67 @@ $cats = [
     <div class="lb-caption" id="lbCap"></div>
 </div>
 
+{{-- ===== ACTION SHEET (post-upload) ===== --}}
+<div class="action-sheet-overlay" id="asOverlay" onclick="asOverlayClick(event)">
+    <div class="action-sheet">
+        <div class="action-sheet-title">✓ Foto Subida</div>
+        <div class="action-sheet-subtitle" id="asSubtitle">¿Qué deseas hacer ahora?</div>
+        <div class="action-sheet-btns">
+            <button class="as-btn as-cam" id="asCamBtn" onclick="asTakeAnother('cam')">📷 Tomar otra foto</button>
+            <button class="as-btn as-gal" id="asGalBtn" onclick="asTakeAnother('gal')">🖼️ Subir desde galería</button>
+            <button class="as-btn as-done" onclick="closeActionSheet()">✓ Listo</button>
+        </div>
+    </div>
+</div>
+
 {{-- ===== JS ===== --}}
 <script>
 const csrf = document.querySelector('meta[name="csrf-token"]').content;
 const activeFilters = { status: 'all', category: 'all', priority: 'all' };
+
+/* ─── EDIT MODE TOGGLE ───────────────── */
+function toggleEditMode(rowId, btn) {
+    const row = document.getElementById(rowId);
+    if (!row) return;
+    const isActive = row.classList.toggle('edit-mode');
+    btn.classList.toggle('active', isActive);
+    btn.title = isActive ? 'Desactivar modo eliminar' : 'Activar modo eliminar';
+}
+
+/* ─── ACTION SHEET ───────────────────── */
+let _asTaskId = null;
+let _asType   = null;
+
+function showActionSheet(taskId, type, uploadedCount) {
+    _asTaskId = taskId;
+    _asType   = type;
+    const label = type === 'antes' ? 'Antes' : 'Después';
+    const subtitle = uploadedCount > 1
+        ? `✓ ${uploadedCount} fotos subidas — ${label}`
+        : `✓ Foto subida — ${label}`;
+    document.getElementById('asSubtitle').textContent = subtitle;
+    document.getElementById('asOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeActionSheet() {
+    document.getElementById('asOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+    _asTaskId = null;
+    _asType   = null;
+}
+
+function asOverlayClick(e) {
+    if (e.target.id === 'asOverlay') closeActionSheet();
+}
+
+function asTakeAnother(mode) {
+    closeActionSheet();
+    if (_asTaskId === null || !_asType) return;
+    const inputId = `fi-${_asTaskId}-${_asType}-${mode}`;
+    const el = document.getElementById(inputId);
+    if (el) { el.value = ''; el.click(); }
+}
 
 /* ─── IMAGE COMPRESSION ──────────────────── */
 function compressImage(file, maxWidth = 1920, maxHeight = 1920, quality = 0.8) {
@@ -1071,68 +1249,93 @@ function refreshStats() {
     if (ringText) ringText.textContent = pct + '%';
 }
 
-/* ─── PHOTO UPLOAD ───────────────────────── */
+/* ─── PHOTO UPLOAD (multi-file) ─────────── */
 async function doUpload(taskId, type, input) {
-    const file = input.files[0];
-    if (!file) return;
+    const files = [...input.files];
+    if (!files.length) return;
 
-    const btn = document.getElementById(`upbtn-${taskId}-${type}`);
-    const orig = btn.textContent;
-    btn.textContent = 'Subiendo...';
-    btn.disabled = true;
-    btn.classList.add('loading');
+    const row  = document.getElementById(`thumbs-${taskId}-${type}`);
+    let uploaded = 0;
 
-    try {
-        const compressedFile = await compressImage(file);
+    // Disable all upload buttons for this col
+    const card = document.getElementById(`card-${taskId}`);
+    const upBtns = card ? [...card.querySelectorAll(`.up-btn[onclick*="fi-${taskId}-${type}"]`)] : [];
+    // also grab buttons by convention
+    const camBtn = document.getElementById(`fi-${taskId}-${type}-cam`)?.previousElementSibling;
+    const galBtn = document.getElementById(`fi-${taskId}-${type}-gal`)?.previousElementSibling;
+    const allBtns = card
+        ? [...card.querySelectorAll('.up-btns-row .up-btn')]
+        : [];
 
-        const fd = new FormData();
-        fd.append('photo', compressedFile);
-        fd.append('type', type);
-        fd.append('_token', csrf);
+    allBtns.forEach(b => { b.disabled = true; b.classList.add('loading'); });
 
-        const res  = await fetch(`/jj-construccion/20wings-tareas/task/${taskId}/photo`, { 
-            method: 'POST', 
-            headers: { 'Accept': 'application/json' },
-            body: fd 
-        });
+    for (let i = 0; i < files.length; i++) {
+        const progressText = files.length > 1
+            ? `Subiendo ${i + 1}/${files.length}...`
+            : 'Subiendo...';
+        allBtns.forEach(b => { b.textContent = progressText; });
 
-        let data;
         try {
-            data = await res.json();
-        } catch(jsonErr) {
-            throw new Error('La respuesta del servidor no es válida.');
-        }
+            const compressedFile = await compressImage(files[i]);
 
-        if (res.ok && data.success) {
-            const row = document.getElementById(`thumbs-${taskId}-${type}`);
-            const div = document.createElement('div');
-            div.className = 'p-thumb';
-            div.dataset.phid = data.photo.id;
-            div.innerHTML = `
-                <img src="${data.photo.url}" alt="${type}" class="lb-trigger"
-                     data-src="${data.photo.url}" data-cap="${type === 'antes' ? 'Antes' : 'Después'}">
-                <button class="del-ph" onclick="delPhoto(${data.photo.id},this)">×</button>
-            `;
-            row.appendChild(div);
-        } else {
-            let errorMsg = 'Error al subir foto';
-            if (data && data.errors && data.errors.photo) {
-                errorMsg += ': ' + data.errors.photo.join(', ');
-            } else if (data && data.message) {
-                errorMsg += ': ' + data.message;
+            const fd = new FormData();
+            fd.append('photo', compressedFile);
+            fd.append('type', type);
+            fd.append('_token', csrf);
+
+            const res = await fetch(`/jj-construccion/20wings-tareas/task/${taskId}/photo`, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' },
+                body: fd
+            });
+
+            let data;
+            try { data = await res.json(); }
+            catch(jsonErr) { throw new Error('Respuesta inválida del servidor.'); }
+
+            if (res.ok && data.success) {
+                const div = document.createElement('div');
+                div.className = 'p-thumb';
+                div.dataset.phid = data.photo.id;
+                div.innerHTML = `
+                    <img src="${data.photo.url}" alt="${type}" class="lb-trigger"
+                         data-src="${data.photo.url}" data-cap="${type === 'antes' ? 'Antes' : 'Después'}">
+                    <button class="del-ph" onclick="delPhoto(${data.photo.id},this)" type="button">×</button>
+                `;
+                if (row) row.appendChild(div);
+                uploaded++;
+            } else {
+                let msg = `Error foto ${i + 1}`;
+                if (data?.errors?.photo) msg += ': ' + data.errors.photo.join(', ');
+                else if (data?.message)  msg += ': ' + data.message;
+                alert(msg);
             }
-            alert(errorMsg);
+        } catch(e) {
+            console.error(e);
+            alert(`Error de conexión (foto ${i + 1}): ` + e.message);
         }
-    } catch(e) {
-        console.error(e);
-        alert('Error de conexión al subir foto: ' + e.message);
-    } finally {
-        btn.textContent = orig;
-        btn.disabled = false;
-        btn.classList.remove('loading');
-        input.value = '';
+    }
+
+    // Restore buttons
+    allBtns.forEach(b => { b.disabled = false; b.classList.remove('loading'); });
+    // Restore original labels
+    if (card) {
+        card.querySelectorAll('.up-btns-row .cam-btn').forEach(b => {
+            if (!b.classList.contains('despues')) b.textContent = '📷 Cámara';
+            else b.textContent = '📷 Cámara';
+        });
+        card.querySelectorAll('.up-btns-row .gal-btn').forEach(b => {
+            b.textContent = '🖼️ Galería';
+        });
+    }
+    input.value = '';
+
+    // Show action sheet if at least one photo was uploaded
+    if (uploaded > 0) {
+        showActionSheet(taskId, type, uploaded);
     }
 }
+
 
 /* ─── LIGHTBOX ───────────────────────────── */
 document.addEventListener('click', e => {

@@ -30,6 +30,7 @@ class JJTaskController extends Controller
         ['name' => 'Lavado a presión de paredes, techo, iluminación y otros',   'category' => 'limpieza',      'priority' => 'media'],
         ['name' => 'Pintar Storage',                                            'category' => 'pintura',       'priority' => 'media'],
         ['name' => 'Piso Storage',                                              'category' => 'reparacion',    'priority' => 'media'],
+        ['name' => 'Rampa de cemento',                                          'category' => 'reparacion',    'priority' => 'alta'],
     ];
 
     protected function getJsonPath(): string

@@ -110,3 +110,9 @@ Route::get('/guia-y-tutoriales-task/debug-images', function () {
     return response()->json($result);
 });
 
+// ─── Puntico: Panel de todas las rutas del proyecto ───────────────────────
+Route::get('/puntico', function () {
+    return view('puntico');
+})->name('puntico');
+
+
