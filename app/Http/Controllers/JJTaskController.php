@@ -132,20 +132,9 @@ class JJTaskController extends Controller
             }
         }
 
-        // Sort normal tasks
+        // Sort normal tasks alphabetically by name
         usort($normalTasks, function($a, $b) {
-            $prioOrder = ['alta' => 1, 'media' => 2, 'baja' => 3];
-            $statusOrder = ['pendiente' => 1, 'en_progreso' => 2, 'completada' => 3];
-
-            $aPrio = $prioOrder[$a['priority']] ?? 2;
-            $bPrio = $prioOrder[$b['priority']] ?? 2;
-            if ($aPrio !== $bPrio) {
-                return $aPrio <=> $bPrio;
-            }
-
-            $aStatus = $statusOrder[$a['status']] ?? 2;
-            $bStatus = $statusOrder[$b['status']] ?? 2;
-            return $aStatus <=> $bStatus;
+            return strnatcasecmp($a['name'], $b['name']);
         });
 
         $total = count($normalTasks);
