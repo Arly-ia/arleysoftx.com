@@ -216,7 +216,7 @@
 </header>
 
 <div class="stats-row">
-    <div class="stat-chip">Total: <strong>5 rutas</strong></div>
+    <div class="stat-chip">Total: <strong>6 rutas</strong></div>
     <div class="stat-chip">🟢 <strong>Externo</strong> · acceso abierto</div>
     <div class="stat-chip">🟡 <strong>Privado</strong> · uso interno</div>
 </div>
@@ -244,6 +244,22 @@
             <div class="route-info">
                 <div class="route-name">Reporte IA Generativa</div>
                 <div class="route-url">arleysoftx.com/reporte-ia</div>
+            </div>
+            <span class="route-badge badge-externo">Externo</span>
+            <span class="route-arrow">→</span>
+        </a>
+    </div>
+
+    {{-- ── APUESTAS & ENTRETENIMIENTO ── --}}
+    <div>
+        <div class="section-title">⚽ Apuestas & Juegos</div>
+
+        <a class="route-card" href="{{ url('/apuestas') }}" target="_blank"
+           style="--accent: rgba(0,230,118,0.12);" onclick="copyUrl(event,'{{ url('/apuestas') }}')">
+            <div class="route-icon">🎲</div>
+            <div class="route-info">
+                <div class="route-name">Simulador de Apuestas Wplay (Cuotas en Vivo, Parlays & Demo)</div>
+                <div class="route-url">arleysoftx.com/apuestas</div>
             </div>
             <span class="route-badge badge-externo">Externo</span>
             <span class="route-arrow">→</span>

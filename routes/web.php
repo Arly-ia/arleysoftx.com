@@ -115,4 +115,14 @@ Route::get('/puntico', function () {
     return view('puntico');
 })->name('puntico');
 
+// ─── Simulador de Apuestas Deportivas (Estilo Wplay) ──────────────────────
+Route::get('/apuestas', function () {
+    return view('apuestas');
+})->name('apuestas');
+
+Route::get('/simulacion-apuestas', function () {
+    return redirect()->route('apuestas');
+})->name('apuestas.simulacion');
+
+
 

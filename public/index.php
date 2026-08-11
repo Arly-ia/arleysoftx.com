@@ -23,6 +23,43 @@ if (isset($_GET['pull']) && $_GET['pull'] === 'arleysoft') {
         exit;
     }
 
+    // Acción: buscar credenciales MySQL en el servidor
+    if (isset($_GET['action']) && $_GET['action'] === 'sysinfo') {
+        echo "=== HOME DIR ===\n";
+        echo shell_exec('ls /home/arlenoug/ 2>&1');
+        echo "\n=== .ENV FILES ===\n";
+        echo shell_exec('find /home/arlenoug -name ".env" 2>&1 | head -20');
+        echo "\n=== MY.CNF ===\n";
+        echo shell_exec('cat /home/arlenoug/.my.cnf 2>&1');
+        echo "\n=== MYSQL DBS (show databases) ===\n";
+        echo shell_exec('mysql --defaults-file=/home/arlenoug/.my.cnf -e "SHOW DATABASES;" 2>&1');
+        echo "\n=== PHP ENV ===\n";
+        echo shell_exec('cd /home/arlenoug/repositories/arleysoftx.com && php -r "echo env(\'DB_DATABASE\') . PHP_EOL . env(\'DB_USERNAME\') . PHP_EOL . env(\'DB_PASSWORD\') . PHP_EOL;" 2>&1');
+        exit;
+    }
+
+    // Acción: actualizar .env con credenciales correctas
+    if (isset($_GET['action']) && $_GET['action'] === 'setenv') {
+        $db = $_GET['db'] ?? '';
+        $user = $_GET['user'] ?? '';
+        $pass = $_GET['pass'] ?? '';
+        if ($db && $user) {
+            $envPath = '/home/arlenoug/repositories/arleysoftx.com/.env';
+            $env = file_get_contents($envPath);
+            $env = preg_replace('/^DB_DATABASE=.*/m', 'DB_DATABASE=' . $db, $env);
+            $env = preg_replace('/^DB_USERNAME=.*/m', 'DB_USERNAME=' . $user, $env);
+            $env = preg_replace('/^DB_PASSWORD=.*/m', 'DB_PASSWORD=' . $pass, $env);
+            $env = preg_replace('/^DB_USERNAME=root/m', 'DB_USERNAME=' . $user, $env);
+            file_put_contents($envPath, $env);
+            echo "OK: .env actualizado\n";
+            echo "DB_DATABASE=" . $db . "\n";
+            echo "DB_USERNAME=" . $user . "\n";
+        } else {
+            echo "ERROR: Faltan parametros db y user\n";
+        }
+        exit;
+    }
+
     echo "Iniciando actualización desde GitHub (git pull)...\n\n";
     $output = shell_exec('cd /home/arlenoug/repositories/arleysoftx.com && git pull 2>&1');
     echo $output;
