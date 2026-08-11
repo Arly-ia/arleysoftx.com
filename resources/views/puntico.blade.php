@@ -252,13 +252,13 @@
 
     {{-- ── APUESTAS & ENTRETENIMIENTO ── --}}
     <div>
-        <div class="section-title">⚽ Apuestas & Juegos</div>
+        <div class="section-title">⚽ Pronósticos & Apuestas</div>
 
         <a class="route-card" href="{{ url('/apuestas') }}" target="_blank"
            style="--accent: rgba(0,230,118,0.12);" onclick="copyUrl(event,'{{ url('/apuestas') }}')">
             <div class="route-icon">🎲</div>
             <div class="route-info">
-                <div class="route-name">Simulador de Apuestas Wplay (Cuotas en Vivo, Parlays & Demo)</div>
+                <div class="route-name">ArleySoftX Play — Pronósticos Deportivos (Calendario 8 Días, H2H & Demo)</div>
                 <div class="route-url">arleysoftx.com/apuestas</div>
             </div>
             <span class="route-badge badge-externo">Externo</span>

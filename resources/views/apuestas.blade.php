@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wplay Simulador · Apuestas Deportivas en Vivo | ArleySoftX</title>
-    <meta name="description" content="Simulador de apuestas deportivas interactivo estilo Wplay con cuotas en vivo, cálculo de ganancias, apuestas combinadas y simulación instantánea.">
+    <title>ArleySoftX Play · Pronósticos y Apuestas Deportivas</title>
+    <meta name="description" content="Plataforma de pronósticos y apuestas deportivas interactivas ArleySoftX Play. Calendario de los próximos 8 días, cuotas en vivo, estadísticas H2H y simulador demo.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -88,16 +88,16 @@
             color: #070c14 !important;
         }
 
-        @keyframes goalPop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.25); color: #00e676; }
-            100% { transform: scale(1); }
-        }
-        .animate-goal {
-            animation: goalPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* Day tab active */
+        .day-tab.active {
+            background: linear-gradient(135deg, #00e676 0%, #00b843 100%);
+            color: #070c14;
+            font-weight: 800;
+            border-color: #00e676;
+            box-shadow: 0 0 12px rgba(0, 230, 118, 0.3);
         }
 
-        /* Bet slip slide in on mobile */
+        /* Mobile drawer slide */
         @media (max-width: 1023px) {
             #betslipDrawer.open {
                 transform: translateY(0);
@@ -122,9 +122,9 @@
                 </a>
                 <div class="h-4 w-px bg-slate-800 hidden sm:block"></div>
                 <div class="flex items-center gap-1.5">
-                    <span class="font-bebas text-3xl tracking-wider text-white">W<span class="text-wpGreen">PLAY</span></span>
+                    <span class="font-bebas text-3xl tracking-wider text-white">ARLEYSOFTX <span class="text-wpGreen">PLAY</span></span>
                     <span class="px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-wpGreen/20 text-wpGreen border border-wpGreen/30 rounded font-outfit">
-                        SIMULADOR
+                        SIMULADOR DEMO
                     </span>
                 </div>
             </div>
@@ -159,8 +159,15 @@
             </div>
         </div>
 
+        <!-- 8-Day Calendar Schedule Navigation Bar -->
+        <div class="bg-wpDark border-t border-wpBorder/80 overflow-x-auto scrollbar-none py-2 px-4">
+            <div class="max-w-7xl mx-auto flex items-center gap-2 text-xs font-outfit" id="daysBarContainer">
+                <!-- Injected dynamically by JS for the next 8 days -->
+            </div>
+        </div>
+
         <!-- Sports & Categories Bar -->
-        <div class="bg-wpDark/80 border-t border-wpBorder/60 overflow-x-auto scrollbar-none">
+        <div class="bg-wpDark2/70 border-t border-wpBorder/40 overflow-x-auto scrollbar-none">
             <div class="max-w-7xl mx-auto px-4 flex items-center gap-1 sm:gap-2 py-2 text-xs font-outfit font-bold whitespace-nowrap">
                 <button onclick="filterSport('all')" class="sport-tab active px-3 py-1.5 rounded-xl bg-wpGreen text-wpDark font-black transition flex items-center gap-1.5" data-sport="all">
                     <span>🔥</span>
@@ -209,13 +216,13 @@
             <div class="relative z-10 max-w-2xl">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-wpGreen/10 border border-wpGreen/30 text-wpGreen text-xs font-bold font-outfit uppercase tracking-wider mb-3">
                     <span class="w-2 h-2 rounded-full bg-wpGreen animate-ping"></span>
-                    Simulador Oficial Demo · Cuotas Dinámicas
+                    ArleySoftX Play · Calendario 8 Días & Estadísticas H2H
                 </div>
                 <h1 class="font-bebas text-4xl sm:text-5xl md:text-6xl text-white tracking-wide leading-none mb-2">
-                    VIVE LA EMOCIÓN DE <span class="text-wpGreen">APOSTAR EN VIVO</span>
+                    PRONÓSTICOS & <span class="text-wpGreen">ESTADÍSTICAS EN VIVO</span>
                 </h1>
                 <p class="text-slate-300 text-sm sm:text-base font-light leading-relaxed mb-4">
-                    Selecciona tus cuotas 1X2, arma apuestas combinadas con bonificador múltiple y simula el resultado en tiempo real sin arriesgar dinero real.
+                    Haz clic en cualquier partido para analizar el **historial de enfrentamientos directos (H2H)**, rachas y estadísticas antes de armar tus boletos simples o combinados.
                 </p>
                 <div class="flex flex-wrap gap-3 items-center">
                     <button onclick="quickAddCombo()" class="bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-outfit font-black text-sm px-5 py-2.5 rounded-xl hover:scale-105 active:scale-95 transition glow-green-sm flex items-center gap-2">
@@ -237,10 +244,13 @@
             <section class="lg:col-span-8 space-y-6">
                 
                 <!-- Active Filter & League Switcher -->
-                <div class="flex items-center justify-between bg-wpDark2 border border-wpBorder rounded-2xl p-4">
+                <div class="flex flex-wrap items-center justify-between bg-wpDark2 border border-wpBorder rounded-2xl p-4 gap-2">
                     <div class="flex items-center gap-2">
                         <span id="currentLeagueTitle" class="font-outfit font-black text-base sm:text-lg text-white">
-                            🏆 Partidos Destacados & En Vivo
+                            🏆 Partidos de Hoy & En Vivo
+                        </span>
+                        <span id="activeDateBadge" class="text-xs px-2.5 py-0.5 bg-wpCard border border-wpBorder rounded-full text-slate-400 font-bold font-outfit">
+                            Hoy
                         </span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -284,6 +294,41 @@
             </div>
             <div id="mobileBetslipContainer" class="overflow-y-auto p-4 flex-grow">
                 <!-- Rendered by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Estadísticas & Histórico H2H de Enfrentamientos -->
+    <div id="statsModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-wpDark2 border border-wpBorder rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            
+            <!-- Modal Header -->
+            <div class="p-4 sm:p-5 border-b border-wpBorder flex items-center justify-between bg-wpCard">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-wpGreen/15 border border-wpGreen/30 text-wpGreen flex items-center justify-center text-xl">
+                        📊
+                    </div>
+                    <div>
+                        <h2 class="font-bebas text-2xl text-white tracking-wide">ESTADÍSTICAS & HISTÓRICO H2H</h2>
+                        <p class="text-xs text-slate-400" id="statsModalLeague">Liga BetPlay Dimayor</p>
+                    </div>
+                </div>
+                <button onclick="closeStatsModal()" class="w-9 h-9 rounded-full bg-wpCardHover flex items-center justify-center text-slate-300 hover:text-white font-bold transition">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div id="statsModalContent" class="p-4 sm:p-6 overflow-y-auto space-y-6 flex-grow">
+                <!-- Injected dynamically by JS -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-wpBorder bg-wpCard/40 flex items-center justify-between">
+                <span class="text-xs text-slate-400 font-outfit">Datos históricos y proyecciones de rendimiento</span>
+                <button onclick="closeStatsModal()" class="px-5 py-2 rounded-xl bg-wpGreen text-wpDark font-outfit font-black text-sm hover:brightness-110 transition">
+                    Entendido
+                </button>
             </div>
         </div>
     </div>
@@ -356,8 +401,8 @@
         <div class="flex items-center gap-3">
             <span class="text-2xl animate-bounce">⚽</span>
             <div class="flex-1">
-                <div class="text-[10px] font-bold text-wpGreen uppercase font-outfit tracking-wider">¡GOL SIMULADO EN VIVO!</div>
-                <div id="simToastMessage" class="text-xs font-semibold">Atlético Nacional acaba de anotar (Min 82')</div>
+                <div class="text-[10px] font-bold text-wpGreen uppercase font-outfit tracking-wider">¡EVENTO EN VIVO!</div>
+                <div id="simToastMessage" class="text-xs font-semibold">Gol anotado en tiempo real</div>
             </div>
         </div>
     </div>
@@ -366,10 +411,10 @@
     <footer class="border-t border-wpBorder bg-wpDark2 py-8 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-light">
             <div class="flex items-center gap-2">
-                <span class="font-bebas text-lg text-slate-400">WPLAY SIMULATOR</span>
-                <span>· Exclusivo de ArleySoftX</span>
+                <span class="font-bebas text-lg text-white">ARLEYSOFTX <span class="text-wpGreen">PLAY</span></span>
+                <span>· Simulador & Estadísticas Deportivas</span>
             </div>
-            <p>Juego responsable simulado para mayores de 18 años. Solo con fines educativos y de entretenimiento.</p>
+            <p>Plataforma de pronósticos y simulación deportiva para entretenimiento y aprendizaje.</p>
             <div class="flex items-center gap-4 text-slate-400">
                 <a href="{{ route('puntico') }}" class="hover:text-wpGreen transition font-outfit font-semibold">📍 Panel de Rutas</a>
                 <a href="{{ route('home') }}" class="hover:text-wpGreen transition font-outfit font-semibold">🏠 Home</a>
@@ -415,7 +460,6 @@
                     osc.start(now);
                     osc.stop(now + 0.05);
                 } else if (type === 'bet_placed') {
-                    // Cash register / chime
                     [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
                         const osc = ctx.createOscillator();
                         const gain = ctx.createGain();
@@ -429,7 +473,6 @@
                         osc.stop(now + i * 0.06 + 0.18);
                     });
                 } else if (type === 'goal') {
-                    // Stadium whistle
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
                     osc.type = 'sawtooth';
@@ -443,7 +486,6 @@
                     osc.start(now);
                     osc.stop(now + 0.35);
                 } else if (type === 'win') {
-                    // Fanfare
                     [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, idx) => {
                         const osc = ctx.createOscillator();
                         const gain = ctx.createGain();
@@ -469,19 +511,38 @@
         }
 
         /* =========================================================================
-           2. STATE & MATCHES DATABASE
+           2. 8-DAY CALENDAR & MATCHES DATABASE
            ========================================================================= */
         const DEFAULT_BALANCE = 100000;
         let balance = parseInt(localStorage.getItem('wp_balance')) || DEFAULT_BALANCE;
-        let selectedBets = []; // Array of { matchId, marketId, pick, label, odds, home, away, sport }
-        let betMode = 'single'; // 'single' or 'parlay'
+        let selectedBets = [];
+        let betMode = 'single';
         let currentSportFilter = 'all';
+        let currentDayFilter = 0; // 0 = Hoy, 1 = Mañana, ..., 'all' = Todos los 8 días
         let betHistory = JSON.parse(localStorage.getItem('wp_history') || '[]');
 
-        // Matches Data
+        // Generate next 8 days array with real date strings
+        const next8Days = [];
+        const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+        for (let i = 0; i < 8; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() + i);
+            next8Days.push({
+                offset: i,
+                dayName: i === 0 ? 'Hoy' : i === 1 ? 'Mañana' : dayNames[d.getDay()],
+                dateString: `${d.getDate()} ${monthNames[d.getMonth()]}`,
+                fullFormatted: `${dayNames[d.getDay()]} ${d.getDate()} de ${monthNames[d.getMonth()]}`
+            });
+        }
+
+        // Comprehensive Fixture across the 8 Days
         const INITIAL_MATCHES = [
+            // DÍA 0: HOY
             {
                 id: 'm1',
+                dayOffset: 0,
                 sport: 'futbol',
                 league: '🇨🇴 Liga BetPlay Dimayor',
                 isLive: true,
@@ -490,7 +551,21 @@
                 away: 'Millonarios FC',
                 homeScore: 2,
                 awayScore: 1,
-                stats: { possession: [54, 46], shots: [8, 5] },
+                stats: { possession: [54, 46], shots: [8, 5], corners: [6, 4] },
+                h2h: {
+                    homeWins: 14, draws: 10, awayWins: 11,
+                    lastMatches: [
+                        { date: '15 Mar 2026', home: 'Millonarios', away: 'Nacional', score: '0 - 1' },
+                        { date: '12 Nov 2025', home: 'Nacional', away: 'Millonarios', score: '2 - 2' },
+                        { date: '28 Jul 2025', home: 'Millonarios', away: 'Nacional', score: '1 - 2' },
+                        { date: '10 Feb 2025', home: 'Nacional', away: 'Millonarios', score: '0 - 0' },
+                        { date: '19 Oct 2024', home: 'Nacional', away: 'Millonarios', score: '1 - 0' }
+                    ],
+                    homeStreak: ['V', 'V', 'E', 'V', 'D'],
+                    awayStreak: ['D', 'E', 'V', 'D', 'V'],
+                    homeWinProb: 48, drawProb: 28, awayWinProb: 24,
+                    avgGoals: 2.4, bttsProb: 62
+                },
                 odds: {
                     '1X2': { '1': 1.62, 'X': 3.45, '2': 5.20 },
                     'over_under': { 'Over 2.5': 1.55, 'Under 2.5': 2.30 },
@@ -499,6 +574,7 @@
             },
             {
                 id: 'm2',
+                dayOffset: 0,
                 sport: 'futbol',
                 league: '🇪🇺 UEFA Champions League',
                 isLive: true,
@@ -507,7 +583,21 @@
                 away: 'Manchester City',
                 homeScore: 1,
                 awayScore: 1,
-                stats: { possession: [48, 52], shots: [6, 7] },
+                stats: { possession: [48, 52], shots: [6, 7], corners: [3, 5] },
+                h2h: {
+                    homeWins: 6, draws: 5, awayWins: 5,
+                    lastMatches: [
+                        { date: '17 Abr 2025', home: 'Man City', away: 'Real Madrid', score: '1 - 1' },
+                        { date: '09 Abr 2025', home: 'Real Madrid', away: 'Man City', score: '3 - 3' },
+                        { date: '17 May 2024', home: 'Man City', away: 'Real Madrid', score: '4 - 0' },
+                        { date: '09 May 2024', home: 'Real Madrid', away: 'Man City', score: '1 - 1' },
+                        { date: '04 May 2023', home: 'Real Madrid', away: 'Man City', score: '3 - 1' }
+                    ],
+                    homeStreak: ['V', 'V', 'V', 'E', 'V'],
+                    awayStreak: ['V', 'E', 'V', 'V', 'D'],
+                    homeWinProb: 42, drawProb: 26, awayWinProb: 32,
+                    avgGoals: 3.6, bttsProb: 75
+                },
                 odds: {
                     '1X2': { '1': 2.40, 'X': 3.60, '2': 2.75 },
                     'over_under': { 'Over 2.5': 1.65, 'Under 2.5': 2.15 },
@@ -516,6 +606,7 @@
             },
             {
                 id: 'm3',
+                dayOffset: 0,
                 sport: 'futbol',
                 league: '🇨🇴 Liga BetPlay Dimayor',
                 isLive: true,
@@ -524,23 +615,83 @@
                 away: 'América de Cali',
                 homeScore: 0,
                 awayScore: 0,
-                stats: { possession: [60, 40], shots: [3, 1] },
+                stats: { possession: [60, 40], shots: [3, 1], corners: [2, 0] },
+                h2h: {
+                    homeWins: 9, draws: 7, awayWins: 8,
+                    lastMatches: [
+                        { date: '21 Ene 2026', home: 'América', away: 'Junior', score: '1 - 0' },
+                        { date: '04 Oct 2025', home: 'Junior', away: 'América', score: '3 - 1' },
+                        { date: '18 May 2025', home: 'América', away: 'Junior', score: '2 - 0' },
+                        { date: '25 Ene 2025', home: 'Junior', away: 'América', score: '1 - 1' },
+                        { date: '02 Sep 2024', home: 'América', away: 'Junior', score: '1 - 2' }
+                    ],
+                    homeStreak: ['E', 'V', 'D', 'V', 'E'],
+                    awayStreak: ['V', 'V', 'E', 'D', 'V'],
+                    homeWinProb: 45, drawProb: 30, awayWinProb: 25,
+                    avgGoals: 2.2, bttsProb: 55
+                },
                 odds: {
                     '1X2': { '1': 2.05, 'X': 3.10, '2': 3.80 },
-                    'over_under': { 'Over 2.5': 2.10, 'Under 1.5': 1.68 },
+                    'over_under': { 'Over 2.5': 2.10, 'Under 2.5': 1.68 },
                     'btts': { 'Ambos Si': 1.95, 'Ambos No': 1.80 }
                 }
             },
             {
                 id: 'm4',
+                dayOffset: 0,
+                sport: 'baloncesto',
+                league: '🇺🇸 NBA Basketball',
+                isLive: false,
+                startTime: 'Hoy 21:00',
+                home: 'Los Angeles Lakers',
+                away: 'Golden State Warriors',
+                homeScore: 0,
+                awayScore: 0,
+                h2h: {
+                    homeWins: 18, draws: 0, awayWins: 15,
+                    lastMatches: [
+                        { date: '22 Feb 2026', home: 'Warriors', away: 'Lakers', score: '128 - 110' },
+                        { date: '15 Ene 2026', home: 'Lakers', away: 'Warriors', score: '145 - 144' },
+                        { date: '16 Mar 2025', home: 'Lakers', away: 'Warriors', score: '121 - 128' },
+                        { date: '27 Ene 2025', home: 'Warriors', away: 'Lakers', score: '144 - 145' }
+                    ],
+                    homeStreak: ['V', 'V', 'D', 'V', 'D'],
+                    awayStreak: ['D', 'V', 'V', 'D', 'V'],
+                    homeWinProb: 53, drawProb: 0, awayWinProb: 47,
+                    avgGoals: 232.0, bttsProb: 90
+                },
+                odds: {
+                    '1X2': { '1': 1.80, 'X': 14.0, '2': 2.10 },
+                    'over_under': { 'Over 224.5': 1.90, 'Under 224.5': 1.90 },
+                    'btts': { 'Handicap -3.5': 1.95, 'Handicap +3.5': 1.85 }
+                }
+            },
+
+            // DÍA 1: MAÑANA
+            {
+                id: 'm5',
+                dayOffset: 1,
                 sport: 'futbol',
                 league: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League',
                 isLive: false,
-                startTime: 'Hoy 14:00',
+                startTime: 'Mañana 14:00',
                 home: 'Arsenal FC',
                 away: 'Chelsea FC',
                 homeScore: 0,
                 awayScore: 0,
+                h2h: {
+                    homeWins: 11, draws: 6, awayWins: 8,
+                    lastMatches: [
+                        { date: '23 Abr 2025', home: 'Arsenal', away: 'Chelsea', score: '5 - 0' },
+                        { date: '21 Oct 2024', home: 'Chelsea', away: 'Arsenal', score: '2 - 2' },
+                        { date: '02 May 2024', home: 'Arsenal', away: 'Chelsea', score: '3 - 1' },
+                        { date: '06 Nov 2023', home: 'Chelsea', away: 'Arsenal', score: '0 - 1' }
+                    ],
+                    homeStreak: ['V', 'V', 'V', 'E', 'V'],
+                    awayStreak: ['D', 'V', 'E', 'V', 'D'],
+                    homeWinProb: 55, drawProb: 25, awayWinProb: 20,
+                    avgGoals: 3.1, bttsProb: 60
+                },
                 odds: {
                     '1X2': { '1': 1.75, 'X': 3.85, '2': 4.30 },
                     'over_under': { 'Over 2.5': 1.72, 'Under 2.5': 2.08 },
@@ -548,53 +699,216 @@
                 }
             },
             {
-                id: 'm5',
-                sport: 'baloncesto',
-                league: '🇺🇸 NBA Basketball',
-                isLive: true,
-                minute: 'Q3 04:22',
-                home: 'Los Angeles Lakers',
-                away: 'Golden State Warriors',
-                homeScore: 84,
-                awayScore: 81,
-                stats: { possession: [50, 50], shots: [32, 30] },
+                id: 'm6',
+                dayOffset: 1,
+                sport: 'futbol',
+                league: '🇨🇴 Liga BetPlay Dimayor',
+                isLive: false,
+                startTime: 'Mañana 18:10',
+                home: 'Independiente Santa Fe',
+                away: 'Deportivo Cali',
+                homeScore: 0,
+                awayScore: 0,
+                h2h: {
+                    homeWins: 8, draws: 9, awayWins: 6,
+                    lastMatches: [
+                        { date: '10 Feb 2026', home: 'Santa Fe', away: 'Cali', score: '1 - 0' },
+                        { date: '20 Ago 2025', home: 'Cali', away: 'Santa Fe', score: '2 - 2' },
+                        { date: '13 Feb 2025', home: 'Santa Fe', away: 'Cali', score: '1 - 1' }
+                    ],
+                    homeStreak: ['V', 'E', 'V', 'D', 'V'],
+                    awayStreak: ['D', 'D', 'E', 'V', 'D'],
+                    homeWinProb: 52, drawProb: 30, awayWinProb: 18,
+                    avgGoals: 2.1, bttsProb: 48
+                },
                 odds: {
-                    '1X2': { '1': 1.80, 'X': 14.0, '2': 2.10 },
-                    'over_under': { 'Over 224.5': 1.90, 'Under 224.5': 1.90 },
-                    'btts': { 'Handicap -3.5': 1.95, 'Handicap +3.5': 1.85 }
+                    '1X2': { '1': 1.90, 'X': 3.20, '2': 4.10 },
+                    'over_under': { 'Over 2.5': 2.25, 'Under 2.5': 1.60 },
+                    'btts': { 'Ambos Si': 2.00, 'Ambos No': 1.75 }
                 }
             },
+
+            // DÍA 2
             {
-                id: 'm6',
+                id: 'm7',
+                dayOffset: 2,
+                sport: 'futbol',
+                league: '🇪🇺 UEFA Champions League',
+                isLive: false,
+                startTime: '14:00',
+                home: 'Bayern Munich',
+                away: 'Paris Saint-Germain',
+                homeScore: 0,
+                awayScore: 0,
+                h2h: {
+                    homeWins: 7, draws: 1, awayWins: 5,
+                    lastMatches: [
+                        { date: '08 Mar 2024', home: 'Bayern', away: 'PSG', score: '2 - 0' },
+                        { date: '14 Feb 2024', home: 'PSG', away: 'Bayern', score: '0 - 1' },
+                        { date: '13 Abr 2023', home: 'PSG', away: 'Bayern', score: '0 - 1' }
+                    ],
+                    homeStreak: ['V', 'V', 'E', 'V', 'V'],
+                    awayStreak: ['V', 'V', 'D', 'V', 'E'],
+                    homeWinProb: 50, drawProb: 24, awayWinProb: 26,
+                    avgGoals: 3.4, bttsProb: 70
+                },
+                odds: {
+                    '1X2': { '1': 1.95, 'X': 3.75, '2': 3.60 },
+                    'over_under': { 'Over 2.5': 1.50, 'Under 2.5': 2.50 },
+                    'btts': { 'Ambos Si': 1.50, 'Ambos No': 2.45 }
+                }
+            },
+
+            // DÍA 3
+            {
+                id: 'm8',
+                dayOffset: 3,
                 sport: 'tenis',
                 league: '🎾 ATP Masters 1000',
                 isLive: false,
-                startTime: 'Hoy 16:30',
+                startTime: '16:30',
                 home: 'Carlos Alcaraz',
                 away: 'Jannik Sinner',
                 homeScore: 0,
                 awayScore: 0,
+                h2h: {
+                    homeWins: 5, draws: 0, awayWins: 4,
+                    lastMatches: [
+                        { date: '07 Jun 2025', home: 'Alcaraz', away: 'Sinner', score: '3 - 2' },
+                        { date: '17 Mar 2025', home: 'Alcaraz', away: 'Sinner', score: '2 - 1' },
+                        { date: '03 Oct 2024', home: 'Sinner', away: 'Alcaraz', score: '2 - 0' }
+                    ],
+                    homeStreak: ['V', 'V', 'V', 'V', 'D'],
+                    awayStreak: ['V', 'V', 'V', 'D', 'V'],
+                    homeWinProb: 52, drawProb: 0, awayWinProb: 48,
+                    avgGoals: 23.5, bttsProb: 80
+                },
                 odds: {
                     '1X2': { '1': 1.92, 'X': 18.0, '2': 1.90 },
                     'over_under': { 'Over 22.5 Games': 1.85, 'Under 22.5 Games': 1.95 },
                     'btts': { 'Set 1 Ganador 1': 1.90, 'Set 1 Ganador 2': 1.90 }
                 }
             },
+
+            // DÍA 4
             {
-                id: 'm7',
+                id: 'm9',
+                dayOffset: 4,
+                sport: 'futbol',
+                league: '🇪🇸 LaLiga EA Sports',
+                isLive: false,
+                startTime: '15:00',
+                home: 'Barcelona FC',
+                away: 'Atlético de Madrid',
+                homeScore: 0,
+                awayScore: 0,
+                h2h: {
+                    homeWins: 14, draws: 8, awayWins: 7,
+                    lastMatches: [
+                        { date: '17 Mar 2025', home: 'Atlético', away: 'Barcelona', score: '0 - 3' },
+                        { date: '03 Dic 2024', home: 'Barcelona', away: 'Atlético', score: '1 - 0' },
+                        { date: '23 Abr 2024', home: 'Barcelona', away: 'Atlético', score: '1 - 0' }
+                    ],
+                    homeStreak: ['V', 'V', 'E', 'V', 'V'],
+                    awayStreak: ['V', 'E', 'D', 'V', 'V'],
+                    homeWinProb: 51, drawProb: 26, awayWinProb: 23,
+                    avgGoals: 2.8, bttsProb: 58
+                },
+                odds: {
+                    '1X2': { '1': 1.85, 'X': 3.60, '2': 4.00 },
+                    'over_under': { 'Over 2.5': 1.70, 'Under 2.5': 2.10 },
+                    'btts': { 'Ambos Si': 1.65, 'Ambos No': 2.15 }
+                }
+            },
+
+            // DÍA 5
+            {
+                id: 'm10',
+                dayOffset: 5,
+                sport: 'futbol',
+                league: '🇨🇴 Liga BetPlay Dimayor',
+                isLive: false,
+                startTime: '20:30',
+                home: 'Independiente Medellín',
+                away: 'Deportes Tolima',
+                homeScore: 0,
+                awayScore: 0,
+                h2h: {
+                    homeWins: 10, draws: 11, awayWins: 9,
+                    lastMatches: [
+                        { date: '14 Sep 2025', home: 'Tolima', away: 'Medellín', score: '2 - 2' },
+                        { date: '22 Mar 2025', home: 'Medellín', away: 'Tolima', score: '1 - 1' },
+                        { date: '05 Mar 2025', home: 'Tolima', away: 'Medellín', score: '0 - 0' }
+                    ],
+                    homeStreak: ['V', 'E', 'E', 'V', 'D'],
+                    awayStreak: ['V', 'V', 'D', 'E', 'V'],
+                    homeWinProb: 40, drawProb: 35, awayWinProb: 25,
+                    avgGoals: 1.9, bttsProb: 44
+                },
+                odds: {
+                    '1X2': { '1': 2.20, 'X': 3.05, '2': 3.40 },
+                    'over_under': { 'Over 2.5': 2.30, 'Under 2.5': 1.58 },
+                    'btts': { 'Ambos Si': 2.10, 'Ambos No': 1.68 }
+                }
+            },
+
+            // DÍA 6
+            {
+                id: 'm11',
+                dayOffset: 6,
+                sport: 'baloncesto',
+                league: '🇺🇸 NBA Basketball',
+                isLive: false,
+                startTime: '20:00',
+                home: 'Boston Celtics',
+                away: 'Miami Heat',
+                homeScore: 0,
+                awayScore: 0,
+                h2h: {
+                    homeWins: 16, draws: 0, awayWins: 12,
+                    lastMatches: [
+                        { date: '01 May 2025', home: 'Celtics', away: 'Heat', score: '118 - 84' },
+                        { date: '29 Abr 2025', home: 'Heat', away: 'Celtics', score: '88 - 102' }
+                    ],
+                    homeStreak: ['V', 'V', 'V', 'D', 'V'],
+                    awayStreak: ['D', 'V', 'D', 'V', 'D'],
+                    homeWinProb: 65, drawProb: 0, awayWinProb: 35,
+                    avgGoals: 215.0, bttsProb: 88
+                },
+                odds: {
+                    '1X2': { '1': 1.45, 'X': 16.0, '2': 2.85 },
+                    'over_under': { 'Over 218.5': 1.90, 'Under 218.5': 1.90 },
+                    'btts': { 'Handicap -6.5': 1.90, 'Handicap +6.5': 1.90 }
+                }
+            },
+
+            // DÍA 7
+            {
+                id: 'm12',
+                dayOffset: 7,
                 sport: 'esports',
                 league: '🎮 League of Legends - Worlds',
-                isLive: true,
-                minute: 'Game 2 · 21 min',
+                isLive: false,
+                startTime: '06:00',
                 home: 'T1 Telecom',
                 away: 'Gen.G Esports',
-                homeScore: 1,
+                homeScore: 0,
                 awayScore: 0,
-                stats: { possession: [55, 45], shots: [14, 9] },
+                h2h: {
+                    homeWins: 12, draws: 0, awayWins: 14,
+                    lastMatches: [
+                        { date: '27 Oct 2025', home: 'T1', away: 'Gen.G', score: '3 - 1' },
+                        { date: '08 Sep 2025', home: 'Gen.G', away: 'T1', score: '3 - 2' }
+                    ],
+                    homeStreak: ['V', 'V', 'V', 'V', 'D'],
+                    awayStreak: ['V', 'V', 'D', 'V', 'V'],
+                    homeWinProb: 50, drawProb: 0, awayWinProb: 50,
+                    avgGoals: 31.0, bttsProb: 95
+                },
                 odds: {
-                    '1X2': { '1': 1.48, 'X': 22.0, '2': 2.65 },
+                    '1X2': { '1': 1.85, 'X': 22.0, '2': 1.90 },
                     'over_under': { 'Over 28.5 Kills': 1.80, 'Under 28.5 Kills': 1.95 },
-                    'btts': { 'Dragon Alma T1': 1.50, 'Dragon Alma GenG': 2.40 }
+                    'btts': { 'Dragon Alma T1': 1.85, 'Dragon Alma GenG': 1.85 }
                 }
             }
         ];
@@ -602,7 +916,53 @@
         let matches = JSON.parse(JSON.stringify(INITIAL_MATCHES));
 
         /* =========================================================================
-           3. FORMATTING UTILITIES
+           3. RENDER 8-DAY CALENDAR STRIP
+           ========================================================================= */
+        function renderDaysBar() {
+            const container = document.getElementById('daysBarContainer');
+            if (!container) return;
+
+            let html = `
+                <button onclick="filterDay('all')" class="day-tab px-3 py-1.5 rounded-xl border border-wpBorder transition whitespace-nowrap ${currentDayFilter === 'all' ? 'active' : 'bg-wpCard text-slate-300 hover:bg-wpCardHover'}">
+                    📅 Todos (8 Días)
+                </button>
+            `;
+
+            next8Days.forEach(day => {
+                const matchCountForDay = matches.filter(m => m.dayOffset === day.offset).length;
+                const isActive = currentDayFilter === day.offset;
+                html += `
+                    <button onclick="filterDay(${day.offset})" class="day-tab px-3.5 py-1.5 rounded-xl border border-wpBorder transition whitespace-nowrap flex items-center gap-1.5 ${isActive ? 'active' : 'bg-wpCard text-slate-300 hover:bg-wpCardHover'}">
+                        <span class="font-bold font-outfit">${day.dayName}</span>
+                        <span class="text-[10px] opacity-75">${day.dateString}</span>
+                        ${matchCountForDay > 0 ? `<span class="text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-wpDark text-wpGreen' : 'bg-slate-700 text-slate-300'} font-black">${matchCountForDay}</span>` : ''}
+                    </button>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function filterDay(offset) {
+            playSound('click');
+            currentDayFilter = offset;
+            renderDaysBar();
+            
+            const badge = document.getElementById('activeDateBadge');
+            if (badge) {
+                if (offset === 'all') {
+                    badge.innerText = 'Próximos 8 Días';
+                } else {
+                    const found = next8Days.find(d => d.offset === offset);
+                    badge.innerText = found ? `${found.dayName} (${found.dateString})` : 'Día ' + offset;
+                }
+            }
+
+            renderMatches();
+        }
+
+        /* =========================================================================
+           4. FORMATTING UTILITIES & BALANCE
            ========================================================================= */
         function formatCOP(amount) {
             return '$' + Math.round(amount).toLocaleString('es-CO') + ' COP';
@@ -614,16 +974,21 @@
         }
 
         /* =========================================================================
-           4. RENDER MATCHES
+           5. RENDER MATCHES FEED
            ========================================================================= */
         function renderMatches() {
             const container = document.getElementById('matchesContainer');
             if (!container) return;
 
             let filtered = matches.filter(m => {
-                if (currentSportFilter === 'all') return true;
-                if (currentSportFilter === 'live') return m.isLive;
-                return m.sport === currentSportFilter;
+                // Filter by sport
+                if (currentSportFilter === 'live' && !m.isLive) return false;
+                if (currentSportFilter !== 'all' && currentSportFilter !== 'live' && m.sport !== currentSportFilter) return false;
+                
+                // Filter by day
+                if (currentDayFilter !== 'all' && m.dayOffset !== currentDayFilter) return false;
+
+                return true;
             });
 
             // Update live count badge
@@ -635,10 +1000,10 @@
                 container.innerHTML = `
                     <div class="bg-wpDark2 border border-wpBorder rounded-2xl p-12 text-center">
                         <span class="text-4xl mb-3 block">⚽</span>
-                        <h4 class="font-bebas text-2xl text-white">NO HAY EVENTOS DISPONIBLES</h4>
-                        <p class="text-xs text-slate-400 mb-4">No se encontraron partidos en esta categoría en este momento.</p>
-                        <button onclick="filterSport('all')" class="px-4 py-2 bg-wpGreen text-wpDark font-black font-outfit text-xs rounded-xl">
-                            Ver Todos los Partidos
+                        <h4 class="font-bebas text-2xl text-white">NO HAY EVENTOS PARA ESTE DÍA / FILTRO</h4>
+                        <p class="text-xs text-slate-400 mb-4 font-light">Prueba seleccionando otro día en el calendario superior de 8 días.</p>
+                        <button onclick="filterDay('all')" class="px-4 py-2 bg-wpGreen text-wpDark font-black font-outfit text-xs rounded-xl">
+                            Ver Todos los 8 Días
                         </button>
                     </div>
                 `;
@@ -651,15 +1016,26 @@
                 const isSelectedX = isBetSelected(m.id, '1X2', 'X');
                 const isSelected2 = isBetSelected(m.id, '1X2', '2');
 
+                const dayObj = next8Days.find(d => d.offset === m.dayOffset);
+                const dayLabel = dayObj ? `${dayObj.dayName} · ${dayObj.dateString}` : '';
+
                 html += `
                     <div class="bg-wpDark2 hover:border-slate-700/80 border border-wpBorder rounded-3xl p-4 sm:p-5 transition shadow-lg relative overflow-hidden" id="match-card-${m.id}">
                         
-                        <!-- Top League & Live Info -->
+                        <!-- Top League, Date & Live Info -->
                         <div class="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-wpBorder/60">
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-bold text-slate-300 font-outfit">${m.league}</span>
+                                <span class="text-[10px] text-slate-500 font-semibold bg-wpCard px-2 py-0.5 rounded-full border border-wpBorder/50 hidden sm:inline">
+                                    📅 ${dayLabel}
+                                </span>
                             </div>
                             <div class="flex items-center gap-2">
+                                <!-- H2H Stats Button -->
+                                <button onclick="openStatsModal('${m.id}')" class="text-xs font-bold text-wpGreen hover:bg-wpGreen/20 bg-wpGreen/10 border border-wpGreen/30 px-2.5 py-0.5 rounded-full font-outfit transition flex items-center gap-1">
+                                    <span>📊</span> <span class="hidden sm:inline">Ver H2H & Estadísticas</span><span class="sm:hidden">H2H</span>
+                                </button>
+
                                 ${m.isLive ? `
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-wpRed/15 border border-wpRed/30 text-wpRed text-[11px] font-black font-outfit">
                                         <span class="w-2 h-2 rounded-full bg-wpRed pulse-live"></span>
@@ -673,18 +1049,27 @@
                             </div>
                         </div>
 
-                        <!-- Teams & Live Scores Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center mb-4">
+                        <!-- Teams & Clickable Banner for Stats -->
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center mb-4 cursor-pointer group" onclick="openStatsModal('${m.id}')" title="Haz clic para ver estadísticas e historial de enfrentamientos">
                             
                             <!-- Team 1 & Score -->
                             <div class="md:col-span-5 flex items-center justify-between md:justify-start gap-3">
                                 <div class="flex items-center gap-2.5">
-                                    <div class="w-8 h-8 rounded-full bg-wpCard border border-wpBorder flex items-center justify-center text-sm font-black text-white">
+                                    <div class="w-8 h-8 rounded-full bg-wpCard border border-wpBorder group-hover:border-wpGreen flex items-center justify-center text-sm font-black text-white transition">
                                         ${m.home.charAt(0)}
                                     </div>
-                                    <span class="font-outfit font-extrabold text-sm sm:text-base text-white truncate max-w-[180px] sm:max-w-[220px]">
-                                        ${m.home}
-                                    </span>
+                                    <div>
+                                        <span class="font-outfit font-extrabold text-sm sm:text-base text-white group-hover:text-wpGreen transition truncate max-w-[180px] sm:max-w-[220px] block">
+                                            ${m.home}
+                                        </span>
+                                        ${m.h2h ? `
+                                            <div class="flex items-center gap-1 mt-0.5">
+                                                ${m.h2h.homeStreak.map(st => `
+                                                    <span class="text-[9px] font-black px-1 rounded ${st === 'V' ? 'bg-emerald-500/20 text-emerald-400' : st === 'E' ? 'bg-amber-500/20 text-amber-400' : 'bg-rose-500/20 text-rose-400'}">${st}</span>
+                                                `).join('')}
+                                            </div>
+                                        ` : ''}
+                                    </div>
                                 </div>
                                 <span class="font-bebas text-2xl sm:text-3xl text-wpGreen px-2.5 py-0.5 rounded-lg bg-wpCard border border-wpBorder md:ml-auto match-score-${m.id}-home">
                                     ${m.homeScore}
@@ -692,8 +1077,9 @@
                             </div>
 
                             <!-- VS / Separator -->
-                            <div class="hidden md:flex md:col-span-2 justify-center text-xs font-black text-slate-500 font-bebas tracking-widest">
-                                VS
+                            <div class="hidden md:flex md:col-span-2 flex-col items-center justify-center text-xs font-black text-slate-500 font-bebas tracking-widest">
+                                <span>VS</span>
+                                <span class="text-[9px] text-slate-400 font-outfit">H2H 📊</span>
                             </div>
 
                             <!-- Team 2 & Score -->
@@ -702,10 +1088,19 @@
                                     ${m.awayScore}
                                 </span>
                                 <div class="flex items-center gap-2.5 text-right">
-                                    <span class="font-outfit font-extrabold text-sm sm:text-base text-white truncate max-w-[180px] sm:max-w-[220px]">
-                                        ${m.away}
-                                    </span>
-                                    <div class="w-8 h-8 rounded-full bg-wpCard border border-wpBorder flex items-center justify-center text-sm font-black text-white">
+                                    <div>
+                                        <span class="font-outfit font-extrabold text-sm sm:text-base text-white group-hover:text-wpGreen transition truncate max-w-[180px] sm:max-w-[220px] block">
+                                            ${m.away}
+                                        </span>
+                                        ${m.h2h ? `
+                                            <div class="flex items-center justify-end gap-1 mt-0.5">
+                                                ${m.h2h.awayStreak.map(st => `
+                                                    <span class="text-[9px] font-black px-1 rounded ${st === 'V' ? 'bg-emerald-500/20 text-emerald-400' : st === 'E' ? 'bg-amber-500/20 text-amber-400' : 'bg-rose-500/20 text-rose-400'}">${st}</span>
+                                                `).join('')}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-wpCard border border-wpBorder group-hover:border-wpGreen flex items-center justify-center text-sm font-black text-white transition">
                                         ${m.away.charAt(0)}
                                     </div>
                                 </div>
@@ -812,7 +1207,156 @@
         }
 
         /* =========================================================================
-           5. BET SELECTION & BETSLIP COMPONENT
+           6. H2H & STATISTICS MODAL
+           ========================================================================= */
+        function openStatsModal(matchId) {
+            playSound('click');
+            const match = matches.find(m => m.id === matchId);
+            if (!match) return;
+
+            const modal = document.getElementById('statsModal');
+            const content = document.getElementById('statsModalContent');
+            const leagueLabel = document.getElementById('statsModalLeague');
+            if (!modal || !content) return;
+
+            if (leagueLabel) leagueLabel.innerText = `${match.league} · ${match.startTime || 'En Vivo'}`;
+
+            const h2h = match.h2h || {
+                homeWins: 5, draws: 3, awayWins: 4,
+                lastMatches: [
+                    { date: 'Último encuentro', home: match.home, away: match.away, score: '2 - 1' }
+                ],
+                homeStreak: ['V', 'E', 'V', 'D', 'V'],
+                awayStreak: ['V', 'D', 'V', 'E', 'D'],
+                homeWinProb: 45, drawProb: 25, awayWinProb: 30,
+                avgGoals: 2.5, bttsProb: 55
+            };
+
+            const totalH2H = h2h.homeWins + h2h.draws + h2h.awayWins || 1;
+            const homeH2HPercent = Math.round((h2h.homeWins / totalH2H) * 100);
+            const drawH2HPercent = Math.round((h2h.draws / totalH2H) * 100);
+            const awayH2HPercent = Math.round((h2h.awayWins / totalH2H) * 100);
+
+            content.innerHTML = `
+                <!-- Versus Header & Win Probabilities -->
+                <div class="bg-wpCard rounded-2xl p-4 sm:p-5 border border-wpBorder">
+                    <div class="flex items-center justify-between gap-4 mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-wpDark border border-wpBorder flex items-center justify-center font-black text-white text-lg">
+                                ${match.home.charAt(0)}
+                            </div>
+                            <div>
+                                <h4 class="font-outfit font-extrabold text-white text-base sm:text-lg">${match.home}</h4>
+                                <div class="flex items-center gap-1 mt-1">
+                                    <span class="text-[10px] text-slate-400 font-bold mr-1">Racha:</span>
+                                    ${h2h.homeStreak.map(st => `
+                                        <span class="w-4 h-4 rounded flex items-center justify-center text-[9px] font-black ${st === 'V' ? 'bg-emerald-500 text-wpDark' : st === 'E' ? 'bg-amber-400 text-wpDark' : 'bg-rose-500 text-white'}">${st}</span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="font-bebas text-2xl text-slate-500">VS</div>
+
+                        <div class="flex items-center justify-end gap-3 text-right">
+                            <div>
+                                <h4 class="font-outfit font-extrabold text-white text-base sm:text-lg">${match.away}</h4>
+                                <div class="flex items-center justify-end gap-1 mt-1">
+                                    <span class="text-[10px] text-slate-400 font-bold mr-1">Racha:</span>
+                                    ${h2h.awayStreak.map(st => `
+                                        <span class="w-4 h-4 rounded flex items-center justify-center text-[9px] font-black ${st === 'V' ? 'bg-emerald-500 text-wpDark' : st === 'E' ? 'bg-amber-400 text-wpDark' : 'bg-rose-500 text-white'}">${st}</span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div class="w-10 h-10 rounded-2xl bg-wpDark border border-wpBorder flex items-center justify-center font-black text-white text-lg">
+                                ${match.away.charAt(0)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Win Probability Visual Bar -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-xs font-outfit font-bold">
+                            <span class="text-emerald-400">${match.home.split(' ')[0]}: ${h2h.homeWinProb}%</span>
+                            <span class="text-amber-400">Empate: ${h2h.drawProb}%</span>
+                            <span class="text-cyan-400">${match.away.split(' ')[0]}: ${h2h.awayWinProb}%</span>
+                        </div>
+                        <div class="w-full h-2.5 rounded-full bg-wpDark flex overflow-hidden">
+                            <div style="width: ${h2h.homeWinProb}%" class="bg-emerald-500 h-full"></div>
+                            <div style="width: ${h2h.drawProb}%" class="bg-amber-400 h-full"></div>
+                            <div style="width: ${h2h.awayWinProb}%" class="bg-cyan-400 h-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="bg-wpCard rounded-2xl p-3 border border-wpBorder text-center">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-outfit block">Prom. Goles</span>
+                        <span class="font-bebas text-2xl text-wpGreen font-black">${h2h.avgGoals || '2.5'}</span>
+                    </div>
+                    <div class="bg-wpCard rounded-2xl p-3 border border-wpBorder text-center">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-outfit block">Ambos Marcan</span>
+                        <span class="font-bebas text-2xl text-wpYellow font-black">${h2h.bttsProb || '50'}%</span>
+                    </div>
+                    <div class="bg-wpCard rounded-2xl p-3 border border-wpBorder text-center">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-outfit block">Victorias ${match.home.split(' ')[0]}</span>
+                        <span class="font-bebas text-2xl text-emerald-400 font-black">${h2h.homeWins}</span>
+                    </div>
+                    <div class="bg-wpCard rounded-2xl p-3 border border-wpBorder text-center">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-outfit block">Victorias ${match.away.split(' ')[0]}</span>
+                        <span class="font-bebas text-2xl text-cyan-400 font-black">${h2h.awayWins}</span>
+                    </div>
+                </div>
+
+                <!-- Historial Cara a Cara (Direct Matches) -->
+                <div>
+                    <h5 class="font-bebas text-xl text-white tracking-wide mb-3 flex items-center gap-2">
+                        <span>⚔️</span> HISTORIAL DIRECTO DE ENFRENTAMIENTOS (ÚLTIMOS JUEGOS)
+                    </h5>
+                    <div class="space-y-2">
+                        ${h2h.lastMatches.map(lm => `
+                            <div class="bg-wpCard border border-wpBorder rounded-2xl p-3 flex items-center justify-between text-xs">
+                                <span class="text-slate-400 font-outfit text-[11px]">${lm.date}</span>
+                                <div class="flex items-center gap-2 font-bold">
+                                    <span class="${lm.score.split('-')[0] > lm.score.split('-')[1] ? 'text-white' : 'text-slate-400'}">${lm.home}</span>
+                                    <span class="font-bebas text-base px-2 py-0.5 bg-wpDark rounded-lg text-wpGreen border border-wpBorder">${lm.score}</span>
+                                    <span class="${lm.score.split('-')[1] > lm.score.split('-')[0] ? 'text-white' : 'text-slate-400'}">${lm.away}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Quick Bet Section inside Modal -->
+                <div class="bg-wpCard/70 border border-wpBorder rounded-2xl p-4">
+                    <span class="text-xs font-bold text-slate-300 font-outfit block mb-2">⚡ Pronosticar Cuota de este Partido:</span>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="toggleBet('${match.id}', '1X2', '1', ${match.odds['1X2']['1']}, '${match.home}'); closeStatsModal();" 
+                                class="p-2 rounded-xl bg-wpDark hover:bg-wpGreen hover:text-wpDark border border-wpBorder text-xs font-bold font-outfit transition text-center">
+                            1 (${match.odds['1X2']['1'].toFixed(2)})
+                        </button>
+                        <button onclick="toggleBet('${match.id}', '1X2', 'X', ${match.odds['1X2']['X']}, 'Empate'); closeStatsModal();" 
+                                class="p-2 rounded-xl bg-wpDark hover:bg-wpGreen hover:text-wpDark border border-wpBorder text-xs font-bold font-outfit transition text-center">
+                            X (${match.odds['1X2']['X'].toFixed(2)})
+                        </button>
+                        <button onclick="toggleBet('${match.id}', '1X2', '2', ${match.odds['1X2']['2']}, '${match.away}'); closeStatsModal();" 
+                                class="p-2 rounded-xl bg-wpDark hover:bg-wpGreen hover:text-wpDark border border-wpBorder text-xs font-bold font-outfit transition text-center">
+                            2 (${match.odds['1X2']['2'].toFixed(2)})
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').classList.add('hidden');
+        }
+
+        /* =========================================================================
+           7. BET SELECTION & BETSLIP COMPONENT
            ========================================================================= */
         function isBetSelected(matchId, marketId, pick) {
             return selectedBets.some(b => b.matchId === matchId && b.marketId === marketId && b.pick === pick);
@@ -826,10 +1370,8 @@
             const existingIndex = selectedBets.findIndex(b => b.matchId === matchId && b.marketId === marketId && b.pick === pick);
 
             if (existingIndex > -1) {
-                // Deselect
                 selectedBets.splice(existingIndex, 1);
             } else {
-                // If another pick in the same market for same match is selected, replace it
                 const sameMarketIndex = selectedBets.findIndex(b => b.matchId === matchId && b.marketId === marketId);
                 if (sameMarketIndex > -1) {
                     selectedBets.splice(sameMarketIndex, 1);
@@ -876,8 +1418,6 @@
             if (selectedBets.length === 0) return 1.0;
             let total = selectedBets.reduce((acc, bet) => acc * bet.odds, 1.0);
             
-            // Wplay Parlay Bonus Multiplier:
-            // 2 bets: +3%, 3 bets: +5%, 4 bets: +10%, 5+ bets: +15%
             let bonusMultiplier = 1.0;
             if (selectedBets.length === 2) bonusMultiplier = 1.03;
             else if (selectedBets.length === 3) bonusMultiplier = 1.05;
@@ -920,16 +1460,13 @@
             const combinedOdds = calculateCombinedOdds();
             const bonus = getParlayBonusPercent();
 
-            // Total potential payout
             let potentialPayout = 0;
             if (betMode === 'parlay') {
                 potentialPayout = currentStakeInput * combinedOdds;
             } else {
-                // Single bets sum payout if stake is distributed equally or per bet
                 potentialPayout = selectedBets.reduce((acc, b) => acc + (currentStakeInput * b.odds), 0);
             }
 
-            // Update DOM
             const payoutEls = document.querySelectorAll('.potentialPayoutDisplay');
             payoutEls.forEach(el => el.innerText = formatCOP(potentialPayout));
 
@@ -950,7 +1487,6 @@
         function renderBetSlip() {
             const count = selectedBets.length;
             
-            // Update Badges
             document.getElementById('mobileSlipCount').innerText = count;
             document.getElementById('mobileDrawerCountBadge').innerText = count;
 
@@ -993,7 +1529,7 @@
                                 🎟️
                             </div>
                             <h5 class="font-bebas text-xl text-slate-300">BOLETO VACÍO</h5>
-                            <p class="text-xs text-slate-500 max-w-[200px]">Haz clic en cualquier cuota de los partidos para agregar tu pronóstico.</p>
+                            <p class="text-xs text-slate-500 max-w-[200px]">Haz clic en cualquier cuota o estadística de los partidos para agregar pronósticos.</p>
                         </div>
                     ` : `
                         <!-- Selected Bets List -->
@@ -1069,7 +1605,7 @@
         }
 
         /* =========================================================================
-           6. PLACE BET & RECORD IN HISTORY
+           8. PLACE BET & RECORD IN HISTORY
            ========================================================================= */
         function placeBet() {
             if (selectedBets.length === 0) return;
@@ -1087,7 +1623,6 @@
                 return;
             }
 
-            // Deduct Balance
             balance -= totalCost;
             updateBalanceDisplay();
             playSound('bet_placed');
@@ -1097,8 +1632,7 @@
                 ? (totalCost * combinedOdds) 
                 : selectedBets.reduce((a, b) => a + (currentStakeInput * b.odds), 0);
 
-            // Create Ticket Object
-            const ticketId = 'WP-' + Math.floor(100000 + Math.random() * 900000);
+            const ticketId = 'ARL-' + Math.floor(100000 + Math.random() * 900000);
             const ticket = {
                 id: ticketId,
                 date: new Date().toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' }),
@@ -1107,7 +1641,7 @@
                 totalStake: totalCost,
                 odds: combinedOdds,
                 potentialWin: potentialWin,
-                status: 'pending', // 'pending', 'won', 'lost'
+                status: 'pending',
                 wonAmount: 0
             };
 
@@ -1115,26 +1649,22 @@
             localStorage.setItem('wp_history', JSON.stringify(betHistory));
             updateHistoryCountBadge();
 
-            // Clear BetSlip
             selectedBets = [];
             renderMatches();
             renderBetSlip();
 
-            // Close mobile drawer if open
             const drawer = document.getElementById('betslipDrawer');
             if (drawer) drawer.classList.remove('open');
 
-            // Celebrate Bet Placement
             showSimToast(`🎉 ¡Boleto #${ticketId} colocado exitosamente por ${formatCOP(totalCost)}!`);
             
-            // Automatically prompt simulation
             setTimeout(() => {
                 resolveTicketSimulation(ticket.id);
             }, 1200);
         }
 
         /* =========================================================================
-           7. LIVE MATCH SIMULATOR & TICKET RESOLUTION
+           9. LIVE MATCH SIMULATOR & TICKET RESOLUTION
            ========================================================================= */
         function simulateAllLiveTick() {
             playSound('goal');
@@ -1143,7 +1673,6 @@
                     if (typeof m.minute === 'number') {
                         m.minute = Math.min(90, m.minute + Math.floor(Math.random() * 4) + 1);
                     }
-                    // Random goal chance
                     if (Math.random() > 0.45) {
                         if (Math.random() > 0.5) {
                             m.homeScore++;
@@ -1193,7 +1722,6 @@
             const ticket = betHistory.find(t => t.id === ticketId);
             if (!ticket || ticket.status !== 'pending') return;
 
-            // 75% favorable demo rate to make simulation exciting and fun
             const won = Math.random() > 0.35;
 
             if (won) {
@@ -1203,7 +1731,6 @@
                 updateBalanceDisplay();
                 playSound('win');
 
-                // Confetti fireworks
                 if (typeof confetti === 'function') {
                     confetti({
                         particleCount: 120,
@@ -1242,8 +1769,8 @@
             selectedBets = [
                 { matchId: 'm1', marketId: '1X2', pick: '1', label: 'Atlético Nacional', odds: 1.62, home: 'Atlético Nacional', away: 'Millonarios FC', league: '🇨🇴 Liga BetPlay', sport: 'futbol' },
                 { matchId: 'm2', marketId: '1X2', pick: '1', label: 'Real Madrid', odds: 2.40, home: 'Real Madrid', away: 'Manchester City', league: '🇪🇺 Champions League', sport: 'futbol' },
-                { matchId: 'm3', marketId: '1X2', pick: '1', label: 'Junior de Barranquilla', odds: 2.05, home: 'Junior', away: 'América de Cali', league: '🇨🇴 Liga BetPlay', sport: 'futbol' },
-                { matchId: 'm5', marketId: '1X2', pick: '1', label: 'LA Lakers', odds: 1.80, home: 'LA Lakers', away: 'Golden State', league: '🇺🇸 NBA', sport: 'baloncesto' },
+                { matchId: 'm5', marketId: '1X2', pick: '1', label: 'Arsenal FC', odds: 1.75, home: 'Arsenal FC', away: 'Chelsea FC', league: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League', sport: 'futbol' },
+                { matchId: 'm4', marketId: '1X2', pick: '1', label: 'LA Lakers', odds: 1.80, home: 'LA Lakers', away: 'Golden State', league: '🇺🇸 NBA', sport: 'baloncesto' },
             ];
             betMode = 'parlay';
             renderMatches();
@@ -1252,7 +1779,7 @@
         }
 
         /* =========================================================================
-           8. RECHARGE & RESET MODALS
+           10. RECHARGE MODAL & HISTORIAL
            ========================================================================= */
         function rechargeBalance() {
             playSound('click');
@@ -1278,9 +1805,6 @@
             showSimToast('🔄 Todos los marcadores y cuotas han sido reiniciados.');
         }
 
-        /* =========================================================================
-           9. HISTORY MODAL
-           ========================================================================= */
         function updateHistoryCountBadge() {
             const badge = document.getElementById('ticketCountBadge');
             if (badge) badge.innerText = betHistory.length;
@@ -1374,13 +1898,12 @@
         }
 
         /* =========================================================================
-           10. SPORTS FILTER
+           11. SPORTS FILTER
            ========================================================================= */
         function filterSport(sport) {
             playSound('click');
             currentSportFilter = sport;
 
-            // Highlight Tab
             document.querySelectorAll('.sport-tab').forEach(tab => {
                 if (tab.dataset.sport === sport) {
                     tab.classList.remove('bg-wpCard', 'text-slate-200');
@@ -1391,7 +1914,6 @@
                 }
             });
 
-            // Update title
             const titles = {
                 all: '🏆 Partidos Destacados & En Vivo',
                 live: '🔴 Partidos Transmitiéndose En Vivo',
@@ -1407,7 +1929,7 @@
         }
 
         /* =========================================================================
-           11. INITIALIZATION ON DOM READY
+           12. INITIALIZATION ON DOM READY
            ========================================================================= */
         document.addEventListener('DOMContentLoaded', () => {
             const storedSound = localStorage.getItem('wp_sound');
@@ -1417,10 +1939,10 @@
             }
             updateBalanceDisplay();
             updateHistoryCountBadge();
+            renderDaysBar();
             renderMatches();
             renderBetSlip();
 
-            // Periodic dynamic clock tick
             setInterval(() => {
                 matches.forEach(m => {
                     if (m.isLive && typeof m.minute === 'number' && m.minute < 90) {

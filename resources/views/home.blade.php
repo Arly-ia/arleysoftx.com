@@ -139,16 +139,16 @@
                 </div>
             </div>
 
-            <!-- Wplay Betting Simulator Card -->
+            <!-- ArleySoftX Play Card -->
             <div class="relative group flex flex-col h-full">
                 <div class="absolute -inset-1.5 bg-gradient-to-r from-[#00e676] to-[#00b0ff] rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
                 
                 <div class="relative bg-slate-900 border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between text-left gap-5 flex-grow h-full">
                     <div class="space-y-3">
-                        <span class="text-xs font-bold text-[#00e676] uppercase tracking-wider font-outfit">Nuevo Simulador</span>
-                        <h3 class="font-outfit font-black text-xl sm:text-2xl text-white">Apuestas Deportivas</h3>
+                        <span class="text-xs font-bold text-[#00e676] uppercase tracking-wider font-outfit">Nuevo Juego & H2H</span>
+                        <h3 class="font-outfit font-black text-xl sm:text-2xl text-white">ArleySoftX Play</h3>
                         <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                            Simulador interactivo estilo Wplay con cuotas en vivo, apuestas simples/parlays, saldo demo y simulación de partidos.
+                            Pronósticos deportivos con calendario de los próximos 8 días, historial directo (H2H), cuotas en vivo y simulación demo.
                         </p>
                     </div>
                     <div class="pt-2">
