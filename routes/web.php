@@ -115,7 +115,7 @@ Route::get('/puntico', function () {
     return view('puntico');
 })->name('puntico');
 
-// ─── Simulador de Apuestas Deportivas (Estilo Wplay) ──────────────────────
+// ─── Simulador de Apuestas Deportivas (ArleySoftX Play) ───────────────────
 Route::get('/apuestas', function () {
     return view('apuestas');
 })->name('apuestas');
@@ -123,6 +123,12 @@ Route::get('/apuestas', function () {
 Route::get('/simulacion-apuestas', function () {
     return redirect()->route('apuestas');
 })->name('apuestas.simulacion');
+
+// ─── API Deportiva en Tiempo Real & Sondeo (Live Polling) ─────────────────
+use App\Http\Controllers\SportsApiController;
+Route::get('/api/sports/fixtures', [SportsApiController::class, 'getFixtures'])->name('api.sports.fixtures');
+Route::get('/api/sports/live',     [SportsApiController::class, 'getLiveMatches'])->name('api.sports.live');
+
 
 
 
