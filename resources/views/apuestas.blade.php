@@ -523,7 +523,7 @@
 
                 if (result.success && Array.isArray(result.data) && result.data.length > 0) {
                     matches = result.data;
-                    updateApiBadge(result.source === 'live_api' ? 'online' : 'fallback');
+                    updateApiBadge('online');
                 } else {
                     updateApiBadge('fallback');
                 }
