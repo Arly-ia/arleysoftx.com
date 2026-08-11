@@ -173,13 +173,21 @@
                     <span class="text-wpRed font-black">EN VIVO</span>
                     <span class="text-[10px] px-1.5 py-0.2 bg-wpRed/20 text-wpRed rounded-full" id="liveMatchBadgeCount">0</span>
                 </button>
+                <button onclick="filterSport('beisbol')" class="sport-tab px-3 py-1.5 rounded-xl bg-wpCard hover:bg-wpCardHover text-slate-200 border border-wpBorder transition flex items-center gap-1.5" data-sport="beisbol">
+                    <span>⚾</span>
+                    <span>Béisbol (MLB)</span>
+                </button>
                 <button onclick="filterSport('futbol')" class="sport-tab px-3 py-1.5 rounded-xl bg-wpCard hover:bg-wpCardHover text-slate-200 border border-wpBorder transition flex items-center gap-1.5" data-sport="futbol">
                     <span>⚽</span>
                     <span>Fútbol</span>
                 </button>
                 <button onclick="filterSport('baloncesto')" class="sport-tab px-3 py-1.5 rounded-xl bg-wpCard hover:bg-wpCardHover text-slate-200 border border-wpBorder transition flex items-center gap-1.5" data-sport="baloncesto">
                     <span>🏀</span>
-                    <span>Baloncesto (NBA)</span>
+                    <span>Baloncesto (WNBA/NBA)</span>
+                </button>
+                <button onclick="filterSport('futbol_americano')" class="sport-tab px-3 py-1.5 rounded-xl bg-wpCard hover:bg-wpCardHover text-slate-200 border border-wpBorder transition flex items-center gap-1.5" data-sport="futbol_americano">
+                    <span>🏈</span>
+                    <span>Fútbol Americano (NFL)</span>
                 </button>
                 
                 <div class="h-4 w-px bg-slate-800 mx-1"></div>
@@ -769,48 +777,68 @@
                             </div>
                         </div>
 
-                        <!-- 1X2 Main Betting Market Grid -->
-                        <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-3">
-                            <button onclick="toggleBet('${m.id}', '1X2', '1', ${m.odds['1X2']['1']}, '${m.home}')" 
-                                    class="odd-btn flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-wpCard hover:bg-wpCardHover border border-wpBorder text-left ${isSelected1 ? 'selected' : ''}">
-                                <div class="truncate mr-1">
-                                    <span class="text-[10px] uppercase font-bold text-slate-400 block font-outfit">1 (${m.home.split(' ')[0]})</span>
-                                </div>
-                                <span class="odd-val font-bebas text-lg sm:text-xl text-wpGreen font-black">${m.odds['1X2']['1'].toFixed(2)}</span>
-                            </button>
+                        <!-- Main Betting Market Grid (2-Way Moneyline for Baseball/Basketball/NFL vs 3-Way 1X2 for Soccer) -->
+                        ${m.hasDraw ? `
+                            <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-3">
+                                <button onclick="toggleBet('${m.id}', '1X2', '1', ${m.odds['1X2']['1']}, '${m.home}')" 
+                                        class="odd-btn flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-wpCard hover:bg-wpCardHover border border-wpBorder text-left ${isSelected1 ? 'selected' : ''}">
+                                    <div class="truncate mr-1">
+                                        <span class="text-[10px] uppercase font-bold text-slate-400 block font-outfit">1 (${m.home.split(' ')[0]})</span>
+                                    </div>
+                                    <span class="odd-val font-bebas text-lg sm:text-xl text-wpGreen font-black">${m.odds['1X2']['1'].toFixed(2)}</span>
+                                </button>
 
-                            <button onclick="toggleBet('${m.id}', '1X2', 'X', ${m.odds['1X2']['X']}, 'Empate')" 
-                                    class="odd-btn flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-wpCard hover:bg-wpCardHover border border-wpBorder text-left ${isSelectedX ? 'selected' : ''}">
-                                <div>
-                                    <span class="text-[10px] uppercase font-bold text-slate-400 block font-outfit">X (Empate)</span>
-                                </div>
-                                <span class="odd-val font-bebas text-lg sm:text-xl text-wpGreen font-black">${m.odds['1X2']['X'].toFixed(2)}</span>
-                            </button>
+                                <button onclick="toggleBet('${m.id}', '1X2', 'X', ${m.odds['1X2']['X'] || 3.30}, 'Empate')" 
+                                        class="odd-btn flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-wpCard hover:bg-wpCardHover border border-wpBorder text-left ${isSelectedX ? 'selected' : ''}">
+                                    <div>
+                                        <span class="text-[10px] uppercase font-bold text-slate-400 block font-outfit">X (Empate)</span>
+                                    </div>
+                                    <span class="odd-val font-bebas text-lg sm:text-xl text-wpGreen font-black">${m.odds['1X2']['X'] ? m.odds['1X2']['X'].toFixed(2) : '3.30'}</span>
+                                </button>
 
-                            <button onclick="toggleBet('${m.id}', '1X2', '2', ${m.odds['1X2']['2']}, '${m.away}')" 
-                                    class="odd-btn flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-wpCard hover:bg-wpCardHover border border-wpBorder text-left ${isSelected2 ? 'selected' : ''}">
-                                <div class="truncate mr-1">
-                                    <span class="text-[10px] uppercase font-bold text-slate-400 block font-outfit">2 (${m.away.split(' ')[0]})</span>
-                                </div>
-                                <span class="odd-val font-bebas text-lg sm:text-xl text-wpGreen font-black">${m.odds['1X2']['2'].toFixed(2)}</span>
-                            </button>
-                        </div>
+                                <button onclick="toggleBet('${m.id}', '1X2', '2', ${m.odds['1X2']['2']}, '${m.away}')" 
+                                        class="odd-btn flex items-center justify-between p-2.5 sm:p-3 rounded-2xl bg-wpCard hover:bg-wpCardHover border border-wpBorder text-left ${isSelected2 ? 'selected' : ''}">
+                                    <div class="truncate mr-1">
+                                        <span class="text-[10px] uppercase font-bold text-slate-400 block font-outfit">2 (${m.away.split(' ')[0]})</span>
+                                    </div>
+                                    <span class="odd-val font-bebas text-lg sm:text-xl text-wpGreen font-black">${m.odds['1X2']['2'].toFixed(2)}</span>
+                                </button>
+                            </div>
+                        ` : `
+                            <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-3">
+                                <button onclick="toggleBet('${m.id}', '1X2', '1', ${m.odds['1X2']['1']}, '${m.home}')" 
+                                        class="odd-btn flex items-center justify-between p-3 rounded-2xl bg-wpCard hover:bg-wpCardHover border border-wpBorder text-left ${isSelected1 ? 'selected' : ''}">
+                                    <div class="truncate mr-1">
+                                        <span class="text-[10px] uppercase font-bold text-slate-400 block font-outfit">GANADOR LOCAL (${m.home.split(' ')[0]})</span>
+                                    </div>
+                                    <span class="odd-val font-bebas text-xl text-wpGreen font-black">${m.odds['1X2']['1'].toFixed(2)}</span>
+                                </button>
+
+                                <button onclick="toggleBet('${m.id}', '1X2', '2', ${m.odds['1X2']['2']}, '${m.away}')" 
+                                        class="odd-btn flex items-center justify-between p-3 rounded-2xl bg-wpCard hover:bg-wpCardHover border border-wpBorder text-left ${isSelected2 ? 'selected' : ''}">
+                                    <div class="truncate mr-1">
+                                        <span class="text-[10px] uppercase font-bold text-slate-400 block font-outfit">GANADOR VISITANTE (${m.away.split(' ')[0]})</span>
+                                    </div>
+                                    <span class="odd-val font-bebas text-xl text-wpGreen font-black">${m.odds['1X2']['2'].toFixed(2)}</span>
+                                </button>
+                            </div>
+                        `}
 
                         <!-- Secondary Markets -->
                         <div class="pt-2 border-t border-wpBorder/40 flex items-center justify-between text-xs">
                             <button onclick="toggleMoreMarkets('${m.id}')" class="text-slate-400 hover:text-wpGreen font-outfit font-bold flex items-center gap-1 transition">
-                                <span>+ Mercados (Goles, Ambos Anotan)</span>
+                                <span>+ Mercados (${m.sport === 'beisbol' ? 'Carreras, Hándicap' : (m.sport === 'baloncesto' ? 'Puntos, Totales' : 'Goles, Ambos Anotan')})</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transform transition-transform" id="arrow-${m.id}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-                            <span class="text-[10px] text-slate-500 font-semibold font-outfit">Datos Oficiales API</span>
+                            <span class="text-[10px] text-slate-500 font-semibold font-outfit">The Odds API · Oficial</span>
                         </div>
 
                         <!-- Expandable Extra Markets -->
                         <div id="extra-markets-${m.id}" class="hidden pt-3 mt-3 border-t border-wpBorder/40 space-y-3">
                             <div>
-                                <span class="text-[11px] font-bold uppercase text-slate-400 font-outfit block mb-1.5">Total de Goles / Puntos (+ / -)</span>
+                                <span class="text-[11px] font-bold uppercase text-slate-400 font-outfit block mb-1.5">${m.sport === 'beisbol' ? 'Total de Carreras (+ / -)' : (m.sport === 'baloncesto' ? 'Total de Puntos (+ / -)' : 'Total de Goles (+ / -)')}</span>
                                 <div class="grid grid-cols-2 gap-2">
                                     ${Object.entries(m.odds['over_under']).map(([key, odd]) => {
                                         const isSel = isBetSelected(m.id, 'over_under', key);
@@ -826,7 +854,7 @@
                             </div>
 
                             <div>
-                                <span class="text-[11px] font-bold uppercase text-slate-400 font-outfit block mb-1.5">Ambos Equipos Anotan / Especiales</span>
+                                <span class="text-[11px] font-bold uppercase text-slate-400 font-outfit block mb-1.5">${m.sport === 'futbol' ? 'Ambos Equipos Anotan' : 'Hándicap / Spread Oficial'}</span>
                                 <div class="grid grid-cols-2 gap-2">
                                     ${Object.entries(m.odds['btts']).map(([key, odd]) => {
                                         const isSel = isBetSelected(m.id, 'btts', key);
@@ -871,15 +899,15 @@
             const leagueLabel = document.getElementById('statsModalLeague');
             if (!modal || !content) return;
 
-            if (leagueLabel) leagueLabel.innerText = `${match.league} · ${match.startTime || 'En Vivo'}`;
+            if (leagueLabel) leagueLabel.innerText = `${match.league} · ${match.startTime || 'Programado'}`;
 
             const h2h = match.h2h || {
-                homeWins: 5, draws: 3, awayWins: 4,
-                lastMatches: [{ date: 'Historial previo', home: match.home, away: match.away, score: '2 - 1' }],
+                homeWins: 5, draws: 0, awayWins: 4,
+                lastMatches: [{ date: 'Historial previo', home: match.home, away: match.away, score: (match.sport === 'beisbol' ? '5 - 3' : '2 - 1') }],
                 homeStreak: ['V', 'E', 'V', 'D', 'V'],
                 awayStreak: ['V', 'D', 'V', 'E', 'D'],
-                homeWinProb: 48, drawProb: 26, awayWinProb: 26,
-                avgGoals: 2.5, bttsProb: 55
+                homeWinProb: 55, drawProb: 0, awayWinProb: 45,
+                avgGoals: (match.sport === 'beisbol' ? '8.4 Carreras' : '2.5 Goles'), bttsProb: 55
             };
 
             content.innerHTML = `
@@ -925,12 +953,12 @@
                     <div class="space-y-1.5">
                         <div class="flex justify-between text-xs font-outfit font-bold">
                             <span class="text-emerald-400">${match.home.split(' ')[0]}: ${h2h.homeWinProb}%</span>
-                            <span class="text-amber-400">Empate: ${h2h.drawProb}%</span>
+                            ${match.hasDraw ? `<span class="text-amber-400">Empate: ${h2h.drawProb}%</span>` : ''}
                             <span class="text-cyan-400">${match.away.split(' ')[0]}: ${h2h.awayWinProb}%</span>
                         </div>
                         <div class="w-full h-2.5 rounded-full bg-wpDark flex overflow-hidden">
                             <div style="width: ${h2h.homeWinProb}%" class="bg-emerald-500 h-full"></div>
-                            <div style="width: ${h2h.drawProb}%" class="bg-amber-400 h-full"></div>
+                            ${match.hasDraw ? `<div style="width: ${h2h.drawProb}%" class="bg-amber-400 h-full"></div>` : ''}
                             <div style="width: ${h2h.awayWinProb}%" class="bg-cyan-400 h-full"></div>
                         </div>
                     </div>
@@ -938,12 +966,12 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div class="bg-wpCard rounded-2xl p-3 border border-wpBorder text-center">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 font-outfit block">Prom. Goles</span>
-                        <span class="font-bebas text-2xl text-wpGreen font-black">${h2h.avgGoals || '2.5'}</span>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-outfit block">${match.sport === 'beisbol' ? 'Prom. Carreras' : (match.sport === 'baloncesto' ? 'Prom. Puntos' : 'Prom. Goles')}</span>
+                        <span class="font-bebas text-2xl text-wpGreen font-black">${h2h.avgGoals || (match.sport === 'beisbol' ? '8.4' : '2.5')}</span>
                     </div>
                     <div class="bg-wpCard rounded-2xl p-3 border border-wpBorder text-center">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 font-outfit block">Ambos Marcan</span>
-                        <span class="font-bebas text-2xl text-wpYellow font-black">${h2h.bttsProb || '50'}%</span>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-outfit block">Prob. Anotación</span>
+                        <span class="font-bebas text-2xl text-wpYellow font-black">${h2h.bttsProb || '55'}%</span>
                     </div>
                     <div class="bg-wpCard rounded-2xl p-3 border border-wpBorder text-center">
                         <span class="text-[10px] uppercase font-bold text-slate-400 font-outfit block">Victorias ${match.home.split(' ')[0]}</span>
