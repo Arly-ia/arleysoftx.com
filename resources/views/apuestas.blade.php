@@ -955,19 +955,44 @@
                             </div>
                         </div>
 
-                        <!-- Pill Badge de Sugerencia Rápida de Marcador -->
+                        <!-- Pill Badge de Sugerencia Rápida de Marcador Adaptativa -->
                         ${mScorePreds ? `
-                            <div class="mb-3.5 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-wpGreen/15 via-emerald-500/10 to-wpCard border border-wpGreen/30 flex items-center justify-between cursor-pointer hover:border-wpGreen transition group" onclick="openStatsModal('${m.id}')" title="Haz clic para ver el cálculo completo de marcadores más probables">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-wpGreen animate-pulse"></span>
-                                    <span class="text-[10px] font-black uppercase text-wpGreen font-outfit tracking-wider">🎯 Sugerencia IA (Poisson):</span>
-                                    <span class="text-sm font-black text-white font-bebas tracking-wide group-hover:text-wpGreen transition">${mScorePreds.recommendedScore}</span>
-                                    <span class="text-[10px] text-slate-300 font-outfit font-bold">(${mScorePreds.recommendedProb}% prob. @${mScorePreds.recommendedOdds.toFixed(2)})</span>
+                            ${(m.isFinished || m.minute === 'FT' || m.minute === 'Finalizado') ? `
+                                <div class="mb-3.5 px-3 py-1.5 rounded-2xl bg-slate-800/50 border border-slate-700/60 flex items-center justify-between cursor-pointer hover:border-slate-500 transition group" onclick="openStatsModal('${m.id}')">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-black uppercase text-slate-400 font-outfit tracking-wider">🏁 Marcador Final Oficial:</span>
+                                        <span class="text-sm font-black text-wpGreen font-bebas tracking-wide">${m.homeScore} - ${m.awayScore}</span>
+                                        <span class="text-[10px] text-slate-400 font-outfit font-semibold">(Concluido)</span>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 font-bold font-outfit flex items-center gap-1 group-hover:text-white transition">
+                                        <span>Estadísticas</span> <span>→</span>
+                                    </span>
                                 </div>
-                                <span class="text-[10px] text-wpGreen font-bold font-outfit flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                                    <span>Ver análisis</span> <span>→</span>
-                                </span>
-                            </div>
+                            ` : m.isLive ? `
+                                <div class="mb-3.5 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-wpGreen/15 to-wpCard border border-emerald-500/40 flex items-center justify-between cursor-pointer hover:border-emerald-400 transition group shadow-sm" onclick="openStatsModal('${m.id}')" title="Proyección en vivo ajustada al marcador actual en tiempo real">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                        <span class="text-[10px] font-black uppercase text-emerald-400 font-outfit tracking-wider">🟢 Proyección Final en Vivo (${m.minute}):</span>
+                                        <span class="text-sm font-black text-white font-bebas tracking-wide group-hover:text-emerald-400 transition">${mScorePreds.recommendedScore}</span>
+                                        <span class="text-[10px] text-emerald-300 font-outfit font-bold">(${mScorePreds.recommendedProb}% prob. @${mScorePreds.recommendedOdds.toFixed(2)})</span>
+                                    </div>
+                                    <span class="text-[10px] text-emerald-400 font-bold font-outfit flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                                        <span>Ver proyección</span> <span>→</span>
+                                    </span>
+                                </div>
+                            ` : `
+                                <div class="mb-3.5 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-wpGreen/15 via-emerald-500/10 to-wpCard border border-wpGreen/30 flex items-center justify-between cursor-pointer hover:border-wpGreen transition group" onclick="openStatsModal('${m.id}')" title="Haz clic para ver el cálculo completo de marcadores más probables">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-wpGreen animate-pulse"></span>
+                                        <span class="text-[10px] font-black uppercase text-wpGreen font-outfit tracking-wider">🎯 Sugerencia IA (Poisson):</span>
+                                        <span class="text-sm font-black text-white font-bebas tracking-wide group-hover:text-wpGreen transition">${mScorePreds.recommendedScore}</span>
+                                        <span class="text-[10px] text-slate-300 font-outfit font-bold">(${mScorePreds.recommendedProb}% prob. @${mScorePreds.recommendedOdds.toFixed(2)})</span>
+                                    </div>
+                                    <span class="text-[10px] text-wpGreen font-bold font-outfit flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                                        <span>Ver análisis</span> <span>→</span>
+                                    </span>
+                                </div>
+                            `}
                         ` : ''}
 
                         <!-- Teams & Live Scores Grid -->
@@ -1221,7 +1246,41 @@
            6. POISSON PREDICTION ALGORITHM (CLIENT/FALLBACK HELPER) & STATS MODAL
            ========================================================================= */
         function getOrComputeScorePredictions(match) {
-            if (match.score_predictions && match.score_predictions.topScores && match.score_predictions.topScores.length > 0) {
+            const isFinished = match.isFinished || (match.minute === 'FT' || match.minute === 'Finalizado');
+            const isLive = match.isLive && !isFinished;
+            const curH = parseInt(match.homeScore) || 0;
+            const curA = parseInt(match.awayScore) || 0;
+
+            // 1. Si el partido ya FINALIZÓ: El marcador es 100% el resultado final oficial
+            if (isFinished) {
+                const finalScore = `${curH} - ${curA}`;
+                return {
+                    expectedGoalsHome: curH,
+                    expectedGoalsAway: curA,
+                    totalExpectedGoals: curH + curA,
+                    topScores: [{
+                        score: finalScore,
+                        homeGoals: curH,
+                        awayGoals: curA,
+                        probability: 100.0,
+                        odds: 1.01,
+                        tag: '🏁 Marcador Final Oficial',
+                        type: curH > curA ? 'home_win' : (curH === curA ? 'draw' : 'away_win'),
+                        typeLabel: curH > curA ? `Victoria ${match.home}` : (curH === curA ? 'Empate' : `Victoria ${match.away}`),
+                        isTopRecommendation: true
+                    }],
+                    recommendedScore: finalScore,
+                    recommendedOdds: 1.01,
+                    recommendedProb: 100.0,
+                    confidencePercent: 100,
+                    isLive: false,
+                    isFinished: true,
+                    analysis: `Partido concluido con resultado oficial definitivo de ${finalScore}.`
+                };
+            }
+
+            // Si es pre-partido y ya viene calculado del backend, usarlo
+            if (!isLive && match.score_predictions && match.score_predictions.topScores && match.score_predictions.topScores.length > 0) {
                 return match.score_predictions;
             }
 
@@ -1233,25 +1292,45 @@
             const homeRatio = Math.max(0.25, Math.min(0.75, (probHome + (probDraw * 0.35)) / 100));
             const awayRatio = 1 - homeRatio;
 
-            const lambdaHome = Math.max(0.65, Math.min(3.8, parseFloat(((avgGoals * homeRatio) * 1.12).toFixed(2))));
-            const lambdaAway = Math.max(0.45, Math.min(3.4, parseFloat(((avgGoals * awayRatio) * 0.92).toFixed(2))));
+            const baseLambdaHome = Math.max(0.65, Math.min(3.8, parseFloat(((avgGoals * homeRatio) * 1.12).toFixed(2))));
+            const baseLambdaAway = Math.max(0.45, Math.min(3.4, parseFloat(((avgGoals * awayRatio) * 0.92).toFixed(2))));
 
             function fact(n) { return n <= 1 ? 1 : n * fact(n - 1); }
             function poisson(lambda, k) { return (Math.pow(lambda, k) * Math.exp(-lambda)) / fact(k); }
 
+            // 2. Si está EN VIVO, calcular únicamente la expectativa de goles RESTANTES en los minutos que quedan
+            let timeRemainingRatio = 1.0;
+            let elapsedMin = 45;
+            if (isLive) {
+                const numMatch = (match.minute || '').toString().replace(/[^0-9]/g, '');
+                elapsedMin = parseInt(numMatch) || 45;
+                timeRemainingRatio = Math.max(0.04, Math.min(1.0, (90 - elapsedMin) / 90));
+            }
+
+            const remLambdaH = isLive ? Math.max(0.05, baseLambdaHome * timeRemainingRatio) : baseLambdaHome;
+            const remLambdaA = isLive ? Math.max(0.05, baseLambdaAway * timeRemainingRatio) : baseLambdaAway;
+
+            const startH = isLive ? curH : 0;
+            const startA = isLive ? curA : 0;
+            const maxExtra = isLive ? 4 : 5;
+
             const scores = [];
             let totalSum = 0;
-            for (let x = 0; x <= 5; x++) {
-                for (let y = 0; y <= 5; y++) {
-                    const p = poisson(lambdaHome, x) * poisson(lambdaAway, y);
+            for (let kH = 0; kH <= maxExtra; kH++) {
+                for (let kA = 0; kA <= maxExtra; kA++) {
+                    const p = poisson(remLambdaH, kH) * poisson(remLambdaA, kA);
                     totalSum += p;
+
+                    const finalH = startH + kH;
+                    const finalA = startA + kA;
+
                     scores.push({
-                        score: `${x} - ${y}`,
-                        homeGoals: x,
-                        awayGoals: y,
+                        score: `${finalH} - ${finalA}`,
+                        homeGoals: finalH,
+                        awayGoals: finalA,
                         rawProb: p,
-                        type: x > y ? 'home_win' : (x === y ? 'draw' : 'away_win'),
-                        typeLabel: x > y ? `Victoria ${match.home}` : (x === y ? 'Empate' : `Victoria ${match.away}`)
+                        type: finalH > finalA ? 'home_win' : (finalH === finalA ? 'draw' : 'away_win'),
+                        typeLabel: finalH > finalA ? `Victoria ${match.home}` : (finalH === finalA ? 'Empate' : `Victoria ${match.away}`)
                     });
                 }
             }
@@ -1259,15 +1338,15 @@
             scores.forEach(s => {
                 const norm = (s.rawProb / Math.max(0.001, totalSum)) * 100;
                 s.probability = parseFloat(norm.toFixed(1));
-                s.odds = parseFloat(Math.max(2.10, Math.min(85.0, (100 / Math.max(0.5, norm)) * 1.08)).toFixed(2));
+                s.odds = parseFloat(Math.max(1.12, Math.min(85.0, (100 / Math.max(0.5, norm)) * 1.08)).toFixed(2));
             });
 
             scores.sort((a, b) => b.rawProb - a.rawProb);
             const topScores = scores.slice(0, 6);
             const tags = [
-                '🔥 Marcador Más Probable',
-                '⚡ Segunda Opción Fuerte',
-                '💡 Opción de Alto Valor',
+                isLive ? '🟢 Proyección Final Más Probable' : '🔥 Marcador Más Probable',
+                isLive ? '⚡ Segunda Opción en Vivo' : '⚡ Segunda Opción Fuerte',
+                isLive ? '💡 Opción con Gol Adicional' : '💡 Opción de Alto Valor',
                 '🛡️ Pronóstico Cerrado',
                 '🎯 Alternativa Táctica',
                 '🎲 Posible Sorpresa'
@@ -1280,20 +1359,27 @@
             const bestScore = topScores[0].score;
             const bestProb = topScores[0].probability;
             const bestOdds = topScores[0].odds;
-            const confidence = Math.min(94, Math.round(48 + (bestProb * 2.1)));
+            const confidence = Math.min(96, Math.round(48 + (bestProb * 1.9)));
+
+            const analysis = isLive 
+                ? `Con el marcador actual (${curH} - ${curA}) al minuto ${match.minute || elapsedMin + "'"}, el modelo proyecta ${remLambdaH.toFixed(2)} goles esperados adicionales para ${match.home} y ${remLambdaA.toFixed(2)} para ${match.away}. El marcador final proyectado más probable es ${bestScore} (${bestProb}% prob. cuota @${bestOdds.toFixed(2)}).`
+                : `El modelo predictivo de Poisson proyecta una expectativa de ${baseLambdaHome} goles para ${match.home} y ${baseLambdaAway} para ${match.away}. Basado en estadísticas previas y factor de localía, el marcador más probable es ${bestScore} (${bestProb}% prob. cuota @${bestOdds.toFixed(2)}).`;
 
             return {
-                expectedGoalsHome: lambdaHome,
-                expectedGoalsAway: lambdaAway,
-                totalExpectedGoals: parseFloat((lambdaHome + lambdaAway).toFixed(2)),
+                expectedGoalsHome: isLive ? parseFloat((curH + remLambdaH).toFixed(2)) : baseLambdaHome,
+                expectedGoalsAway: isLive ? parseFloat((curA + remLambdaA).toFixed(2)) : baseLambdaAway,
+                totalExpectedGoals: isLive ? parseFloat((curH + curA + remLambdaH + remLambdaA).toFixed(2)) : parseFloat((baseLambdaHome + baseLambdaAway).toFixed(2)),
                 topScores: topScores,
                 recommendedScore: bestScore,
                 recommendedOdds: bestOdds,
                 recommendedProb: bestProb,
                 confidencePercent: confidence,
-                analysis: `El modelo predictivo de Poisson proyecta una expectativa de ${lambdaHome} goles para ${match.home} y ${lambdaAway} para ${match.away}. Basado en el promedio reciente de los últimos encuentros y el factor de localía, el marcador más probable es ${bestScore} (${bestProb}% de probabilidad con cuota ${bestOdds}), seguido de ${topScores[1].score} (${topScores[1].probability}%).`
+                isLive: isLive,
+                isFinished: false,
+                analysis: analysis
             };
         }
+
 
         function openStatsModal(matchId) {
             playSound('click');

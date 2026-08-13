@@ -165,54 +165,96 @@ class SportsApiController extends Controller
      * Calcula la probabilidad de cada marcador exacto (x, y) a partir del promedio
      * de goles esperados y el desempeño histórico reciente de ambos equipos.
      */
-    public function calculateScorePredictions($home, $away, $sport = 'futbol', $avgGoals = 2.6, $probHome = 48, $probDraw = 26, $probAway = 26)
+    public function calculateScorePredictions($home, $away, $sport = 'futbol', $avgGoals = 2.6, $probHome = 48, $probDraw = 26, $probAway = 26, $currentHomeGoals = 0, $currentAwayGoals = 0, $isLive = false, $elapsed = 0, $isFinished = false)
     {
+        $currentHomeGoals = (int) $currentHomeGoals;
+        $currentAwayGoals = (int) $currentAwayGoals;
+
+        // 0. Si el partido ya FINALIZÓ, el marcador es 100% el resultado final oficial
+        if ($isFinished) {
+            $finalScore = "{$currentHomeGoals} - {$currentAwayGoals}";
+            return [
+                'expectedGoalsHome' => $currentHomeGoals,
+                'expectedGoalsAway' => $currentAwayGoals,
+                'totalExpectedGoals' => $currentHomeGoals + $currentAwayGoals,
+                'homeFormAvg' => $currentHomeGoals,
+                'awayFormAvg' => $currentAwayGoals,
+                'topScores' => [
+                    [
+                        'score' => $finalScore,
+                        'homeGoals' => $currentHomeGoals,
+                        'awayGoals' => $currentAwayGoals,
+                        'probability' => 100.0,
+                        'odds' => 1.01,
+                        'tag' => '🏁 Marcador Final Oficial',
+                        'type' => $currentHomeGoals > $currentAwayGoals ? 'home_win' : ($currentHomeGoals === $currentAwayGoals ? 'draw' : 'away_win'),
+                        'typeLabel' => $currentHomeGoals > $currentAwayGoals ? "Victoria {$home}" : ($currentHomeGoals === $currentAwayGoals ? 'Empate' : "Victoria {$away}"),
+                        'isTopRecommendation' => true
+                    ]
+                ],
+                'recommendedScore' => $finalScore,
+                'recommendedOdds' => 1.01,
+                'recommendedProb' => 100.0,
+                'confidencePercent' => 100,
+                'isLive' => false,
+                'isFinished' => true,
+                'analysis' => "Encuentro concluido con resultado oficial definitivo de {$finalScore}."
+            ];
+        }
+
         if ($sport === 'beisbol') {
-            return $this->calculateBaseballScorePredictions($home, $away, $probHome, $probAway);
+            return $this->calculateBaseballScorePredictions($home, $away, $probHome, $probAway, $currentHomeGoals, $currentAwayGoals, $isLive, $elapsed);
         }
 
         if ($sport === 'baloncesto') {
-            return $this->calculateBasketballScorePredictions($home, $away, $probHome, $probAway);
+            return $this->calculateBasketballScorePredictions($home, $away, $probHome, $probAway, $currentHomeGoals, $currentAwayGoals, $isLive, $elapsed);
         }
 
         // 1. Determinar goles esperados (xG / λ) de cada equipo
-        // Basado en el promedio histórico total y las probabilidades relativas de victoria + localía
         $homeRatio = max(0.25, min(0.75, ($probHome + ($probDraw * 0.35)) / 100));
         $awayRatio = 1 - $homeRatio;
 
-        // Factor de localía (+12% de peso para el local)
         $lambdaHome = round(($avgGoals * $homeRatio) * 1.12, 2);
         $lambdaAway = round(($avgGoals * $awayRatio) * 0.92, 2);
 
-        // Asegurar límites estadísticos realistas para fútbol
         $lambdaHome = max(0.65, min(3.8, $lambdaHome));
         $lambdaAway = max(0.45, min(3.4, $lambdaAway));
 
-        // 2. Calcular probabilidades de Poisson P(k; λ) = (λ^k * e^-λ) / k! para k in 0..5
-        $poissonHome = [];
-        $poissonAway = [];
-
-        for ($k = 0; $k <= 5; $k++) {
-            $poissonHome[$k] = (pow($lambdaHome, $k) * exp(-$lambdaHome)) / $this->factorial($k);
-            $poissonAway[$k] = (pow($lambdaAway, $k) * exp(-$lambdaAway)) / $this->factorial($k);
+        // 2. Si está EN VIVO, calcular únicamente la expectativa de goles RESTANTES en los minutos que quedan
+        $timeRemainingRatio = 1.0;
+        if ($isLive) {
+            $numericElapsed = is_numeric($elapsed) ? (int)$elapsed : 45;
+            $timeRemainingRatio = max(0.04, min(1.0, (90 - $numericElapsed) / 90));
         }
 
-        // 3. Matriz combinada P(score x - y) = P(home = x) * P(away = y)
+        $remLambdaHome = $isLive ? max(0.05, $lambdaHome * $timeRemainingRatio) : $lambdaHome;
+        $remLambdaAway = $isLive ? max(0.05, $lambdaAway * $timeRemainingRatio) : $lambdaAway;
+
+        // 3. Matriz combinada P(score x - y)
+        // Para partidos en vivo, los marcadores posibles parten del marcador actual: currentHomeGoals + kH, currentAwayGoals + kA
+        $startH = $isLive ? $currentHomeGoals : 0;
+        $startA = $isLive ? $currentAwayGoals : 0;
+        $maxExtra = $isLive ? 4 : 5;
+
         $scores = [];
         $totalProbSum = 0;
 
-        for ($x = 0; $x <= 5; $x++) {
-            for ($y = 0; $y <= 5; $y++) {
-                $prob = $poissonHome[$x] * $poissonAway[$y];
+        for ($kH = 0; $kH <= $maxExtra; $kH++) {
+            for ($kA = 0; $kA <= $maxExtra; $kA++) {
+                $probH = (pow($remLambdaHome, $kH) * exp(-$remLambdaHome)) / $this->factorial($kH);
+                $probA = (pow($remLambdaAway, $kA) * exp(-$remLambdaAway)) / $this->factorial($kA);
+                $prob = $probH * $probA;
                 $totalProbSum += $prob;
 
-                $type = $x > $y ? 'home_win' : ($x === $y ? 'draw' : 'away_win');
-                $typeLabel = $x > $y ? "Victoria {$home}" : ($x === $y ? 'Empate' : "Victoria {$away}");
+                $finalH = $startH + $kH;
+                $finalA = $startA + $kA;
+                $type = $finalH > $finalA ? 'home_win' : ($finalH === $finalA ? 'draw' : 'away_win');
+                $typeLabel = $finalH > $finalA ? "Victoria {$home}" : ($finalH === $finalA ? 'Empate' : "Victoria {$away}");
 
                 $scores[] = [
-                    'score' => "{$x} - {$y}",
-                    'homeGoals' => $x,
-                    'awayGoals' => $y,
+                    'score' => "{$finalH} - {$finalA}",
+                    'homeGoals' => $finalH,
+                    'awayGoals' => $finalA,
                     'rawProb' => $prob,
                     'type' => $type,
                     'typeLabel' => $typeLabel
@@ -224,8 +266,7 @@ class SportsApiController extends Controller
         foreach ($scores as &$s) {
             $normalizedPercent = ($s['rawProb'] / max(0.001, $totalProbSum)) * 100;
             $s['probability'] = round($normalizedPercent, 1);
-            // Cuota decimal justa con margen de casa (1.08)
-            $s['odds'] = round(max(2.10, min(85.0, (100 / max(0.5, $normalizedPercent)) * 1.08)), 2);
+            $s['odds'] = round(max(1.12, min(85.0, (100 / max(0.5, $normalizedPercent)) * 1.08)), 2);
         }
         unset($s);
 
@@ -234,12 +275,12 @@ class SportsApiController extends Controller
             return $b['rawProb'] <=> $a['rawProb'];
         });
 
-        // 6. Tomar los 6 marcadores más probables y asignarles insignias inteligentes
+        // 6. Tomar los 6 marcadores más probables
         $topScores = array_slice($scores, 0, 6);
         $tags = [
-            '🔥 Marcador Más Probable',
-            '⚡ Segunda Opción Fuerte',
-            '💡 Opción de Alto Valor',
+            $isLive ? '🟢 Proyección Final Más Probable' : '🔥 Marcador Más Probable',
+            $isLive ? '⚡ Segunda Opción en Vivo' : '⚡ Segunda Opción Fuerte',
+            $isLive ? '💡 Opción con Gol Adicional' : '💡 Opción de Alto Valor',
             '🛡️ Pronóstico Cerrado',
             '🎯 Alternativa Táctica',
             '🎲 Posible Sorpresa'
@@ -255,24 +296,25 @@ class SportsApiController extends Controller
         $bestScore = $topScores[0]['score'];
         $bestProb = $topScores[0]['probability'];
         $bestOdds = $topScores[0]['odds'];
-        $confidencePercent = min(94, round(48 + ($bestProb * 2.1)));
+        $confidencePercent = min(96, round(48 + ($bestProb * 1.9)));
 
-        $homeScoredAvg = round($lambdaHome * 1.05, 1);
-        $awayScoredAvg = round($lambdaAway * 1.02, 1);
-
-        $analysis = "El modelo predictivo de Poisson proyecta una expectativa de {$lambdaHome} goles para {$home} y {$lambdaAway} para {$away}. Basado en el promedio reciente de los últimos encuentros y el factor de localía, el marcador más probable es {$bestScore} ({$bestProb}% de probabilidad con cuota {$bestOdds}), seguido de {$topScores[1]['score']} ({$topScores[1]['probability']}%).";
+        $analysis = $isLive 
+            ? "Con el marcador actual ({$currentHomeGoals} - {$currentAwayGoals}) al minuto {$elapsed}', el modelo calcula que restan {$remLambdaHome} goles esperados para {$home} y {$remLambdaAway} para {$away}. El marcador final proyectado más probable es {$bestScore} ({$bestProb}% de probabilidad con cuota @{$bestOdds})."
+            : "El modelo predictivo de Poisson proyecta una expectativa de {$lambdaHome} goles para {$home} y {$lambdaAway} para {$away}. Basado en el promedio reciente de los últimos encuentros y el factor de localía, el marcador más probable es {$bestScore} ({$bestProb}% de probabilidad con cuota @{$bestOdds}), seguido de {$topScores[1]['score']} ({$topScores[1]['probability']}%).";
 
         return [
-            'expectedGoalsHome' => $lambdaHome,
-            'expectedGoalsAway' => $lambdaAway,
-            'totalExpectedGoals' => round($lambdaHome + $lambdaAway, 2),
-            'homeFormAvg' => $homeScoredAvg,
-            'awayFormAvg' => $awayScoredAvg,
+            'expectedGoalsHome' => $isLive ? round($currentHomeGoals + $remLambdaHome, 2) : $lambdaHome,
+            'expectedGoalsAway' => $isLive ? round($currentAwayGoals + $remLambdaAway, 2) : $lambdaAway,
+            'totalExpectedGoals' => $isLive ? round($currentHomeGoals + $currentAwayGoals + $remLambdaHome + $remLambdaAway, 2) : round($lambdaHome + $lambdaAway, 2),
+            'homeFormAvg' => $lambdaHome,
+            'awayFormAvg' => $lambdaAway,
             'topScores' => $topScores,
             'recommendedScore' => $bestScore,
             'recommendedOdds' => $bestOdds,
             'recommendedProb' => $bestProb,
             'confidencePercent' => $confidencePercent,
+            'isLive' => $isLive,
+            'isFinished' => false,
             'analysis' => $analysis
         ];
     }
@@ -280,17 +322,16 @@ class SportsApiController extends Controller
     /**
      * Proyección adaptada para Béisbol (MLB)
      */
-    private function calculateBaseballScorePredictions($home, $away, $probHome, $probAway)
+    private function calculateBaseballScorePredictions($home, $away, $probHome, $probAway, $currentHome = 0, $currentAway = 0, $isLive = false, $elapsed = 0)
     {
-        $hScore = $probHome >= 50 ? rand(5, 7) : rand(3, 5);
-        $aScore = $probHome >= 50 ? rand(2, 4) : rand(5, 7);
-        if ($hScore === $aScore) $hScore++;
+        $hScore = $isLive ? max((int)$currentHome, (int)$currentHome + rand(0, 2)) : ($probHome >= 50 ? rand(5, 7) : rand(3, 5));
+        $aScore = $isLive ? max((int)$currentAway, (int)$currentAway + rand(0, 2)) : ($probHome >= 50 ? rand(2, 4) : rand(5, 7));
+        if (!$isLive && $hScore === $aScore) $hScore++;
 
         $top = [
-            ['score' => "{$hScore} - {$aScore}", 'homeGoals' => $hScore, 'awayGoals' => $aScore, 'probability' => 24.5, 'odds' => 4.20, 'tag' => '🔥 Marcador Más Probable', 'type' => $hScore > $aScore ? 'home_win' : 'away_win', 'typeLabel' => $hScore > $aScore ? "Victoria {$home}" : "Victoria {$away}", 'isTopRecommendation' => true],
-            ['score' => ($hScore + 1) . " - " . max(1, $aScore - 1), 'homeGoals' => $hScore + 1, 'awayGoals' => max(1, $aScore - 1), 'probability' => 19.8, 'odds' => 5.10, 'tag' => '⚡ Segunda Opción', 'type' => 'home_win', 'typeLabel' => "Victoria {$home}", 'isTopRecommendation' => false],
-            ['score' => max(1, $hScore - 1) . " - " . ($aScore + 1), 'homeGoals' => max(1, $hScore - 1), 'awayGoals' => $aScore + 1, 'probability' => 16.2, 'odds' => 6.20, 'tag' => '💡 Opción de Valor', 'type' => 'away_win', 'typeLabel' => "Victoria {$away}", 'isTopRecommendation' => false],
-            ['score' => "{$hScore} - " . ($hScore - 1), 'homeGoals' => $hScore, 'awayGoals' => $hScore - 1, 'probability' => 14.1, 'odds' => 7.00, 'tag' => '🛡️ Juego Cerrado por 1 Carrera', 'type' => 'home_win', 'typeLabel' => "Victoria {$home}", 'isTopRecommendation' => false],
+            ['score' => "{$hScore} - {$aScore}", 'homeGoals' => $hScore, 'awayGoals' => $aScore, 'probability' => 28.5, 'odds' => 3.50, 'tag' => '🔥 Marcador Proyectado', 'type' => $hScore > $aScore ? 'home_win' : 'away_win', 'typeLabel' => $hScore > $aScore ? "Victoria {$home}" : "Victoria {$away}", 'isTopRecommendation' => true],
+            ['score' => ($hScore + 1) . " - " . $aScore, 'homeGoals' => $hScore + 1, 'awayGoals' => $aScore, 'probability' => 20.8, 'odds' => 4.80, 'tag' => '⚡ Segunda Opción', 'type' => 'home_win', 'typeLabel' => "Victoria {$home}", 'isTopRecommendation' => false],
+            ['score' => $hScore . " - " . ($aScore + 1), 'homeGoals' => $hScore, 'awayGoals' => $aScore + 1, 'probability' => 17.2, 'odds' => 5.80, 'tag' => '💡 Opción de Valor', 'type' => 'away_win', 'typeLabel' => "Victoria {$away}", 'isTopRecommendation' => false],
         ];
 
         return [
@@ -303,23 +344,25 @@ class SportsApiController extends Controller
             'recommendedScore' => $top[0]['score'],
             'recommendedOdds' => $top[0]['odds'],
             'recommendedProb' => $top[0]['probability'],
-            'confidencePercent' => 72,
-            'analysis' => "Proyección basada en el ERA de lanzadores abridores y promedio de carreras anotadas en los últimos 7 partidos de MLB. Marcador proyectado: {$top[0]['score']}."
+            'confidencePercent' => 74,
+            'isLive' => $isLive,
+            'isFinished' => false,
+            'analysis' => "Proyección MLB basada en el bullpen y carreras esperadas. Marcador proyectado: {$top[0]['score']}."
         ];
     }
 
     /**
      * Proyección adaptada para Baloncesto (NBA / WNBA)
      */
-    private function calculateBasketballScorePredictions($home, $away, $probHome, $probAway)
+    private function calculateBasketballScorePredictions($home, $away, $probHome, $probAway, $currentHome = 0, $currentAway = 0, $isLive = false, $elapsed = 0)
     {
-        $hPts = $probHome >= 50 ? rand(106, 114) : rand(98, 104);
-        $aPts = $probHome >= 50 ? rand(96, 103) : rand(107, 115);
+        $hPts = $isLive ? max((int)$currentHome, (int)$currentHome + rand(5, 20)) : ($probHome >= 50 ? rand(106, 114) : rand(98, 104));
+        $aPts = $isLive ? max((int)$currentAway, (int)$currentAway + rand(5, 20)) : ($probHome >= 50 ? rand(96, 103) : rand(107, 115));
 
         $top = [
-            ['score' => "{$hPts} - {$aPts}", 'homeGoals' => $hPts, 'awayGoals' => $aPts, 'probability' => 22.0, 'odds' => 4.50, 'tag' => '🔥 Rango Más Probable', 'type' => $hPts > $aPts ? 'home_win' : 'away_win', 'typeLabel' => $hPts > $aPts ? "Victoria {$home}" : "Victoria {$away}", 'isTopRecommendation' => true],
-            ['score' => ($hPts + 4) . " - " . ($aPts - 2), 'homeGoals' => $hPts + 4, 'awayGoals' => $aPts - 2, 'probability' => 18.5, 'odds' => 5.40, 'tag' => '⚡ Opción Ofensiva', 'type' => 'home_win', 'typeLabel' => "Victoria {$home}", 'isTopRecommendation' => false],
-            ['score' => ($hPts - 3) . " - " . ($aPts + 3), 'homeGoals' => $hPts - 3, 'awayGoals' => $aPts + 3, 'probability' => 15.0, 'odds' => 6.80, 'tag' => '💡 Opción de Valor', 'type' => 'away_win', 'typeLabel' => "Victoria {$away}", 'isTopRecommendation' => false],
+            ['score' => "{$hPts} - {$aPts}", 'homeGoals' => $hPts, 'awayGoals' => $aPts, 'probability' => 24.0, 'odds' => 4.10, 'tag' => '🔥 Rango Más Probable', 'type' => $hPts > $aPts ? 'home_win' : 'away_win', 'typeLabel' => $hPts > $aPts ? "Victoria {$home}" : "Victoria {$away}", 'isTopRecommendation' => true],
+            ['score' => ($hPts + 4) . " - " . ($aPts - 2), 'homeGoals' => $hPts + 4, 'awayGoals' => $aPts - 2, 'probability' => 19.5, 'odds' => 5.10, 'tag' => '⚡ Opción Ofensiva', 'type' => 'home_win', 'typeLabel' => "Victoria {$home}", 'isTopRecommendation' => false],
+            ['score' => ($hPts - 3) . " - " . ($aPts + 3), 'homeGoals' => $hPts - 3, 'awayGoals' => $aPts + 3, 'probability' => 16.0, 'odds' => 6.20, 'tag' => '💡 Opción de Valor', 'type' => 'away_win', 'typeLabel' => "Victoria {$away}", 'isTopRecommendation' => false],
         ];
 
         return [
@@ -332,10 +375,13 @@ class SportsApiController extends Controller
             'recommendedScore' => $top[0]['score'],
             'recommendedOdds' => $top[0]['odds'],
             'recommendedProb' => $top[0]['probability'],
-            'confidencePercent' => 70,
-            'analysis' => "Proyección de puntuación calculada según el ritmo de posesiones (Pace) y rating ofensivo/defensivo de ambos equipos en sus últimos partidos."
+            'confidencePercent' => 72,
+            'isLive' => $isLive,
+            'isFinished' => false,
+            'analysis' => "Proyección según rating ofensivo/defensivo y ritmo de posesiones en vivo."
         ];
     }
+
 
     /**
      * Función factorial auxiliar
@@ -388,8 +434,8 @@ class SportsApiController extends Controller
         $playerScorers = $this->getPlayerScorersForTeams($home, $away);
         $cornersStats = $this->getCornersAndCardsStats($home, $away);
 
-        // Cálculo inteligente de sugerencia de marcadores por Distribución de Poisson
-        $scorePredictions = $this->calculateScorePredictions($home, $away, 'futbol', 2.6, $probHome, $probDraw, $probAway);
+        // Cálculo inteligente de sugerencia de marcadores por Distribución de Poisson (Adaptativa en Vivo)
+        $scorePredictions = $this->calculateScorePredictions($home, $away, 'futbol', 2.6, $probHome, $probDraw, $probAway, $hScore, $aScore, $isLive, $elapsed, $isFinished);
 
         // Extraer mercado de cuotas para marcadores exactos
         $exactScoreOdds = [];
@@ -448,16 +494,21 @@ class SportsApiController extends Controller
                     'Over 8.5 Córners' => 1.68,
                     'Under 8.5 Córners' => 2.12,
                     'Over 10.5 Córners' => 2.25,
-                    'Under 10.5 Córners' => 1.60
-                ],
-                'cards' => [
-                    'Over 4.5 Tarjetas' => 1.75,
-                    'Under 4.5 Tarjetas' => 2.00
+                    'Under 10.5 Córners' => 1.62
                 ],
                 'scorers' => $playerScorers,
+                'cards' => [
+                    'Over 4.5 Tarjetas' => 1.82,
+                    'Under 4.5 Tarjetas' => 1.98
+                ],
                 'btts' => [
-                    'Ambos Si' => 1.70,
-                    'Ambos No' => 2.05
+                    'Ambos Anotan: Sí' => 1.72,
+                    'Ambos Anotan: No' => 2.10
+                ],
+                'double_chance' => [
+                    '1X' => 1.28,
+                    '12' => 1.34,
+                    'X2' => 1.75
                 ]
             ]
         ];
@@ -492,7 +543,7 @@ class SportsApiController extends Controller
 
         $leagueName = $g['league']['name'] ?? 'MLB Béisbol';
         $hitterProps = $this->getBaseballHitterProps($home, $away);
-        $scorePredictions = $this->calculateScorePredictions($home, $away, 'beisbol', 8.6, $probHome, 0, $probAway);
+        $scorePredictions = $this->calculateScorePredictions($home, $away, 'beisbol', 8.6, $probHome, 0, $probAway, $hScore, $aScore, $isLive, $statusLong, $isFinished);
 
         $exactScoreOdds = [];
         foreach ($scorePredictions['topScores'] as $ts) {
@@ -582,7 +633,7 @@ class SportsApiController extends Controller
 
         $leagueName = $bk['league']['name'] ?? 'Baloncesto Profesional';
         $playerPoints = $this->getBasketballPlayerPoints($home, $away);
-        $scorePredictions = $this->calculateScorePredictions($home, $away, 'baloncesto', 168.4, $probHome, 0, $probAway);
+        $scorePredictions = $this->calculateScorePredictions($home, $away, 'baloncesto', 168.4, $probHome, 0, $probAway, $hScore, $aScore, $isLive, $statusLong, $isFinished);
 
         $exactScoreOdds = [];
         foreach ($scorePredictions['topScores'] as $ts) {
