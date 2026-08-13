@@ -816,6 +816,22 @@
         function filterDay(offset) {
             playSound('click');
             currentDayOffset = offset;
+            currentLeagueFilter = 'all'; // Siempre resetea filtro de liga/favoritas para mostrar toda la cartelera del nuevo día
+
+            // Si el usuario tenía seleccionado el filtro "EN VIVO" y cambia a un día futuro, cambiar automáticamente a "Destacados"
+            if (offset > 0 && currentSportFilter === 'live') {
+                currentSportFilter = 'all';
+                document.querySelectorAll('.sport-tab').forEach(tab => {
+                    if (tab.dataset.sport === 'all') {
+                        tab.classList.remove('bg-wpCard', 'text-slate-200');
+                        tab.classList.add('bg-wpGreen', 'text-wpDark');
+                    } else {
+                        tab.classList.remove('bg-wpGreen', 'text-wpDark');
+                        tab.classList.add('bg-wpCard', 'text-slate-200');
+                    }
+                });
+            }
+
             renderDaysBar();
             
             const badge = document.getElementById('activeDateBadge');
@@ -824,8 +840,18 @@
                 badge.innerText = `${found.dayName} (${found.dateString})`;
             }
 
+            const titleEl = document.getElementById('currentLeagueTitle');
+            if (titleEl) {
+                if (offset === 0) {
+                    titleEl.innerText = '🏆 Partidos de Hoy & En Vivo';
+                } else if (found) {
+                    titleEl.innerText = `📅 Partidos del ${found.dayName} (${found.dateString})`;
+                }
+            }
+
             fetchFixturesFromApi(offset);
         }
+
 
         /* =========================================================================
            4.5. FAVORITE LEAGUES & FAVORITE TEAMS HELPERS (ROBUST & NORMALIZED)
