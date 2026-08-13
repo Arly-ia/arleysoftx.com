@@ -91,7 +91,26 @@ Route::get('/arleysoft-deploy-pull-secure-9x4p', function () {
         $output = [];
         $output[] = "=== INICIANDO DESPLIEGUE EN PRODUCCIÓN ===";
         
-        $gitOutput = shell_exec('git pull origin main 2>&1');
+        // Detectar ruta real del repositorio Git
+        $possiblePaths = [
+            base_path(),
+            base_path('../repositories/arleysoftx.com'),
+            '/home/arlenoug/repositories/arleysoftx.com',
+            dirname(base_path()) . '/repositories/arleysoftx.com',
+            dirname(public_path()),
+        ];
+
+        $repoPath = base_path();
+        foreach ($possiblePaths as $p) {
+            if (file_exists($p . '/.git')) {
+                $repoPath = realpath($p);
+                break;
+            }
+        }
+
+        $output[] = "Directorio detectado: " . $repoPath;
+        $gitCommand = "cd " . escapeshellarg($repoPath) . " && git pull origin main 2>&1";
+        $gitOutput = shell_exec($gitCommand);
         $output[] = "--- GIT PULL ---";
         $output[] = $gitOutput ?: 'No output / Ejecutado';
 
