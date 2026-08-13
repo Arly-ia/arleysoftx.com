@@ -462,9 +462,57 @@ class SportsApiController extends Controller
     }
 
     /**
+     * Formatea el nombre de la liga con banderas y nombres limpios
+     */
+    private function formatLeagueWithFlag($country, $leagueName)
+    {
+        $flagMap = [
+            'colombia' => '🇨🇴 Colombia',
+            'co' => '🇨🇴 Colombia',
+            'spain' => '🇪🇸 España',
+            'españa' => '🇪🇸 España',
+            'es' => '🇪🇸 España',
+            'england' => '🇬🇧 Inglaterra',
+            'inglaterra' => '🇬🇧 Inglaterra',
+            'gb' => '🇬🇧 Inglaterra',
+            'uk' => '🇬🇧 Inglaterra',
+            'italy' => '🇮🇹 Italia',
+            'italia' => '🇮🇹 Italia',
+            'it' => '🇮🇹 Italia',
+            'france' => '🇫🇷 Francia',
+            'francia' => '🇫🇷 Francia',
+            'fr' => '🇫🇷 Francia',
+            'germany' => '🇩🇪 Alemania',
+            'alemania' => '🇩🇪 Alemania',
+            'de' => '🇩🇪 Alemania',
+            'argentina' => '🇦🇷 Argentina',
+            'ar' => '🇦🇷 Argentina',
+            'brazil' => '🇧🇷 Brasil',
+            'brasil' => '🇧🇷 Brasil',
+            'br' => '🇧🇷 Brasil',
+            'usa' => '🇺🇸 Estados Unidos',
+            'united states' => '🇺🇸 Estados Unidos',
+            'us' => '🇺🇸 Estados Unidos',
+            'mexico' => '🇲🇽 México',
+            'méxico' => '🇲🇽 México',
+            'mx' => '🇲🇽 México',
+            'japan' => '🇯🇵 Japón',
+            'japon' => '🇯🇵 Japón',
+            'jp' => '🇯🇵 Japón',
+            'world' => '🌍 Internacional',
+            'europe' => '🏆 Europa',
+        ];
+
+        $cleanCountry = mb_strtolower(trim((string)$country), 'UTF-8');
+        $countryPrefix = $flagMap[$cleanCountry] ?? ($country ? "🌍 {$country}" : "⚽");
+        return "{$countryPrefix} · {$leagueName}";
+    }
+
+    /**
      * Normalizador de Partido de Fútbol con Córners, Goleadores y Sugerencia de Marcadores
      */
     private function parseFootballFixture($f, $dayOffset)
+
 
     {
         $home = $f['teams']['home']['name'] ?? '';
@@ -494,7 +542,8 @@ class SportsApiController extends Controller
 
         $leagueName = $f['league']['name'] ?? 'Fútbol Internacional';
         $country = $f['league']['country'] ?? '';
-        $leagueDisplay = ($country ? "🌍 {$country} · {$leagueName}" : "⚽ {$leagueName}");
+        $leagueDisplay = $this->formatLeagueWithFlag($country, $leagueName);
+
 
         // Goleadores destacados y tiros de esquina basados en equipos
         $playerScorers = $this->getPlayerScorersForTeams($home, $away);
