@@ -397,9 +397,75 @@ class SportsApiController extends Controller
     }
 
     /**
+     * Resuelve el escudo oficial del equipo con diccionario de alta precisión
+     */
+    private function resolveTeamLogo($teamName, $providedLogo = null)
+    {
+        $clean = mb_strtolower(trim((string)$teamName), 'UTF-8');
+        
+        $logoMap = [
+            'junior' => 'https://media.api-sports.io/football/teams/1126.png',
+            'junior de barranquilla' => 'https://media.api-sports.io/football/teams/1126.png',
+            'pereira' => 'https://media.api-sports.io/football/teams/1142.png',
+            'deportivo pereira' => 'https://media.api-sports.io/football/teams/1142.png',
+            'atletico nacional' => 'https://media.api-sports.io/football/teams/1137.png',
+            'atlético nacional' => 'https://media.api-sports.io/football/teams/1137.png',
+            'nacional' => 'https://media.api-sports.io/football/teams/1137.png',
+            'millonarios' => 'https://media.api-sports.io/football/teams/1128.png',
+            'millonarios fc' => 'https://media.api-sports.io/football/teams/1128.png',
+            'america de cali' => 'https://media.api-sports.io/football/teams/1138.png',
+            'américa de cali' => 'https://media.api-sports.io/football/teams/1138.png',
+            'santa fe' => 'https://media.api-sports.io/football/teams/1127.png',
+            'independiente santa fe' => 'https://media.api-sports.io/football/teams/1127.png',
+            'medellin' => 'https://media.api-sports.io/football/teams/1129.png',
+            'medellín' => 'https://media.api-sports.io/football/teams/1129.png',
+            'independiente medellin' => 'https://media.api-sports.io/football/teams/1129.png',
+            'independiente medellín' => 'https://media.api-sports.io/football/teams/1129.png',
+            'deportivo cali' => 'https://media.api-sports.io/football/teams/1130.png',
+            'once caldas' => 'https://media.api-sports.io/football/teams/1131.png',
+            'deportes tolima' => 'https://media.api-sports.io/football/teams/1136.png',
+            'tolima' => 'https://media.api-sports.io/football/teams/1136.png',
+            'bucaramanga' => 'https://media.api-sports.io/football/teams/1134.png',
+            'atletico bucaramanga' => 'https://media.api-sports.io/football/teams/1134.png',
+            'atlético bucaramanga' => 'https://media.api-sports.io/football/teams/1134.png',
+            'deportivo pasto' => 'https://media.api-sports.io/football/teams/1133.png',
+            'pasto' => 'https://media.api-sports.io/football/teams/1133.png',
+            'aguilas doradas' => 'https://media.api-sports.io/football/teams/1139.png',
+            'águilas doradas' => 'https://media.api-sports.io/football/teams/1139.png',
+            'la equidad' => 'https://media.api-sports.io/football/teams/1132.png',
+            'envigado' => 'https://media.api-sports.io/football/teams/1135.png',
+            'fortaleza ceif' => 'https://media.api-sports.io/football/teams/1145.png',
+            'real madrid' => 'https://media.api-sports.io/football/teams/541.png',
+            'barcelona' => 'https://media.api-sports.io/football/teams/529.png',
+            'fc barcelona' => 'https://media.api-sports.io/football/teams/529.png',
+            'manchester city' => 'https://media.api-sports.io/football/teams/50.png',
+            'arsenal' => 'https://media.api-sports.io/football/teams/42.png',
+            'liverpool' => 'https://media.api-sports.io/football/teams/40.png',
+            'chelsea' => 'https://media.api-sports.io/football/teams/49.png',
+            'psg' => 'https://media.api-sports.io/football/teams/85.png',
+            'paris saint-germain' => 'https://media.api-sports.io/football/teams/85.png',
+            'bayern munich' => 'https://media.api-sports.io/football/teams/157.png',
+            'bayern münich' => 'https://media.api-sports.io/football/teams/157.png',
+            'inter miami' => 'https://media.api-sports.io/football/teams/9568.png',
+            'inter miami cf' => 'https://media.api-sports.io/football/teams/9568.png',
+            'boca juniors' => 'https://media.api-sports.io/football/teams/451.png',
+            'river plate' => 'https://media.api-sports.io/football/teams/435.png',
+        ];
+
+        foreach ($logoMap as $key => $logo) {
+            if ($clean === $key || str_contains($clean, $key)) {
+                return $logo;
+            }
+        }
+
+        return $providedLogo ?: null;
+    }
+
+    /**
      * Normalizador de Partido de Fútbol con Córners, Goleadores y Sugerencia de Marcadores
      */
     private function parseFootballFixture($f, $dayOffset)
+
     {
         $home = $f['teams']['home']['name'] ?? '';
         $away = $f['teams']['away']['name'] ?? '';
@@ -510,8 +576,9 @@ class SportsApiController extends Controller
             'away' => $away,
             'homeScore' => $hScore,
             'awayScore' => $aScore,
-            'homeLogo' => $f['teams']['home']['logo'] ?? null,
-            'awayLogo' => $f['teams']['away']['logo'] ?? null,
+            'homeLogo' => $this->resolveTeamLogo($home, $f['teams']['home']['logo'] ?? null),
+            'awayLogo' => $this->resolveTeamLogo($away, $f['teams']['away']['logo'] ?? null),
+
             'score_predictions' => $scorePredictions,
             'h2h' => [
                 'homeWins' => rand(6, 14),
@@ -833,12 +900,13 @@ class SportsApiController extends Controller
                 'homeScore' => 0,
                 'awayScore' => 0,
                 'homeLogo' => 'https://media.api-sports.io/football/teams/1126.png',
-                'awayLogo' => 'https://media.api-sports.io/football/teams/1137.png',
+                'awayLogo' => 'https://media.api-sports.io/football/teams/1142.png',
                 'avgGoals' => 2.4,
                 'probHome' => 56,
                 'probDraw' => 26,
                 'probAway' => 18
             ],
+
             [
                 'id' => "fb_fb4_{$dayOffset}",
                 'sport' => 'futbol',
