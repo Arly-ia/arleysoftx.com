@@ -235,33 +235,54 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             <!-- Left & Center: Matches Feed (8 cols on lg) -->
-            <section class="lg:col-span-8 space-y-6">
+            <section class="lg:col-span-8 space-y-4">
                 
-                <!-- Active Filter & League Switcher -->
-                <div class="flex flex-wrap items-center justify-between bg-wpDark2 border border-wpBorder rounded-2xl p-4 gap-2">
-                    <div class="flex items-center gap-2">
-                        <span id="currentLeagueTitle" class="font-outfit font-black text-base sm:text-lg text-white">
-                            🏆 Partidos de Hoy & En Vivo
-                        </span>
-                        <span id="activeDateBadge" class="text-xs px-2.5 py-0.5 bg-wpCard border border-wpBorder rounded-full text-slate-400 font-bold font-outfit">
-                            Hoy
-                        </span>
+                <!-- Active Filter & League Switcher Header -->
+                <div class="space-y-3">
+                    <div class="flex flex-wrap items-center justify-between bg-wpDark2 border border-wpBorder rounded-2xl p-4 gap-2">
+                        <div class="flex items-center gap-2">
+                            <span id="currentLeagueTitle" class="font-outfit font-black text-base sm:text-lg text-white">
+                                🏆 Partidos de Hoy & En Vivo
+                            </span>
+                            <span id="activeDateBadge" class="text-xs px-2.5 py-0.5 bg-wpCard border border-wpBorder rounded-full text-slate-400 font-bold font-outfit">
+                                Hoy
+                            </span>
+                            <span id="activeLeagueBadge" class="hidden text-xs px-2.5 py-0.5 bg-wpGreen/15 border border-wpGreen/40 rounded-full text-wpGreen font-black font-outfit">
+                                Todas las Ligas
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="apiLoadingIndicator" class="hidden text-xs text-wpGreen font-bold flex items-center gap-1">
+                                <svg class="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                                <span>Actualizando API...</span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span id="apiLoadingIndicator" class="hidden text-xs text-wpGreen font-bold flex items-center gap-1">
-                            <svg class="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                            </svg>
-                            <span>Actualizando API...</span>
-                        </span>
+
+                    <!-- 🌐 Dynamic League Sub-Filters Bar -->
+                    <div class="bg-wpDark2/95 border border-wpBorder rounded-2xl p-3 shadow-md">
+                        <div class="flex items-center justify-between gap-2 mb-2 px-1 text-[11px] font-bold text-slate-400 font-outfit">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-wpGreen">🏆</span>
+                                <span class="text-slate-200 uppercase font-black tracking-wide">Ligas & Torneos:</span>
+                                <span id="leagueCountIndicator" class="text-wpGreen font-extrabold text-[10px] bg-wpGreen/10 px-2 py-0.5 rounded-full border border-wpGreen/30">0 ligas</span>
+                            </div>
+                            <span class="text-[10px] text-slate-500 hidden sm:inline font-light">Selecciona una liga para filtrar los partidos</span>
+                        </div>
+                        <div id="leaguesFilterContainer" class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+                            <!-- Injected dynamically by JS -->
+                        </div>
                     </div>
                 </div>
 
                 <!-- Matches Container -->
-                <div id="matchesContainer" class="space-y-4">
+                <div id="matchesContainer" class="space-y-4 pt-1">
                     <!-- Dynamic Matches injected by JS -->
                 </div>
+
 
             </section>
 
@@ -484,6 +505,7 @@
         let selectedBets = [];
         let betMode = 'single';
         let currentSportFilter = 'all';
+        let currentLeagueFilter = 'all';
         let currentDayOffset = 0;
         let betHistory = JSON.parse(localStorage.getItem('wp_history') || '[]');
         let matches = [];
@@ -532,6 +554,7 @@
                 updateApiBadge('fallback');
             } finally {
                 if (spinner) spinner.classList.add('hidden');
+                renderLeaguesBar();
                 renderMatches();
             }
         }
@@ -640,6 +663,75 @@
         }
 
         /* =========================================================================
+           4.5. DYNAMIC LEAGUES SUB-FILTER BAR
+           ========================================================================= */
+        function renderLeaguesBar() {
+            const container = document.getElementById('leaguesFilterContainer');
+            const indicator = document.getElementById('leagueCountIndicator');
+            const activeBadge = document.getElementById('activeLeagueBadge');
+            if (!container) return;
+
+            // Get matches corresponding to active sport filter
+            const sportMatches = matches.filter(m => {
+                if (currentSportFilter === 'live' && !m.isLive) return false;
+                if (currentSportFilter !== 'all' && currentSportFilter !== 'live' && m.sport !== currentSportFilter) return false;
+                return true;
+            });
+
+            // Extract unique leagues and count matches
+            const leagueCounts = {};
+            sportMatches.forEach(m => {
+                const lName = m.league || 'Otras Ligas';
+                leagueCounts[lName] = (leagueCounts[lName] || 0) + 1;
+            });
+
+            const uniqueLeagues = Object.keys(leagueCounts);
+
+            if (indicator) {
+                indicator.innerText = `${uniqueLeagues.length} ligas · ${sportMatches.length} partidos`;
+            }
+
+            if (activeBadge) {
+                if (currentLeagueFilter !== 'all') {
+                    activeBadge.innerText = currentLeagueFilter;
+                    activeBadge.classList.remove('hidden');
+                } else {
+                    activeBadge.classList.add('hidden');
+                }
+            }
+
+            // Build HTML buttons
+            let html = `
+                <button onclick="filterLeague('all')" class="px-3 py-1.5 rounded-xl border text-xs font-bold font-outfit transition whitespace-nowrap flex items-center gap-1.5 ${currentLeagueFilter === 'all' ? 'bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-black border-wpGreen shadow-md' : 'bg-wpCard text-slate-300 hover:bg-wpCardHover border-wpBorder'}">
+                    <span>🔥</span>
+                    <span>Todas las Ligas</span>
+                    <span class="text-[10px] px-1.5 py-0.2 rounded-full ${currentLeagueFilter === 'all' ? 'bg-wpDark/25 text-wpDark font-black' : 'bg-wpDark text-slate-400 font-bold'}">${sportMatches.length}</span>
+                </button>
+            `;
+
+            uniqueLeagues.forEach(leagueName => {
+                const isActive = currentLeagueFilter === leagueName;
+                const count = leagueCounts[leagueName];
+                const escapedName = leagueName.replace(/'/g, "\\'");
+                html += `
+                    <button onclick="filterLeague('${escapedName}')" class="px-3 py-1.5 rounded-xl border text-xs font-bold font-outfit transition whitespace-nowrap flex items-center gap-1.5 ${isActive ? 'bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-black border-wpGreen shadow-md' : 'bg-wpCard text-slate-300 hover:bg-wpCardHover border-wpBorder'}">
+                        <span>${leagueName}</span>
+                        <span class="text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-wpDark/25 text-wpDark font-black' : 'bg-wpDark text-wpGreen font-black'}">${count}</span>
+                    </button>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function filterLeague(leagueName) {
+            playSound('click');
+            currentLeagueFilter = leagueName;
+            renderLeaguesBar();
+            renderMatches();
+        }
+
+        /* =========================================================================
            5. RENDER MATCHES FEED
            ========================================================================= */
         function formatCOP(amount) {
@@ -658,6 +750,7 @@
             let filtered = matches.filter(m => {
                 if (currentSportFilter === 'live' && !m.isLive) return false;
                 if (currentSportFilter !== 'all' && currentSportFilter !== 'live' && m.sport !== currentSportFilter) return false;
+                if (currentLeagueFilter !== 'all' && m.league !== currentLeagueFilter) return false;
                 return true;
             });
 
@@ -666,16 +759,29 @@
             if (liveBadge) liveBadge.innerText = liveCount;
 
             if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-wpDark2 border border-wpBorder rounded-2xl p-12 text-center">
-                        <span class="text-4xl mb-3 block">⚽</span>
-                        <h4 class="font-bebas text-2xl text-white">NO HAY PARTIDOS PROGRAMADOS</h4>
-                        <p class="text-xs text-slate-400 mb-4 font-light">No se encontraron eventos para esta fecha en la API deportiva.</p>
-                        <button onclick="filterDay(0)" class="px-4 py-2 bg-wpGreen text-wpDark font-black font-outfit text-xs rounded-xl">
-                            Ver Partidos de Hoy
-                        </button>
-                    </div>
-                `;
+                if (currentLeagueFilter !== 'all') {
+                    container.innerHTML = `
+                        <div class="bg-wpDark2 border border-wpBorder rounded-2xl p-10 text-center">
+                            <span class="text-3xl mb-2 block">🏆</span>
+                            <h4 class="font-bebas text-2xl text-white">NO HAY PARTIDOS EN ESTA LIGA</h4>
+                            <p class="text-xs text-slate-400 mb-4 font-light">No se encontraron encuentros programados en "${currentLeagueFilter}" para esta fecha.</p>
+                            <button onclick="filterLeague('all')" class="px-4 py-2 bg-wpGreen text-wpDark font-black font-outfit text-xs rounded-xl shadow">
+                                Ver Todas las Ligas (${currentSportFilter.toUpperCase()})
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="bg-wpDark2 border border-wpBorder rounded-2xl p-12 text-center">
+                            <span class="text-4xl mb-3 block">⚽</span>
+                            <h4 class="font-bebas text-2xl text-white">NO HAY PARTIDOS PROGRAMADOS</h4>
+                            <p class="text-xs text-slate-400 mb-4 font-light">No se encontraron eventos para esta fecha en la API deportiva.</p>
+                            <button onclick="filterDay(0)" class="px-4 py-2 bg-wpGreen text-wpDark font-black font-outfit text-xs rounded-xl">
+                                Ver Partidos de Hoy
+                            </button>
+                        </div>
+                    `;
+                }
                 return;
             }
 
@@ -1804,6 +1910,7 @@
         function filterSport(sport) {
             playSound('click');
             currentSportFilter = sport;
+            currentLeagueFilter = 'all';
 
             document.querySelectorAll('.sport-tab').forEach(tab => {
                 if (tab.dataset.sport === sport) {
@@ -1819,11 +1926,14 @@
                 all: '🏆 Partidos Destacados & En Vivo',
                 live: '🔴 Partidos Transmitiéndose En Vivo',
                 futbol: '⚽ Fútbol Nacional e Internacional',
-                baloncesto: '🏀 Baloncesto NBA & Euroliga'
+                beisbol: '⚾ Béisbol MLB & Torneos',
+                baloncesto: '🏀 Baloncesto NBA & Euroliga',
+                futbol_americano: '🏈 Fútbol Americano (NFL)'
             };
             const titleEl = document.getElementById('currentLeagueTitle');
             if (titleEl) titleEl.innerText = titles[sport] || 'Eventos Deportivos';
 
+            renderLeaguesBar();
             renderMatches();
         }
 
@@ -1840,6 +1950,7 @@
             updateHistoryCountBadge();
             renderDaysBar();
             renderBetSlip();
+            renderLeaguesBar();
 
             // Initial fetch from Live Sports API for Day 0 (Today)
             fetchFixturesFromApi(0);
