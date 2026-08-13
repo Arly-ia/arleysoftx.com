@@ -685,6 +685,8 @@
                 const isSelectedX = isBetSelected(m.id, '1X2', 'X');
                 const isSelected2 = isBetSelected(m.id, '1X2', '2');
 
+                const mScorePreds = getOrComputeScorePredictions(m);
+
                 html += `
                     <div class="bg-wpDark2 hover:border-slate-700/80 border border-wpBorder rounded-3xl p-4 sm:p-5 transition shadow-lg relative overflow-hidden" id="match-card-${m.id}">
                         
@@ -695,7 +697,7 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <button onclick="openStatsModal('${m.id}')" class="text-xs font-bold text-wpGreen hover:bg-wpGreen/20 bg-wpGreen/10 border border-wpGreen/30 px-2.5 py-0.5 rounded-full font-outfit transition flex items-center gap-1">
-                                    <span>📊</span> <span class="hidden sm:inline">Ver H2H & Estadísticas</span><span class="sm:hidden">H2H</span>
+                                    <span>🎯</span> <span class="hidden sm:inline">Pronóstico & H2H</span><span class="sm:hidden">IA & H2H</span>
                                 </button>
 
                                 ${m.isLive ? `
@@ -711,8 +713,23 @@
                             </div>
                         </div>
 
+                        <!-- Pill Badge de Sugerencia Rápida de Marcador -->
+                        ${mScorePreds ? `
+                            <div class="mb-3.5 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-wpGreen/15 via-emerald-500/10 to-wpCard border border-wpGreen/30 flex items-center justify-between cursor-pointer hover:border-wpGreen transition group" onclick="openStatsModal('${m.id}')" title="Haz clic para ver el cálculo completo de marcadores más probables">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-wpGreen animate-pulse"></span>
+                                    <span class="text-[10px] font-black uppercase text-wpGreen font-outfit tracking-wider">🎯 Sugerencia IA (Poisson):</span>
+                                    <span class="text-sm font-black text-white font-bebas tracking-wide group-hover:text-wpGreen transition">${mScorePreds.recommendedScore}</span>
+                                    <span class="text-[10px] text-slate-300 font-outfit font-bold">(${mScorePreds.recommendedProb}% prob. @${mScorePreds.recommendedOdds.toFixed(2)})</span>
+                                </div>
+                                <span class="text-[10px] text-wpGreen font-bold font-outfit flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                                    <span>Ver análisis</span> <span>→</span>
+                                </span>
+                            </div>
+                        ` : ''}
+
                         <!-- Teams & Live Scores Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center mb-4 cursor-pointer group" onclick="openStatsModal('${m.id}')" title="Haz clic para ver estadísticas H2H">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center mb-4 cursor-pointer group" onclick="openStatsModal('${m.id}')" title="Haz clic para ver estadísticas y sugerencia de marcadores">
                             
                             <!-- Team 1 & Score -->
                             <div class="md:col-span-5 flex items-center justify-between md:justify-start gap-3">
@@ -745,7 +762,7 @@
                             <!-- VS / Separator -->
                             <div class="hidden md:flex md:col-span-2 flex-col items-center justify-center text-xs font-black text-slate-500 font-bebas tracking-widest">
                                 <span>VS</span>
-                                <span class="text-[9px] text-slate-400 font-outfit">H2H 📊</span>
+                                <span class="text-[9px] text-slate-400 font-outfit">H2H & IA 📊</span>
                             </div>
 
                             <!-- Team 2 & Score -->
@@ -824,19 +841,45 @@
                             </div>
                         `}
 
-                        <!-- Secondary Markets -->
+                        <!-- Secondary Markets Toggle -->
                         <div class="pt-2 border-t border-wpBorder/40 flex items-center justify-between text-xs">
                             <button onclick="toggleMoreMarkets('${m.id}')" class="text-slate-400 hover:text-wpGreen font-outfit font-bold flex items-center gap-1.5 transition">
-                                <span>+ Mercados (🚩 Córners, 👟 Goleador, 🟨 Tarjetas)</span>
+                                <span>+ Mercados (🎯 Marcador Exacto, 🚩 Córners, 👟 Goleador, 🟨 Tarjetas)</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transform transition-transform" id="arrow-${m.id}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-                            <span class="text-[10px] text-slate-500 font-semibold font-outfit">API-Sports · Oficial</span>
+                            <span class="text-[10px] text-slate-500 font-semibold font-outfit">Poisson AI & API-Sports</span>
                         </div>
 
                         <!-- Expandable Extra Markets -->
                         <div id="extra-markets-${m.id}" class="hidden pt-3 mt-3 border-t border-wpBorder/40 space-y-3.5">
+                            
+                            <!-- 🎯 Marcadores Exactos Más Probables (Poisson AI) -->
+                            ${(mScorePreds && mScorePreds.topScores && mScorePreds.topScores.length > 0) ? `
+                                <div>
+                                    <div class="flex items-center justify-between mb-1.5">
+                                        <span class="text-[11px] font-bold uppercase text-wpGreen font-outfit flex items-center gap-1">🎯 Marcador Exacto Sugerido (Poisson AI)</span>
+                                        <span class="text-[10px] text-slate-400 font-outfit">Confianza: ${mScorePreds.confidencePercent}%</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                        ${mScorePreds.topScores.map(ts => {
+                                            const isSel = isBetSelected(m.id, 'exact_score', ts.score);
+                                            return `
+                                                <button onclick="toggleBet('${m.id}', 'exact_score', '${ts.score}', ${ts.odds}, 'Marcador: ${ts.score}')" 
+                                                        class="odd-btn flex items-center justify-between p-2 rounded-xl bg-wpCard hover:bg-wpCardHover border border-wpBorder ${isSel ? 'selected' : ''}">
+                                                    <div class="text-left truncate mr-1">
+                                                        <span class="text-xs font-bold text-white block truncate">${ts.score}</span>
+                                                        <span class="text-[9px] text-slate-400 block font-outfit">${ts.probability}% prob</span>
+                                                    </div>
+                                                    <span class="odd-val font-bebas text-base text-wpGreen font-black">${ts.odds.toFixed(2)}</span>
+                                                </button>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+
                             <!-- 🚩 Tiros de Esquina (Corners) -->
                             ${m.odds['corners'] ? `
                                 <div>
@@ -933,8 +976,83 @@
         }
 
         /* =========================================================================
-           6. H2H & STATISTICS MODAL
+           6. POISSON PREDICTION ALGORITHM (CLIENT/FALLBACK HELPER) & STATS MODAL
            ========================================================================= */
+        function getOrComputeScorePredictions(match) {
+            if (match.score_predictions && match.score_predictions.topScores && match.score_predictions.topScores.length > 0) {
+                return match.score_predictions;
+            }
+
+            const avgGoals = parseFloat(match.h2h?.avgGoals) || 2.6;
+            const probHome = match.h2h?.homeWinProb || 48;
+            const probDraw = match.h2h?.drawProb || 26;
+            const probAway = match.h2h?.awayWinProb || 26;
+
+            const homeRatio = Math.max(0.25, Math.min(0.75, (probHome + (probDraw * 0.35)) / 100));
+            const awayRatio = 1 - homeRatio;
+
+            const lambdaHome = Math.max(0.65, Math.min(3.8, parseFloat(((avgGoals * homeRatio) * 1.12).toFixed(2))));
+            const lambdaAway = Math.max(0.45, Math.min(3.4, parseFloat(((avgGoals * awayRatio) * 0.92).toFixed(2))));
+
+            function fact(n) { return n <= 1 ? 1 : n * fact(n - 1); }
+            function poisson(lambda, k) { return (Math.pow(lambda, k) * Math.exp(-lambda)) / fact(k); }
+
+            const scores = [];
+            let totalSum = 0;
+            for (let x = 0; x <= 5; x++) {
+                for (let y = 0; y <= 5; y++) {
+                    const p = poisson(lambdaHome, x) * poisson(lambdaAway, y);
+                    totalSum += p;
+                    scores.push({
+                        score: `${x} - ${y}`,
+                        homeGoals: x,
+                        awayGoals: y,
+                        rawProb: p,
+                        type: x > y ? 'home_win' : (x === y ? 'draw' : 'away_win'),
+                        typeLabel: x > y ? `Victoria ${match.home}` : (x === y ? 'Empate' : `Victoria ${match.away}`)
+                    });
+                }
+            }
+
+            scores.forEach(s => {
+                const norm = (s.rawProb / Math.max(0.001, totalSum)) * 100;
+                s.probability = parseFloat(norm.toFixed(1));
+                s.odds = parseFloat(Math.max(2.10, Math.min(85.0, (100 / Math.max(0.5, norm)) * 1.08)).toFixed(2));
+            });
+
+            scores.sort((a, b) => b.rawProb - a.rawProb);
+            const topScores = scores.slice(0, 6);
+            const tags = [
+                '🔥 Marcador Más Probable',
+                '⚡ Segunda Opción Fuerte',
+                '💡 Opción de Alto Valor',
+                '🛡️ Pronóstico Cerrado',
+                '🎯 Alternativa Táctica',
+                '🎲 Posible Sorpresa'
+            ];
+            topScores.forEach((ts, idx) => {
+                ts.tag = tags[idx] || 'Pronóstico';
+                ts.isTopRecommendation = (idx === 0);
+            });
+
+            const bestScore = topScores[0].score;
+            const bestProb = topScores[0].probability;
+            const bestOdds = topScores[0].odds;
+            const confidence = Math.min(94, Math.round(48 + (bestProb * 2.1)));
+
+            return {
+                expectedGoalsHome: lambdaHome,
+                expectedGoalsAway: lambdaAway,
+                totalExpectedGoals: parseFloat((lambdaHome + lambdaAway).toFixed(2)),
+                topScores: topScores,
+                recommendedScore: bestScore,
+                recommendedOdds: bestOdds,
+                recommendedProb: bestProb,
+                confidencePercent: confidence,
+                analysis: `El modelo predictivo de Poisson proyecta una expectativa de ${lambdaHome} goles para ${match.home} y ${lambdaAway} para ${match.away}. Basado en el promedio reciente de los últimos encuentros y el factor de localía, el marcador más probable es ${bestScore} (${bestProb}% de probabilidad con cuota ${bestOdds}), seguido de ${topScores[1].score} (${topScores[1].probability}%).`
+            };
+        }
+
         function openStatsModal(matchId) {
             playSound('click');
             const match = matches.find(m => m.id === matchId);
@@ -960,7 +1078,10 @@
                 topScorers: []
             };
 
+            const scorePreds = getOrComputeScorePredictions(match);
+
             content.innerHTML = `
+                <!-- Encabezado de Equipos y Racha -->
                 <div class="bg-wpCard rounded-2xl p-4 sm:p-5 border border-wpBorder">
                     <div class="flex items-center justify-between gap-4 mb-4">
                         <div class="flex items-center gap-3">
@@ -1010,6 +1131,118 @@
                             <div style="width: ${h2h.homeWinProb}%" class="bg-emerald-500 h-full"></div>
                             ${match.hasDraw ? `<div style="width: ${h2h.drawProb}%" class="bg-amber-400 h-full"></div>` : ''}
                             <div style="width: ${h2h.awayWinProb}%" class="bg-cyan-400 h-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🔥 MÓDULO INTELIGENTE DE SUGERENCIA DE MARCADORES (POISSON AI) -->
+                <div class="bg-gradient-to-br from-wpCard via-[#132235] to-wpCard border border-wpGreen/30 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-36 h-36 bg-wpGreen/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-wpBorder/60">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-wpGreen/20 border border-wpGreen/40 text-wpGreen flex items-center justify-center text-lg glow-green-sm">
+                                🎯
+                            </div>
+                            <div>
+                                <h4 class="font-bebas text-2xl text-white tracking-wide">SUGERENCIA DE MARCADORES (DISTRIBUCIÓN DE POISSON)</h4>
+                                <p class="text-[11px] text-slate-400 font-outfit">Probabilidades calculadas en base al promedio de goles de los últimos partidos</p>
+                            </div>
+                        </div>
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold font-outfit">
+                            <span>Índice de Confianza:</span>
+                            <span class="font-black text-white">${scorePreds.confidencePercent}%</span>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta del Marcador Recomendado Principal -->
+                    <div class="bg-wpDark/90 border-2 border-wpGreen/50 rounded-2xl p-4 mb-5 relative overflow-hidden glow-green-sm">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex items-center gap-4 text-center sm:text-left">
+                                <div class="px-4 py-2 rounded-2xl bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-bebas text-3xl sm:text-4xl font-black shadow-lg">
+                                    ${scorePreds.recommendedScore}
+                                </div>
+                                <div>
+                                    <div class="inline-flex items-center gap-1 text-[11px] font-black uppercase text-wpGreen font-outfit">
+                                        <span>🔥 MARCADOR MÁS PROBABLE</span>
+                                    </div>
+                                    <div class="text-xs text-slate-300 font-outfit">
+                                        Probabilidad estimada: <span class="font-bold text-white">${scorePreds.recommendedProb}%</span> · Cuota: <span class="font-bold text-wpGreen">@${scorePreds.recommendedOdds.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="toggleBet('${match.id}', 'exact_score', '${scorePreds.recommendedScore}', ${scorePreds.recommendedOdds}, 'Marcador: ${scorePreds.recommendedScore}'); closeStatsModal();" 
+                                    class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-outfit font-black text-xs uppercase tracking-wider hover:brightness-110 active:scale-95 transition shadow flex items-center justify-center gap-1.5">
+                                <span>⚡</span>
+                                <span>Apostar a ${scorePreds.recommendedScore} (@${scorePreds.recommendedOdds.toFixed(2)})</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Ranking de Marcadores Más Probables con Barras -->
+                    <div class="mb-5">
+                        <span class="text-xs font-bold uppercase text-slate-300 font-outfit block mb-3">📊 Top 6 Marcadores Proyectados:</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            ${scorePreds.topScores.map((ts, idx) => {
+                                const isSelected = isBetSelected(match.id, 'exact_score', ts.score);
+                                return `
+                                    <div class="bg-wpCard hover:border-slate-600 border ${isSelected ? 'border-wpGreen bg-wpGreen/10' : 'border-wpBorder'} rounded-2xl p-3 flex flex-col justify-between gap-2 transition">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-5 h-5 rounded-full bg-wpDark text-wpGreen border border-wpBorder flex items-center justify-center text-[10px] font-black font-bebas">
+                                                    #${idx + 1}
+                                                </span>
+                                                <span class="font-bebas text-xl text-white tracking-wider">${ts.score}</span>
+                                                <span class="text-[10px] text-slate-400 font-outfit">${ts.typeLabel}</span>
+                                            </div>
+                                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md ${idx === 0 ? 'bg-wpGreen/20 text-wpGreen' : idx === 1 ? 'bg-cyan-500/20 text-cyan-300' : 'bg-slate-700/60 text-slate-300'} font-outfit">
+                                                ${ts.tag}
+                                            </span>
+                                        </div>
+
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between text-[11px] font-outfit">
+                                                <span class="text-slate-400">Probabilidad: <strong class="text-white">${ts.probability}%</strong></span>
+                                                <span class="text-wpGreen font-bold font-bebas text-sm">Cuota @${ts.odds.toFixed(2)}</span>
+                                            </div>
+                                            <div class="w-full h-2 rounded-full bg-wpDark overflow-hidden">
+                                                <div style="width: ${Math.min(100, ts.probability * 3.8)}%" class="h-full rounded-full ${idx === 0 ? 'bg-wpGreen' : idx === 1 ? 'bg-cyan-400' : 'bg-blue-500'}"></div>
+                                            </div>
+                                        </div>
+
+                                        <button onclick="toggleBet('${match.id}', 'exact_score', '${ts.score}', ${ts.odds}, 'Marcador: ${ts.score}'); closeStatsModal();" 
+                                                class="w-full mt-1 py-1.5 rounded-xl border ${isSelected ? 'bg-wpGreen text-wpDark font-black border-wpGreen' : 'bg-wpDark hover:bg-wpGreen hover:text-wpDark border-wpBorder text-slate-300'} text-xs font-bold font-outfit transition flex items-center justify-center gap-1">
+                                            <span>${isSelected ? '✓ Seleccionado' : '+ Elegir Marcador'}</span>
+                                            <span class="font-bebas text-sm font-black">(${ts.odds.toFixed(2)})</span>
+                                        </button>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Desglose de Expectativa de Goles (xG) y Análisis -->
+                    <div class="bg-wpDark/70 border border-wpBorder rounded-2xl p-4 text-xs font-outfit space-y-2">
+                        <div class="flex items-center gap-2 text-amber-400 font-bold">
+                            <span>💡</span>
+                            <span>Análisis Probabilístico de Poisson:</span>
+                        </div>
+                        <p class="text-slate-300 leading-relaxed font-light">
+                            ${scorePreds.analysis}
+                        </p>
+                        <div class="grid grid-cols-3 gap-2 pt-2.5 border-t border-wpBorder/40 text-center">
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase block">xG Local (${match.home.split(' ')[0]})</span>
+                                <span class="font-bebas text-lg text-emerald-400">${scorePreds.expectedGoalsHome}</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase block">Total Goles Estimado</span>
+                                <span class="font-bebas text-lg text-wpYellow">${scorePreds.totalExpectedGoals}</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase block">xG Visita (${match.away.split(' ')[0]})</span>
+                                <span class="font-bebas text-lg text-cyan-400">${scorePreds.expectedGoalsAway}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1103,6 +1336,7 @@
         function closeStatsModal() {
             document.getElementById('statsModal').classList.add('hidden');
         }
+
 
         /* =========================================================================
            7. BET SELECTION & BETSLIP COMPONENT

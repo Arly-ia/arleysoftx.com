@@ -81,6 +81,30 @@ Route::get('/arleysoft-run-migrations-secure-7x2k', function () {
     }
 });
 
+// Ruta de despliegue automático y git pull protegida (para actualizar producción desde el browser)
+Route::get('/arleysoft-deploy-pull-secure-9x4p', function () {
+    $adminToken = request()->query('token');
+    if ($adminToken !== 'arleysoft2026deploy') {
+        abort(403, 'Unauthorized');
+    }
+    try {
+        $output = [];
+        $output[] = "=== INICIANDO DESPLIEGUE EN PRODUCCIÓN ===";
+        
+        $gitOutput = shell_exec('git pull origin main 2>&1');
+        $output[] = "--- GIT PULL ---";
+        $output[] = $gitOutput ?: 'No output / Ejecutado';
+
+        \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+        $output[] = "--- OPTIMIZE:CLEAR ---";
+        $output[] = \Illuminate\Support\Facades\Artisan::output();
+
+        return response('<pre style="background:#070c14;color:#00e676;padding:25px;font-family:monospace;border-radius:12px;font-size:14px;line-height:1.6">' . htmlspecialchars(implode("\n", $output)) . '</pre>');
+    } catch (\Exception $e) {
+        return response('<pre style="background:#070c14;color:#ff3d00;padding:25px;font-family:monospace;border-radius:12px">ERROR: ' . htmlspecialchars($e->getMessage()) . '</pre>');
+    }
+});
+
 
 
 // Ruta para resetear sesión de prueba (solo accesible conociendo el path)
@@ -128,6 +152,7 @@ Route::get('/simulacion-apuestas', function () {
 use App\Http\Controllers\SportsApiController;
 Route::get('/api/sports/fixtures', [SportsApiController::class, 'getFixtures'])->name('api.sports.fixtures');
 Route::get('/api/sports/live',     [SportsApiController::class, 'getLiveMatches'])->name('api.sports.live');
+Route::get('/api/sports/prediction/{matchId}', [SportsApiController::class, 'getMatchPrediction'])->name('api.sports.prediction');
 
 
 
