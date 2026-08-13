@@ -1475,8 +1475,19 @@
         /* =========================================================================
            5. RENDER MATCHES FEED
            ========================================================================= */
+        function formatCOP(amount) {
+            return '$' + Math.round(amount).toLocaleString('es-CO') + ' COP';
+        }
+
+        function updateBalanceDisplay() {
+            const el = document.getElementById('userBalanceDisplay');
+            if (el) el.innerText = formatCOP(balance);
+            localStorage.setItem('wp_balance', balance);
+        }
+
         function renderMatches() {
             const container = document.getElementById('matchesContainer');
+
 
             if (!container) return;
 
