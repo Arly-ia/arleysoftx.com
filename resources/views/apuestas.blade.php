@@ -370,8 +370,107 @@
         </div>
     </div>
 
+    <!-- All Leagues Explorer Modal -->
+    <div id="leaguesModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-wpDark2 border border-wpBorder rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
+            <!-- Header -->
+            <div class="p-5 border-b border-wpBorder bg-wpCard/60 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-wpGreen/20 border border-wpGreen/40 text-wpGreen flex items-center justify-center text-xl">
+                        🏆
+                    </div>
+                    <div>
+                        <h3 class="font-bebas text-2xl text-white tracking-wide">EXPLORADOR DE LIGAS & TORNEOS</h3>
+                        <p class="text-xs text-slate-400 font-outfit font-light">Toca una liga para filtrar o marca la estrella ⭐ para añadirla a tus favoritas.</p>
+                    </div>
+                </div>
+                <button onclick="closeLeaguesModal()" class="w-8 h-8 rounded-full bg-wpCard hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Search and Action Bar inside Modal -->
+            <div class="p-4 border-b border-wpBorder/60 bg-wpDark/80 space-y-3">
+                <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
+                    <input type="text" id="leagueSearchInput" placeholder="Buscar liga o torneo (ej: Premier, Champions, Colombia, MLB)..." oninput="filterLeaguesModalList(this.value)"
+                           class="w-full bg-wpCard border border-wpBorder focus:border-wpGreen text-white font-outfit text-xs pl-10 pr-4 py-2.5 rounded-xl outline-none transition placeholder:text-slate-500">
+                </div>
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-outfit">
+                    <div class="flex items-center gap-2">
+                        <button onclick="filterLeague('all'); closeLeaguesModal();" class="px-3 py-1.5 rounded-xl bg-wpGreen/15 border border-wpGreen/30 text-wpGreen font-bold hover:bg-wpGreen hover:text-wpDark transition flex items-center gap-1">
+                            <span>🔥</span> <span>Ver Todas las Ligas</span>
+                        </button>
+                        <button onclick="closeLeaguesModal(); openFavoritesModal();" class="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 font-bold hover:bg-amber-400 hover:text-slate-950 transition flex items-center gap-1">
+                            <span>⭐</span> <span>Mis Favoritas</span>
+                        </button>
+                    </div>
+                    <span id="modalLeaguesCountLabel" class="text-slate-400 text-[11px] font-bold">0 ligas disponibles</span>
+                </div>
+            </div>
+
+            <!-- Scrollable Leagues List -->
+            <div id="modalLeaguesListContainer" class="p-4 overflow-y-auto space-y-2 flex-grow max-h-[50vh]">
+                <!-- Populated dynamically by JS -->
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 border-t border-wpBorder bg-wpCard/40 flex items-center justify-between text-xs font-outfit text-slate-400">
+                <span>Tip: Las ligas favoritas se guardan en tu dispositivo para acceso rápido.</span>
+                <button onclick="closeLeaguesModal()" class="px-5 py-2 rounded-xl bg-wpCardHover text-white font-bold hover:bg-slate-700 transition">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Favorites Manager Modal -->
+    <div id="favoritesModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-wpDark2 border border-amber-500/40 rounded-3xl w-full max-w-xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
+            <!-- Header -->
+            <div class="p-5 border-b border-wpBorder bg-wpCard/60 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-xl">
+                        ⭐
+                    </div>
+                    <div>
+                        <h3 class="font-bebas text-2xl text-white tracking-wide">MIS LIGAS FAVORITAS</h3>
+                        <p class="text-xs text-slate-400 font-outfit font-light">Toca la estrella ⭐ para quitar de favoritas o pulsa para ver sus partidos.</p>
+                    </div>
+                </div>
+                <button onclick="closeFavoritesModal()" class="w-8 h-8 rounded-full bg-wpCard hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Actions Header -->
+            <div id="favoritesModalActions" class="p-4 border-b border-wpBorder/60 bg-wpDark/80 flex items-center justify-between gap-2">
+                <button onclick="filterLeague('favorites'); closeFavoritesModal();" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black font-outfit text-xs hover:brightness-110 transition flex items-center gap-1.5 shadow">
+                    <span>⚡</span> <span>Ver Partidos de Todas Mis Favoritas</span>
+                </button>
+                <button onclick="closeFavoritesModal(); openLeaguesModal();" class="text-xs text-wpGreen font-bold font-outfit hover:underline flex items-center gap-1">
+                    <span>+ Agregar más ligas</span>
+                </button>
+            </div>
+
+            <!-- Scrollable Favorites List -->
+            <div id="modalFavoritesListContainer" class="p-4 overflow-y-auto space-y-2 flex-grow max-h-[50vh]">
+                <!-- Populated dynamically by JS -->
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 border-t border-wpBorder bg-wpCard/40 flex items-center justify-between text-xs font-outfit text-slate-400">
+                <span id="modalFavoritesCountSummary">0 ligas en tu lista de favoritas</span>
+                <button onclick="closeFavoritesModal()" class="px-5 py-2 rounded-xl bg-wpCardHover text-white font-bold hover:bg-slate-700 transition">
+                    Listo
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Recharge Modal -->
     <div id="rechargeModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+
         <div class="bg-wpDark2 border border-wpBorder rounded-3xl w-full max-w-md p-6 shadow-2xl text-center">
             <div class="w-14 h-14 mx-auto rounded-3xl bg-wpGreen/20 border border-wpGreen/40 text-wpGreen flex items-center justify-center text-3xl mb-4 glow-green-sm">
                 💰
@@ -731,11 +830,78 @@
             renderMatches();
         }
 
+        /* =========================================================================
+           4.5. DYNAMIC LEAGUES SUB-FILTER BAR & POPUP MODALS
+           ========================================================================= */
+        let modalLeaguesSearchQuery = '';
+
+        function toggleFavoriteLeague(event, leagueName) {
+            if (event) {
+                if (typeof event.stopPropagation === 'function') event.stopPropagation();
+                if (typeof event.preventDefault === 'function') event.preventDefault();
+            }
+            playSound('click');
+            const cleanName = normalizeLeague(leagueName);
+            if (!cleanName) return;
+
+            const existingIdx = favoriteLeagues.findIndex(f => normalizeLeague(f).toLowerCase() === cleanName.toLowerCase());
+            let isNowFavorite = false;
+            if (existingIdx > -1) {
+                favoriteLeagues.splice(existingIdx, 1);
+                isNowFavorite = false;
+            } else {
+                favoriteLeagues.push(cleanName);
+                isNowFavorite = true;
+            }
+            localStorage.setItem('wp_favorite_leagues', JSON.stringify(favoriteLeagues));
+
+            if (isNowFavorite) {
+                showSimToast(`"${cleanName}" se agregó a tus favoritas`, '⭐ LIGAS FAVORITAS', '⭐');
+            } else {
+                showSimToast(`"${cleanName}" se eliminó de favoritas`, '⭐ LIGAS FAVORITAS', '🗑️');
+            }
+
+            renderLeaguesBar();
+            renderMatches();
+        }
+
+        function toggleFavoriteLeagueFromModal(event, leagueName, modalSource = 'leagues') {
+            toggleFavoriteLeague(event, leagueName);
+            if (modalSource === 'leagues') {
+                renderModalLeaguesList(modalLeaguesSearchQuery);
+            } else {
+                renderModalFavoritesList();
+            }
+        }
+
         function filterLeague(leagueName) {
             playSound('click');
             currentLeagueFilter = leagueName;
             renderLeaguesBar();
             renderMatches();
+        }
+
+        function selectLeagueAndClose(leagueName) {
+            filterLeague(leagueName);
+            closeLeaguesModal();
+            closeFavoritesModal();
+        }
+
+        function getSportMatches() {
+            return matches.filter(m => {
+                if (currentSportFilter === 'live' && !m.isLive) return false;
+                if (currentSportFilter !== 'all' && currentSportFilter !== 'live' && m.sport !== currentSportFilter) return false;
+                return true;
+            });
+        }
+
+        function getLeagueCounts(sportMatches) {
+            const leagueCounts = {};
+            sportMatches.forEach(m => {
+                const lName = normalizeLeague(m.league) || 'Otras Ligas';
+                leagueCounts[lName] = (leagueCounts[lName] || 0) + 1;
+            });
+            return leagueCounts;
         }
 
         function renderLeaguesBar() {
@@ -744,34 +910,10 @@
             const activeBadge = document.getElementById('activeLeagueBadge');
             if (!container) return;
 
-            // Get matches corresponding to active sport filter
-            const sportMatches = matches.filter(m => {
-                if (currentSportFilter === 'live' && !m.isLive) return false;
-                if (currentSportFilter !== 'all' && currentSportFilter !== 'live' && m.sport !== currentSportFilter) return false;
-                return true;
-            });
-
-            // Extract unique leagues and count matches (strictly > 0)
-            const leagueCounts = {};
-            sportMatches.forEach(m => {
-                const lName = normalizeLeague(m.league) || 'Otras Ligas';
-                leagueCounts[lName] = (leagueCounts[lName] || 0) + 1;
-            });
-
-            // Exclude leagues that have 0 matches
-            let uniqueLeagues = Object.keys(leagueCounts).filter(lName => (leagueCounts[lName] || 0) > 0);
-
-            // Count favorite matches
+            const sportMatches = getSportMatches();
+            const leagueCounts = getLeagueCounts(sportMatches);
+            const uniqueLeagues = Object.keys(leagueCounts).filter(lName => (leagueCounts[lName] || 0) > 0);
             const favMatchesCount = sportMatches.filter(m => isLeagueFavorite(m.league)).length;
-
-            // Sort leagues: Favorites FIRST, then by match count descending
-            uniqueLeagues.sort((a, b) => {
-                const isFavA = isLeagueFavorite(a);
-                const isFavB = isLeagueFavorite(b);
-                if (isFavA && !isFavB) return -1;
-                if (!isFavA && isFavB) return 1;
-                return leagueCounts[b] - leagueCounts[a];
-            });
 
             if (indicator) {
                 indicator.innerText = `${uniqueLeagues.length} ligas · ${sportMatches.length} partidos`;
@@ -789,54 +931,220 @@
                 }
             }
 
-            // Clear container and render dynamic elements safely
+            // Clear container and render ONLY the clean modal trigger buttons and active filter badge
             container.innerHTML = '';
 
-            // 1. Button "Todas las Ligas"
+            // 1. Button "Todas las Ligas" (Abre ventana emergente de ligas con buscador y favoritos)
             const allBtn = document.createElement('button');
-            allBtn.className = `px-3.5 py-1.5 rounded-xl border text-xs font-bold font-outfit transition whitespace-nowrap flex items-center gap-1.5 flex-shrink-0 ${currentLeagueFilter === 'all' ? 'bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-black border-wpGreen shadow-md' : 'bg-wpCard text-slate-300 hover:bg-wpCardHover border-wpBorder'}`;
-            allBtn.innerHTML = `<span>🔥</span><span>Todas las Ligas</span><span class="text-[10px] px-1.5 py-0.2 rounded-full ${currentLeagueFilter === 'all' ? 'bg-wpDark/25 text-wpDark font-black' : 'bg-wpDark text-slate-400 font-bold'}">${sportMatches.length}</span>`;
-            allBtn.onclick = () => filterLeague('all');
+            const isAllActive = currentLeagueFilter === 'all';
+            allBtn.className = `px-4 py-2 rounded-xl border text-xs font-bold font-outfit transition whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${isAllActive ? 'bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-black border-wpGreen shadow-lg' : 'bg-wpCard text-slate-200 hover:bg-wpCardHover border-wpBorder'}`;
+            allBtn.innerHTML = `<span>🔥</span><span>Todas las Ligas</span><span class="text-[10px] px-2 py-0.5 rounded-full ${isAllActive ? 'bg-wpDark/25 text-wpDark font-black' : 'bg-wpDark text-wpGreen font-black'}">${sportMatches.length}</span><span class="text-[10px] opacity-75">▾</span>`;
+            allBtn.title = 'Abrir explorador de ligas y torneos';
+            allBtn.onclick = () => openLeaguesModal();
             container.appendChild(allBtn);
 
-            // 2. Button "Favoritas"
+            // 2. Button "Favoritas" (Abre ventana emergente de gestión de favoritas)
             const isFavFilterActive = currentLeagueFilter === 'favorites';
             const favBtn = document.createElement('button');
-            favBtn.className = `px-3.5 py-1.5 rounded-xl border text-xs font-bold font-outfit transition whitespace-nowrap flex items-center gap-1.5 flex-shrink-0 ${isFavFilterActive ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black border-amber-400 shadow-md' : (favMatchesCount > 0 ? 'bg-wpCard text-amber-300 hover:bg-wpCardHover border-amber-500/40' : 'bg-wpCard text-slate-400 hover:bg-wpCardHover border-wpBorder')}`;
-            favBtn.innerHTML = `<span>⭐</span><span>Favoritas</span><span class="text-[10px] px-1.5 py-0.2 rounded-full ${isFavFilterActive ? 'bg-slate-950/30 text-slate-950 font-black' : (favMatchesCount > 0 ? 'bg-wpDark text-amber-400 font-bold' : 'bg-wpDark text-slate-500')}">${favMatchesCount}</span>`;
-            favBtn.onclick = () => {
-                if (favMatchesCount === 0 && favoriteLeagues.length === 0) {
-                    showSimToast('Aún no tienes ligas favoritas. Toca la estrella ☆ de cualquier liga para agregarla.', '⭐ LIGAS FAVORITAS', '⭐');
-                }
-                filterLeague('favorites');
-            };
+            favBtn.className = `px-4 py-2 rounded-xl border text-xs font-bold font-outfit transition whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${isFavFilterActive ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black border-amber-400 shadow-lg' : (favMatchesCount > 0 ? 'bg-wpCard text-amber-300 hover:bg-wpCardHover border-amber-500/50' : 'bg-wpCard text-slate-400 hover:bg-wpCardHover border-wpBorder')}`;
+            favBtn.innerHTML = `<span>⭐</span><span>Mis Favoritas</span><span class="text-[10px] px-2 py-0.5 rounded-full ${isFavFilterActive ? 'bg-slate-950/30 text-slate-950 font-black' : (favMatchesCount > 0 ? 'bg-wpDark text-amber-400 font-black' : 'bg-wpDark text-slate-500')}">${favMatchesCount}</span><span class="text-[10px] opacity-75">▾</span>`;
+            favBtn.title = 'Abrir ventana de ligas favoritas';
+            favBtn.onclick = () => openFavoritesModal();
             container.appendChild(favBtn);
 
-            // 3. Render all unique league pills safely
-            uniqueLeagues.forEach(leagueName => {
-                const isActive = currentLeagueFilter === leagueName;
-                const count = leagueCounts[leagueName];
-                const isFav = isLeagueFavorite(leagueName);
-
-                const pillDiv = document.createElement('div');
-                pillDiv.className = `inline-flex items-center rounded-xl border transition whitespace-nowrap overflow-hidden flex-shrink-0 ${isActive ? 'bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-black border-wpGreen shadow-md' : (isFav ? 'bg-wpCard text-amber-200 border-amber-500/60 hover:bg-wpCardHover shadow-sm' : 'bg-wpCard text-slate-300 hover:bg-wpCardHover border-wpBorder')}`;
-
-                const starBtn = document.createElement('button');
-                starBtn.className = 'pl-2.5 pr-1.5 py-1.5 text-xs hover:scale-125 transition flex items-center justify-center';
-                starBtn.title = isFav ? 'Quitar de favoritas' : 'Marcar liga como favorita';
-                starBtn.innerHTML = isFav ? '<span class="text-amber-400 text-sm">⭐</span>' : '<span class="text-slate-500 hover:text-amber-400 text-sm">☆</span>';
-                starBtn.onclick = (e) => toggleFavoriteLeague(e, leagueName);
-                pillDiv.appendChild(starBtn);
-
-                const nameBtn = document.createElement('button');
-                nameBtn.className = 'pr-2.5 pl-1 py-1.5 text-xs font-bold font-outfit flex items-center gap-1.5';
-                nameBtn.innerHTML = `<span>${leagueName}</span><span class="text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-wpDark/25 text-wpDark font-black' : (isFav ? 'bg-wpDark text-amber-400 font-black' : 'bg-wpDark text-wpGreen font-black')}">${count}</span>`;
-                nameBtn.onclick = () => filterLeague(leagueName);
-                pillDiv.appendChild(nameBtn);
-
-                container.appendChild(pillDiv);
-            });
+            // 3. Píldora de Filtro Activo (si el usuario filtró por una liga específica o por favoritas)
+            if (currentLeagueFilter !== 'all') {
+                const filterIndicator = document.createElement('div');
+                filterIndicator.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-wpGreen/15 border border-wpGreen/40 text-wpGreen text-xs font-bold font-outfit flex-shrink-0 animate-fadeIn';
+                
+                if (currentLeagueFilter === 'favorites') {
+                    filterIndicator.innerHTML = `
+                        <span>⭐ Filtrando: <strong>Todas las Favoritas</strong> (${favMatchesCount})</span>
+                        <button onclick="filterLeague('all')" class="ml-1 w-4 h-4 rounded-full bg-wpGreen/20 hover:bg-rose-500 hover:text-white flex items-center justify-center text-[10px] transition" title="Quitar filtro">✕</button>
+                    `;
+                } else {
+                    const count = leagueCounts[currentLeagueFilter] || 0;
+                    filterIndicator.innerHTML = `
+                        <span>🏆 Liga: <strong>${currentLeagueFilter}</strong> (${count})</span>
+                        <button onclick="filterLeague('all')" class="ml-1 w-4 h-4 rounded-full bg-wpGreen/20 hover:bg-rose-500 hover:text-white flex items-center justify-center text-[10px] transition" title="Quitar filtro">✕</button>
+                    `;
+                }
+                container.appendChild(filterIndicator);
+            }
         }
+
+        /* =========================================================================
+           4.6. LEAGUES & FAVORITES MODAL LOGIC
+           ========================================================================= */
+        function openLeaguesModal() {
+            playSound('click');
+            modalLeaguesSearchQuery = '';
+            const searchInput = document.getElementById('leagueSearchInput');
+            if (searchInput) searchInput.value = '';
+
+            renderModalLeaguesList('');
+            const modal = document.getElementById('leaguesModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeLeaguesModal() {
+            const modal = document.getElementById('leaguesModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function filterLeaguesModalList(query) {
+            modalLeaguesSearchQuery = query || '';
+            renderModalLeaguesList(modalLeaguesSearchQuery);
+        }
+
+        function renderModalLeaguesList(filterText = '') {
+            const container = document.getElementById('modalLeaguesListContainer');
+            const countLabel = document.getElementById('modalLeaguesCountLabel');
+            if (!container) return;
+
+            const sportMatches = getSportMatches();
+            const leagueCounts = getLeagueCounts(sportMatches);
+            let uniqueLeagues = Object.keys(leagueCounts).filter(lName => (leagueCounts[lName] || 0) > 0);
+
+            // Sort: Favorites first, then match count
+            uniqueLeagues.sort((a, b) => {
+                const isFavA = isLeagueFavorite(a);
+                const isFavB = isLeagueFavorite(b);
+                if (isFavA && !isFavB) return -1;
+                if (!isFavA && isFavB) return 1;
+                return leagueCounts[b] - leagueCounts[a];
+            });
+
+            // Filter by search query
+            const q = (filterText || '').trim().toLowerCase();
+            if (q) {
+                uniqueLeagues = uniqueLeagues.filter(l => l.toLowerCase().includes(q));
+            }
+
+            if (countLabel) {
+                countLabel.innerText = `${uniqueLeagues.length} ligas encontradas`;
+            }
+
+            if (uniqueLeagues.length === 0) {
+                container.innerHTML = `
+                    <div class="py-10 text-center text-slate-400">
+                        <span class="text-3xl block mb-2">🔍</span>
+                        <h5 class="font-bebas text-xl text-white">NO SE ENCONTRARON LIGAS</h5>
+                        <p class="text-xs text-slate-500">No hay torneos que coincidan con "${filterText}".</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = uniqueLeagues.map(leagueName => {
+                const count = leagueCounts[leagueName] || 0;
+                const isFav = isLeagueFavorite(leagueName);
+                const isSelected = currentLeagueFilter === leagueName;
+                const escapedName = leagueName.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+                return `
+                    <div class="bg-wpCard hover:border-slate-600 border ${isSelected ? 'border-wpGreen bg-wpGreen/10' : (isFav ? 'border-amber-500/40 bg-amber-500/5' : 'border-wpBorder')} rounded-2xl p-3 flex items-center justify-between gap-3 transition">
+                        <div class="flex items-center gap-3 flex-grow cursor-pointer" onclick="selectLeagueAndClose('${escapedName}')">
+                            <button onclick="toggleFavoriteLeagueFromModal(event, '${escapedName}', 'leagues')" class="text-base hover:scale-125 transition p-1.5 rounded-lg hover:bg-wpDark" title="${isFav ? 'Quitar de favoritas' : 'Añadir a favoritas'}">
+                                ${isFav ? '<span class="text-amber-400">⭐</span>' : '<span class="text-slate-500 hover:text-amber-400">☆</span>'}
+                            </button>
+                            <div>
+                                <span class="text-xs sm:text-sm font-bold text-white block font-outfit hover:text-wpGreen transition">${leagueName}</span>
+                                <span class="text-[10px] text-slate-400 font-outfit">${count} ${count === 1 ? 'partido disponible' : 'partidos disponibles'}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="selectLeagueAndClose('${escapedName}')" class="px-3.5 py-1.5 rounded-xl ${isSelected ? 'bg-wpGreen text-wpDark font-black' : 'bg-wpDark hover:bg-wpGreen hover:text-wpDark text-slate-200'} border border-wpBorder text-xs font-bold font-outfit transition flex items-center gap-1">
+                                <span>${isSelected ? '✓ Activa' : 'Ver Partidos'}</span>
+                                <span class="text-[10px] font-black font-bebas px-1.5 py-0.2 rounded ${isSelected ? 'bg-wpDark/20 text-wpDark' : 'bg-wpCard text-wpGreen'}">${count}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openFavoritesModal() {
+            playSound('click');
+            renderModalFavoritesList();
+            const modal = document.getElementById('favoritesModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeFavoritesModal() {
+            const modal = document.getElementById('favoritesModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function renderModalFavoritesList() {
+            const container = document.getElementById('modalFavoritesListContainer');
+            const summaryLabel = document.getElementById('modalFavoritesCountSummary');
+            const actionsHeader = document.getElementById('favoritesModalActions');
+            if (!container) return;
+
+            const sportMatches = getSportMatches();
+            const leagueCounts = getLeagueCounts(sportMatches);
+
+            // Get user favorites
+            const favs = favoriteLeagues.map(f => normalizeLeague(f)).filter(Boolean);
+
+            if (summaryLabel) {
+                summaryLabel.innerText = `${favs.length} ${favs.length === 1 ? 'liga guardada' : 'ligas guardadas'} en favoritas`;
+            }
+
+            if (favs.length === 0) {
+                if (actionsHeader) actionsHeader.classList.add('hidden');
+                container.innerHTML = `
+                    <div class="py-10 text-center space-y-4">
+                        <span class="text-4xl block animate-pulse">⭐</span>
+                        <div>
+                            <h4 class="font-bebas text-2xl text-white">NO TIENES LIGAS FAVORITAS AÚN</h4>
+                            <p class="text-xs text-slate-400 max-w-sm mx-auto font-light mt-1">
+                                Abre el explorador de ligas y toca la estrella <span class="text-amber-400 font-bold">☆</span> para agregar tus torneos preferidos aquí.
+                            </p>
+                        </div>
+                        <button onclick="closeFavoritesModal(); openLeaguesModal();" class="px-5 py-2.5 bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-black font-outfit text-xs rounded-xl shadow-lg hover:brightness-110 transition">
+                            🔍 Explorar Todas las Ligas
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            if (actionsHeader) actionsHeader.classList.remove('hidden');
+
+            container.innerHTML = favs.map(leagueName => {
+                const count = leagueCounts[leagueName] || 0;
+                const isSelected = currentLeagueFilter === leagueName;
+                const escapedName = leagueName.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+                return `
+                    <div class="bg-wpCard hover:border-slate-600 border ${isSelected ? 'border-amber-400 bg-amber-500/10' : 'border-wpBorder'} rounded-2xl p-3 flex items-center justify-between gap-3 transition">
+                        <div class="flex items-center gap-3 flex-grow cursor-pointer" onclick="selectLeagueAndClose('${escapedName}')">
+                            <button onclick="toggleFavoriteLeagueFromModal(event, '${escapedName}', 'favorites')" class="text-base hover:scale-125 transition p-1.5 rounded-lg hover:bg-rose-500/20 text-amber-400 hover:text-rose-400" title="Quitar de favoritas">
+                                ⭐
+                            </button>
+                            <div>
+                                <span class="text-xs sm:text-sm font-bold text-white block font-outfit hover:text-amber-400 transition">${leagueName}</span>
+                                <span class="text-[10px] ${count > 0 ? 'text-wpGreen font-bold' : 'text-slate-500'} font-outfit">
+                                    ${count > 0 ? `⚽ ${count} ${count === 1 ? 'partido hoy' : 'partidos hoy'}` : 'Sin partidos programados hoy'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="selectLeagueAndClose('${escapedName}')" class="px-3.5 py-1.5 rounded-xl ${isSelected ? 'bg-amber-400 text-slate-950 font-black' : 'bg-wpDark hover:bg-amber-400 hover:text-slate-950 text-slate-200'} border border-wpBorder text-xs font-bold font-outfit transition flex items-center gap-1">
+                                <span>${isSelected ? '✓ Activa' : 'Ver'}</span>
+                                ${count > 0 ? `<span class="text-[10px] font-black font-bebas px-1.5 py-0.2 rounded bg-wpCard text-amber-400">${count}</span>` : ''}
+                            </button>
+                            <button onclick="toggleFavoriteLeagueFromModal(event, '${escapedName}', 'favorites')" class="p-1.5 text-xs text-slate-500 hover:text-rose-400 transition" title="Eliminar de favoritas">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
 
         /* =========================================================================
            5. RENDER MATCHES FEED
