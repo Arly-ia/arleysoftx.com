@@ -557,6 +557,7 @@
                 if (spinner) spinner.classList.add('hidden');
                 renderLeaguesBar();
                 renderMatches();
+                evaluateRealTimeTickets();
             }
         }
 
@@ -584,6 +585,7 @@
                     if (updatedAny) {
                         renderMatches();
                     }
+                    evaluateRealTimeTickets();
                 }
             } catch (e) {}
         }
@@ -1817,7 +1819,7 @@
         }
 
         /* =========================================================================
-           8. PLACE BET & RECORD IN HISTORY
+           8. REAL-TIME BETTING & EVALUATION ENGINE (NO FAKE SIMULATION)
            ========================================================================= */
         function placeBet() {
             if (selectedBets.length === 0) return;
@@ -1849,11 +1851,26 @@
                 id: ticketId,
                 date: new Date().toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' }),
                 mode: betMode,
-                selections: JSON.parse(JSON.stringify(selectedBets)),
+                selections: selectedBets.map(b => ({
+                    matchId: b.matchId,
+                    home: b.home,
+                    away: b.away,
+                    league: b.league,
+                    sport: b.sport,
+                    marketId: b.marketId,
+                    pick: b.pick,
+                    label: b.label,
+                    odds: b.odds,
+                    stake: betMode === 'single' ? currentStakeInput : 0,
+                    status: 'pending', // 'pending', 'won', 'lost'
+                    liveScore: '0 - 0',
+                    isLive: false,
+                    isFinished: false
+                })),
                 totalStake: totalCost,
                 odds: combinedOdds,
                 potentialWin: potentialWin,
-                status: 'pending',
+                status: 'pending', // 'pending', 'won', 'lost'
                 wonAmount: 0
             };
 
@@ -1868,52 +1885,132 @@
             const drawer = document.getElementById('betslipDrawer');
             if (drawer) drawer.classList.remove('open');
 
-            showSimToast(`🎉 ¡Boleto #${ticketId} colocado exitosamente por ${formatCOP(totalCost)}!`);
-            
-            setTimeout(() => {
-                resolveTicketSimulation(ticket.id);
-            }, 1200);
+            showSimToast(`🎉 ¡Boleto #${ticketId} registrado en tiempo real! Puedes seguir tus partidos en directo en "Mis Boletos".`, '✅ APUESTA EN TIEMPO REAL', '🎟️');
+
+            // Evaluar inmediatamente con los marcadores reales actuales
+            evaluateRealTimeTickets();
         }
 
-        function resolveTicketSimulation(ticketId) {
-            const ticket = betHistory.find(t => t.id === ticketId);
-            if (!ticket || ticket.status !== 'pending') return;
+        /**
+         * Evalúa todas las selecciones de los boletos abiertos con los marcadores reales de la API
+         */
+        function evaluateRealTimeTickets() {
+            if (!Array.isArray(betHistory) || betHistory.length === 0) return;
 
-            const won = Math.random() > 0.35;
+            let historyChanged = false;
 
-            if (won) {
-                ticket.status = 'won';
-                ticket.wonAmount = ticket.potentialWin;
-                balance += ticket.wonAmount;
-                updateBalanceDisplay();
-                playSound('win');
+            betHistory.forEach(ticket => {
+                if (ticket.status !== 'pending') return;
 
-                if (typeof confetti === 'function') {
-                    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+                let allSelectionsFinished = true;
+                let anySelectionLost = false;
+                let allSelectionsWon = true;
+                let singleModeWonAmount = 0;
+
+                ticket.selections.forEach(sel => {
+                    // Buscar el partido real en el feed actual de matches
+                    const match = matches.find(m => m.id === sel.matchId || 
+                        (m.home && sel.home && m.home.toLowerCase().includes(sel.home.toLowerCase())) ||
+                        (m.away && sel.away && m.away.toLowerCase().includes(sel.away.toLowerCase())));
+
+                    if (match) {
+                        sel.isLive = match.isLive || false;
+                        sel.isFinished = match.isFinished || (match.minute === 'FT' || match.minute === 'Finalizado');
+                        sel.minute = match.minute || '';
+                        sel.liveScore = `${match.homeScore ?? 0} - ${match.awayScore ?? 0}`;
+
+                        if (sel.isFinished) {
+                            // Evaluar resultado real
+                            const hScore = parseInt(match.homeScore) || 0;
+                            const aScore = parseInt(match.awayScore) || 0;
+                            let won = false;
+
+                            if (sel.marketId === '1X2') {
+                                if (sel.pick === '1') won = hScore > aScore;
+                                else if (sel.pick === 'X') won = hScore === aScore;
+                                else if (sel.pick === '2') won = aScore > hScore;
+                            } else if (sel.marketId === 'exact_score') {
+                                const parts = (sel.pick || '').split('-').map(p => parseInt(p.trim()));
+                                if (parts.length === 2) {
+                                    won = (hScore === parts[0] && aScore === parts[1]);
+                                }
+                            } else if (sel.marketId === 'over_under' || (sel.pick && sel.pick.includes('2.5'))) {
+                                const isOver = sel.pick.includes('+') || sel.pick.toLowerCase().includes('más') || sel.pick.toLowerCase().includes('over');
+                                won = isOver ? ((hScore + aScore) > 2.5) : ((hScore + aScore) < 2.5);
+                            } else if (sel.marketId === 'btts') {
+                                const isYes = sel.pick.toLowerCase().includes('sí') || sel.pick.toLowerCase().includes('si') || sel.pick.toLowerCase().includes('yes');
+                                won = isYes ? (hScore > 0 && aScore > 0) : (hScore === 0 || aScore === 0);
+                            } else if (sel.marketId === 'double_chance') {
+                                if (sel.pick === '1X') won = hScore >= aScore;
+                                else if (sel.pick === '12') won = hScore !== aScore;
+                                else if (sel.pick === 'X2') won = aScore >= hScore;
+                            } else {
+                                won = hScore > aScore;
+                            }
+
+                            sel.status = won ? 'won' : 'lost';
+
+                            if (won) {
+                                if (ticket.mode === 'single') {
+                                    singleModeWonAmount += (sel.stake * sel.odds);
+                                }
+                            } else {
+                                anySelectionLost = true;
+                                allSelectionsWon = false;
+                            }
+                        } else {
+                            // Sigue en juego o programado
+                            allSelectionsFinished = false;
+                            allSelectionsWon = false;
+                        }
+                    } else {
+                        // Si no se encuentra en el snapshot actual, se mantiene pendiente
+                        allSelectionsFinished = false;
+                        allSelectionsWon = false;
+                    }
+                });
+
+                // Resolver estado del boleto según modalidad
+                if (ticket.mode === 'parlay') {
+                    if (anySelectionLost) {
+                        ticket.status = 'lost';
+                        ticket.wonAmount = 0;
+                        historyChanged = true;
+                        showSimToast(`❌ Boleto Combinado #${ticket.id} finalizó (no acertó uno de los partidos).`, 'RESULTADO EN TIEMPO REAL', '❌');
+                    } else if (allSelectionsFinished && allSelectionsWon) {
+                        ticket.status = 'won';
+                        ticket.wonAmount = ticket.potentialWin;
+                        balance += ticket.wonAmount;
+                        updateBalanceDisplay();
+                        playSound('win');
+                        historyChanged = true;
+
+                        if (typeof confetti === 'function') {
+                            confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+                        }
+                        showSimToast(`🏆 ¡BOLETO GANADOR #${ticket.id}! Acertaste todos los partidos reales y cobraste ${formatCOP(ticket.wonAmount)}`, '¡PREMIO COBRADO!', '💰');
+                    }
+                } else {
+                    // Modalidad Sencilla
+                    if (allSelectionsFinished) {
+                        ticket.status = singleModeWonAmount > 0 ? 'won' : 'lost';
+                        ticket.wonAmount = singleModeWonAmount;
+                        if (singleModeWonAmount > 0) {
+                            balance += singleModeWonAmount;
+                            updateBalanceDisplay();
+                            playSound('win');
+                            showSimToast(`🏆 Boleto Sencillo #${ticket.id} finalizado. Cobraste ${formatCOP(singleModeWonAmount)}`, '¡PREMIO COBRADO!', '💰');
+                        } else {
+                            showSimToast(`❌ Boleto Sencillo #${ticket.id} finalizó sin aciertos.`, 'RESULTADO EN TIEMPO REAL', '❌');
+                        }
+                        historyChanged = true;
+                    }
                 }
+            });
 
-                showSimToast(`🏆 ¡BOLETO GANADOR #${ticket.id}! Cobraste ${formatCOP(ticket.wonAmount)}`);
-            } else {
-                ticket.status = 'lost';
-                ticket.wonAmount = 0;
-                showSimToast(`❌ Boleto #${ticket.id} no acertó los resultados esta vez.`);
-            }
-
-            localStorage.setItem('wp_history', JSON.stringify(betHistory));
-            updateHistoryCountBadge();
-        }
-
-        function showSimToast(message) {
-            const toast = document.getElementById('simToast');
-            const msg = document.getElementById('simToastMessage');
-            if (toast && msg) {
-                msg.innerText = message;
-                toast.classList.remove('hidden');
-                toast.classList.remove('translate-y-4');
-                setTimeout(() => {
-                    toast.classList.add('translate-y-4');
-                    setTimeout(() => toast.classList.add('hidden'), 300);
-                }, 4000);
+            if (historyChanged) {
+                localStorage.setItem('wp_history', JSON.stringify(betHistory));
+                updateHistoryCountBadge();
             }
         }
 
@@ -1970,6 +2067,8 @@
 
         function openHistoryModal() {
             playSound('click');
+            evaluateRealTimeTickets();
+
             const modal = document.getElementById('historyModal');
             const list = document.getElementById('historyListContainer');
             if (!modal || !list) return;
@@ -1979,12 +2078,12 @@
                     <div class="py-12 text-center text-slate-400">
                         <span class="text-4xl mb-2 block">📭</span>
                         <h4 class="font-bebas text-2xl text-white">NO HAY BOLETOS EN EL HISTORIAL</h4>
-                        <p class="text-xs text-slate-500">Realiza tu primera apuesta en el simulador para registrarla aquí.</p>
+                        <p class="text-xs text-slate-500">Realiza tu primera apuesta en tiempo real para hacer seguimiento en vivo aquí.</p>
                     </div>
                 `;
             } else {
                 list.innerHTML = betHistory.map(ticket => `
-                    <div class="bg-wpCard border ${ticket.status === 'won' ? 'border-wpGreen/60' : ticket.status === 'lost' ? 'border-rose-500/40' : 'border-wpBorder'} rounded-2xl p-4 transition shadow-md">
+                    <div class="bg-wpCard border ${ticket.status === 'won' ? 'border-wpGreen/70 shadow-wpGreen/10 shadow-lg' : ticket.status === 'lost' ? 'border-rose-500/40' : 'border-cyan-500/40'} rounded-2xl p-4 transition shadow-md">
                         <div class="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-wpBorder/60">
                             <div class="flex items-center gap-2">
                                 <span class="font-bebas text-lg text-white">#${ticket.id}</span>
@@ -1995,28 +2094,59 @@
                             <div class="flex items-center gap-2">
                                 <span class="text-xs text-slate-400 font-outfit">${ticket.date}</span>
                                 ${ticket.status === 'won' ? `
-                                    <span class="px-2.5 py-0.5 rounded-full bg-wpGreen/20 text-wpGreen font-black text-xs font-outfit">GANADA</span>
+                                    <span class="px-2.5 py-0.5 rounded-full bg-wpGreen/20 text-wpGreen font-black text-xs font-outfit border border-wpGreen/30">🏆 GANADA</span>
                                 ` : ticket.status === 'lost' ? `
-                                    <span class="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-black text-xs font-outfit">PERDIDA</span>
+                                    <span class="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-black text-xs font-outfit border border-rose-500/30">❌ NO ACERTADA</span>
                                 ` : `
-                                    <span class="px-2.5 py-0.5 rounded-full bg-wpYellow/20 text-wpYellow font-black text-xs font-outfit">PENDIENTE</span>
+                                    <span class="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-black text-xs font-outfit border border-cyan-500/30 animate-pulse">🟢 EN TIEMPO REAL</span>
                                 `}
                             </div>
                         </div>
 
-                        <div class="space-y-1 mb-3">
-                            ${ticket.selections.map(s => `
-                                <div class="flex items-center justify-between text-xs text-slate-300">
-                                    <span class="font-semibold">${s.home} vs ${s.away}</span>
-                                    <span class="text-wpGreen font-bold font-outfit">${s.label} (${s.odds.toFixed(2)})</span>
-                                </div>
-                            `).join('')}
+                        <div class="space-y-2 mb-3">
+                            ${ticket.selections.map(s => {
+                                const currentMatch = matches.find(m => m.id === s.matchId || (m.home && s.home && m.home.includes(s.home)));
+                                const isLive = currentMatch ? currentMatch.isLive : s.isLive;
+                                const isFinished = currentMatch ? (currentMatch.isFinished || currentMatch.minute === 'FT') : s.isFinished;
+                                const currentScore = currentMatch ? `${currentMatch.homeScore ?? 0} - ${currentMatch.awayScore ?? 0}` : (s.liveScore || '0 - 0');
+                                const currentMinute = currentMatch ? currentMatch.minute : (s.minute || '');
+
+                                return `
+                                    <div class="bg-wpDark/60 border border-wpBorder/40 rounded-xl p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs">
+                                        <div>
+                                            <div class="text-white font-bold">${s.home} vs ${s.away}</div>
+                                            <div class="text-slate-400 text-[11px] font-outfit">Pronóstico: <strong class="text-wpGreen font-black">${s.label}</strong> (@${s.odds.toFixed(2)})</div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            ${isLive ? `
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-wpRed/20 text-wpRed text-[10px] font-black font-outfit border border-wpRed/30">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-wpRed animate-ping"></span>
+                                                    VIVO ${currentMinute} (${currentScore})
+                                                </span>
+                                            ` : isFinished ? `
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px] font-bold font-outfit border border-slate-700">
+                                                    🏁 Final: ${currentScore}
+                                                </span>
+                                                ${s.status === 'won' ? `
+                                                    <span class="text-wpGreen font-bold text-[10px] font-outfit">✓ Acertada</span>
+                                                ` : s.status === 'lost' ? `
+                                                    <span class="text-rose-400 font-bold text-[10px] font-outfit">✗ No Acertada</span>
+                                                ` : ''}
+                                            ` : `
+                                                <span class="text-[10px] text-slate-400 bg-wpCard px-2 py-0.5 rounded-full border border-wpBorder font-outfit">
+                                                    ⏱️ Programado
+                                                </span>
+                                            `}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
                         </div>
 
                         <div class="flex items-center justify-between pt-2 border-t border-wpBorder/40 text-xs font-outfit">
                             <div><span class="text-slate-400">Apostado: </span><span class="font-bold text-white">${formatCOP(ticket.totalStake)}</span></div>
                             <div><span class="text-slate-400">Cuota: </span><span class="font-bold text-wpGreen font-bebas text-base">${ticket.odds.toFixed(2)}x</span></div>
-                            <div><span class="text-slate-400">Premio: </span><span class="font-black ${ticket.status === 'won' ? 'text-wpGreen' : 'text-slate-400'}">${ticket.status === 'won' ? formatCOP(ticket.wonAmount) : formatCOP(ticket.potentialWin)}</span></div>
+                            <div><span class="text-slate-400">Premio: </span><span class="font-black ${ticket.status === 'won' ? 'text-wpGreen' : (ticket.status === 'lost' ? 'text-slate-500 line-through' : 'text-cyan-400')}">${ticket.status === 'won' ? formatCOP(ticket.wonAmount) : formatCOP(ticket.potentialWin)}</span></div>
                         </div>
                     </div>
                 `).join('');
@@ -2037,6 +2167,7 @@
                 openHistoryModal();
             }
         }
+
 
         /* =========================================================================
            10. SPORTS FILTER
