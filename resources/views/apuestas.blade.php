@@ -664,24 +664,67 @@
         }
 
         /* =========================================================================
-           4.5. DYNAMIC LEAGUES SUB-FILTER BAR & FAVORITES
+           4.5. DYNAMIC LEAGUES SUB-FILTER BAR & FAVORITES (ROBUST & NORMALIZED)
            ========================================================================= */
+        let simToastTimer = null;
+        function showSimToast(message, title = '¡ACTUALIZACIÓN EN VIVO!', icon = '⚽') {
+            const toast = document.getElementById('simToast');
+            const msgEl = document.getElementById('simToastMessage');
+            if (!toast || !msgEl) return;
+
+            msgEl.innerText = message;
+            const titleEl = toast.querySelector('.font-outfit');
+            if (titleEl) titleEl.innerText = title;
+            const iconEl = toast.querySelector('.animate-bounce');
+            if (iconEl) iconEl.innerText = icon;
+
+            toast.classList.remove('hidden', 'translate-y-4');
+            toast.classList.add('translate-y-0');
+
+            if (simToastTimer) clearTimeout(simToastTimer);
+            simToastTimer = setTimeout(() => {
+                toast.classList.add('translate-y-4');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        function normalizeLeague(name) {
+            if (!name) return '';
+            return name.toString().trim().replace(/\s+/g, ' ');
+        }
+
+        function isLeagueFavorite(name) {
+            const target = normalizeLeague(name).toLowerCase();
+            if (!target) return false;
+            return favoriteLeagues.some(f => normalizeLeague(f).toLowerCase() === target);
+        }
+
         function toggleFavoriteLeague(event, leagueName) {
             if (event) {
-                event.stopPropagation();
-                event.preventDefault();
+                if (typeof event.stopPropagation === 'function') event.stopPropagation();
+                if (typeof event.preventDefault === 'function') event.preventDefault();
             }
             playSound('click');
-            const cleanName = (leagueName || '').trim();
+            const cleanName = normalizeLeague(leagueName);
             if (!cleanName) return;
 
-            const index = favoriteLeagues.indexOf(cleanName);
-            if (index > -1) {
-                favoriteLeagues.splice(index, 1);
+            const existingIdx = favoriteLeagues.findIndex(f => normalizeLeague(f).toLowerCase() === cleanName.toLowerCase());
+            let isNowFavorite = false;
+            if (existingIdx > -1) {
+                favoriteLeagues.splice(existingIdx, 1);
+                isNowFavorite = false;
             } else {
                 favoriteLeagues.push(cleanName);
+                isNowFavorite = true;
             }
             localStorage.setItem('wp_favorite_leagues', JSON.stringify(favoriteLeagues));
+
+            if (isNowFavorite) {
+                showSimToast(`"${cleanName}" se agregó a tus favoritas`, '⭐ LIGAS FAVORITAS', '⭐');
+            } else {
+                showSimToast(`"${cleanName}" se eliminó de favoritas`, '⭐ LIGAS FAVORITAS', '🗑️');
+            }
+
             renderLeaguesBar();
             renderMatches();
         }
@@ -709,7 +752,7 @@
             // Extract unique leagues and count matches (strictly > 0)
             const leagueCounts = {};
             sportMatches.forEach(m => {
-                const lName = (m.league && m.league.trim()) ? m.league.trim() : 'Otras Ligas';
+                const lName = normalizeLeague(m.league) || 'Otras Ligas';
                 leagueCounts[lName] = (leagueCounts[lName] || 0) + 1;
             });
 
@@ -717,12 +760,12 @@
             let uniqueLeagues = Object.keys(leagueCounts).filter(lName => (leagueCounts[lName] || 0) > 0);
 
             // Count favorite matches
-            const favMatchesCount = sportMatches.filter(m => favoriteLeagues.includes((m.league || '').trim())).length;
+            const favMatchesCount = sportMatches.filter(m => isLeagueFavorite(m.league)).length;
 
             // Sort leagues: Favorites FIRST, then by match count descending
             uniqueLeagues.sort((a, b) => {
-                const isFavA = favoriteLeagues.includes(a);
-                const isFavB = favoriteLeagues.includes(b);
+                const isFavA = isLeagueFavorite(a);
+                const isFavB = isLeagueFavorite(b);
                 if (isFavA && !isFavB) return -1;
                 if (!isFavA && isFavB) return 1;
                 return leagueCounts[b] - leagueCounts[a];
@@ -758,23 +801,28 @@
             const isFavFilterActive = currentLeagueFilter === 'favorites';
             const favBtn = document.createElement('button');
             favBtn.className = `px-3.5 py-1.5 rounded-xl border text-xs font-bold font-outfit transition whitespace-nowrap flex items-center gap-1.5 flex-shrink-0 ${isFavFilterActive ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black border-amber-400 shadow-md' : (favMatchesCount > 0 ? 'bg-wpCard text-amber-300 hover:bg-wpCardHover border-amber-500/40' : 'bg-wpCard text-slate-400 hover:bg-wpCardHover border-wpBorder')}`;
-            favBtn.innerHTML = `<span>⭐</span><span>Favoritas</span><span class="text-[10px] px-1.5 py-0.2 rounded-full ${isFavFilterActive ? 'bg-slate-950/30 text-slate-950 font-black' : 'bg-wpDark text-amber-400 font-bold'}">${favMatchesCount}</span>`;
-            favBtn.onclick = () => filterLeague('favorites');
+            favBtn.innerHTML = `<span>⭐</span><span>Favoritas</span><span class="text-[10px] px-1.5 py-0.2 rounded-full ${isFavFilterActive ? 'bg-slate-950/30 text-slate-950 font-black' : (favMatchesCount > 0 ? 'bg-wpDark text-amber-400 font-bold' : 'bg-wpDark text-slate-500')}">${favMatchesCount}</span>`;
+            favBtn.onclick = () => {
+                if (favMatchesCount === 0 && favoriteLeagues.length === 0) {
+                    showSimToast('Aún no tienes ligas favoritas. Toca la estrella ☆ de cualquier liga para agregarla.', '⭐ LIGAS FAVORITAS', '⭐');
+                }
+                filterLeague('favorites');
+            };
             container.appendChild(favBtn);
 
             // 3. Render all unique league pills safely
             uniqueLeagues.forEach(leagueName => {
                 const isActive = currentLeagueFilter === leagueName;
                 const count = leagueCounts[leagueName];
-                const isFav = favoriteLeagues.includes(leagueName);
+                const isFav = isLeagueFavorite(leagueName);
 
                 const pillDiv = document.createElement('div');
-                pillDiv.className = `inline-flex items-center rounded-xl border transition whitespace-nowrap overflow-hidden flex-shrink-0 ${isActive ? 'bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-black border-wpGreen shadow-md' : (isFav ? 'bg-wpCard text-amber-200 border-amber-500/50 hover:bg-wpCardHover' : 'bg-wpCard text-slate-300 hover:bg-wpCardHover border-wpBorder')}`;
+                pillDiv.className = `inline-flex items-center rounded-xl border transition whitespace-nowrap overflow-hidden flex-shrink-0 ${isActive ? 'bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-black border-wpGreen shadow-md' : (isFav ? 'bg-wpCard text-amber-200 border-amber-500/60 hover:bg-wpCardHover shadow-sm' : 'bg-wpCard text-slate-300 hover:bg-wpCardHover border-wpBorder')}`;
 
                 const starBtn = document.createElement('button');
-                starBtn.className = 'pl-2.5 pr-1 py-1.5 text-xs hover:scale-125 transition flex items-center justify-center';
+                starBtn.className = 'pl-2.5 pr-1.5 py-1.5 text-xs hover:scale-125 transition flex items-center justify-center';
                 starBtn.title = isFav ? 'Quitar de favoritas' : 'Marcar liga como favorita';
-                starBtn.innerHTML = isFav ? '⭐' : '<span class="text-slate-500 hover:text-amber-400">☆</span>';
+                starBtn.innerHTML = isFav ? '<span class="text-amber-400 text-sm">⭐</span>' : '<span class="text-slate-500 hover:text-amber-400 text-sm">☆</span>';
                 starBtn.onclick = (e) => toggleFavoriteLeague(e, leagueName);
                 pillDiv.appendChild(starBtn);
 
@@ -807,11 +855,11 @@
             let filtered = matches.filter(m => {
                 if (currentSportFilter === 'live' && !m.isLive) return false;
                 if (currentSportFilter !== 'all' && currentSportFilter !== 'live' && m.sport !== currentSportFilter) return false;
-                const cleanLeague = (m.league || '').trim();
+                const cleanLeague = normalizeLeague(m.league);
                 if (currentLeagueFilter === 'favorites') {
-                    return favoriteLeagues.includes(cleanLeague);
+                    return isLeagueFavorite(cleanLeague);
                 }
-                if (currentLeagueFilter !== 'all' && cleanLeague !== currentLeagueFilter) return false;
+                if (currentLeagueFilter !== 'all' && normalizeLeague(currentLeagueFilter).toLowerCase() !== cleanLeague.toLowerCase()) return false;
                 return true;
             });
 
@@ -822,13 +870,17 @@
             if (filtered.length === 0) {
                 if (currentLeagueFilter === 'favorites') {
                     container.innerHTML = `
-                        <div class="bg-wpDark2 border border-amber-500/30 rounded-2xl p-10 text-center">
-                            <span class="text-3xl mb-2 block">⭐</span>
-                            <h4 class="font-bebas text-2xl text-white">NO HAY PARTIDOS EN TUS LIGAS FAVORITAS</h4>
-                            <p class="text-xs text-slate-400 mb-4 font-light">No tienes ligas marcadas como favoritas con partidos hoy o en este deporte.</p>
-                            <div class="flex items-center justify-center gap-2">
-                                <button onclick="filterLeague('all')" class="px-4 py-2 bg-wpGreen text-wpDark font-black font-outfit text-xs rounded-xl shadow">
-                                    Ver Todas las Ligas
+                        <div class="bg-wpDark2 border border-amber-500/30 rounded-3xl p-10 text-center space-y-4">
+                            <span class="text-4xl block animate-pulse">⭐</span>
+                            <div>
+                                <h4 class="font-bebas text-2xl text-white">NO TIENES LIGAS FAVORITAS SELECCIONADAS</h4>
+                                <p class="text-xs text-slate-400 max-w-md mx-auto font-light mt-1">
+                                    Haz clic en la estrella <span class="text-amber-400 font-bold">☆</span> al lado de cualquier liga o partido para agregarla a tu lista de favoritas.
+                                </p>
+                            </div>
+                            <div class="pt-2">
+                                <button onclick="filterLeague('all')" class="px-5 py-2.5 bg-gradient-to-r from-wpGreen to-wpGreenDark text-wpDark font-black font-outfit text-xs rounded-xl shadow-lg hover:brightness-110 transition">
+                                    Explorar Todas las Ligas (${matches.length} partidos)
                                 </button>
                             </div>
                         </div>
@@ -866,9 +918,9 @@
                 const isSelected2 = isBetSelected(m.id, '1X2', '2');
 
                 const mScorePreds = getOrComputeScorePredictions(m);
-                const cleanLeague = (m.league || '').trim();
-                const isFav = favoriteLeagues.includes(cleanLeague);
-                const encodedLeague = encodeURIComponent(cleanLeague);
+                const cleanLeague = normalizeLeague(m.league);
+                const isFav = isLeagueFavorite(cleanLeague);
+                const escapedLeagueAttr = cleanLeague.replace(/"/g, '&quot;');
 
                 html += `
                     <div class="bg-wpDark2 hover:border-slate-700/80 border border-wpBorder rounded-3xl p-4 sm:p-5 transition shadow-lg relative overflow-hidden" id="match-card-${m.id}">
@@ -876,12 +928,13 @@
                         <!-- Top League, Date & Live Info -->
                         <div class="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-wpBorder/60">
                             <div class="flex items-center gap-1.5">
-                                <button onclick="toggleFavoriteLeague(event, decodeURIComponent('${encodedLeague}'))" class="text-xs hover:scale-125 transition p-0.5" title="${isFav ? 'Quitar de favoritas' : 'Marcar liga como favorita'}">
-                                    ${isFav ? '⭐' : '<span class="text-slate-500 hover:text-amber-400">☆</span>'}
+                                <button onclick="toggleFavoriteLeague(event, this.getAttribute('data-league'))" data-league="${escapedLeagueAttr}" class="text-xs hover:scale-125 transition p-1" title="${isFav ? 'Quitar de favoritas' : 'Marcar liga como favorita'}">
+                                    ${isFav ? '<span class="text-amber-400 text-sm">⭐</span>' : '<span class="text-slate-500 hover:text-amber-400 text-sm">☆</span>'}
                                 </button>
-                                <span class="text-xs font-bold text-slate-300 font-outfit cursor-pointer hover:text-wpGreen transition" onclick="filterLeague(decodeURIComponent('${encodedLeague}'))">${cleanLeague}</span>
+                                <span class="text-xs font-bold text-slate-300 font-outfit cursor-pointer hover:text-wpGreen transition" onclick="filterLeague(this.getAttribute('data-league'))" data-league="${escapedLeagueAttr}">${cleanLeague}</span>
                             </div>
                             <div class="flex items-center gap-2">
+
 
                                 <button onclick="openStatsModal('${m.id}')" class="text-xs font-bold text-wpGreen hover:bg-wpGreen/20 bg-wpGreen/10 border border-wpGreen/30 px-2.5 py-0.5 rounded-full font-outfit transition flex items-center gap-1">
                                     <span>🎯</span> <span class="hidden sm:inline">Pronóstico & H2H</span><span class="sm:hidden">IA & H2H</span>
