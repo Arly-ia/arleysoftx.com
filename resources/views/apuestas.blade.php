@@ -881,8 +881,11 @@
         // --- LEAGUES FAVORITES ---
         function normalizeLeague(name) {
             if (!name) return '';
-            return name.toString().trim().replace(/\s+/g, ' ');
+            let s = name.toString().trim().replace(/\s+/g, ' ');
+            s = s.replace(/^[a-z]{2}\s+/i, '');
+            return s;
         }
+
 
         function isLeagueFavorite(name) {
             const target = normalizeLeague(name).toLowerCase();
