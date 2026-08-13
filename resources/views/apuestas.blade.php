@@ -1244,21 +1244,33 @@
                                 <span class="text-xs font-bold text-slate-300 font-outfit cursor-pointer hover:text-wpGreen transition" onclick="filterLeague(this.getAttribute('data-league'))" data-league="${escapedLeagueAttr}">${cleanLeague}</span>
                             </div>
                             <div class="flex items-center gap-2">
-
-
                                 <button onclick="openStatsModal('${m.id}')" class="text-xs font-bold text-wpGreen hover:bg-wpGreen/20 bg-wpGreen/10 border border-wpGreen/30 px-2.5 py-0.5 rounded-full font-outfit transition flex items-center gap-1">
                                     <span>🎯</span> <span class="hidden sm:inline">Pronóstico & H2H</span><span class="sm:hidden">IA & H2H</span>
                                 </button>
 
                                 ${m.isLive ? `
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-wpRed/15 border border-wpRed/30 text-wpRed text-[11px] font-black font-outfit">
-                                        <span class="w-2 h-2 rounded-full bg-wpRed pulse-live"></span>
-                                        VIVO ${m.minute}
-                                    </span>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-400 text-[11px] font-black font-outfit">
+                                            <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                                            ${m.period || ('VIVO ' + m.minute)}
+                                        </span>
+                                        ${m.partialScore ? `
+                                            <span class="text-[10px] font-black text-emerald-300 font-outfit bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full shadow-sm" title="Marcador parcial">
+                                                ⏱️ ${m.partialScore}
+                                            </span>
+                                        ` : ''}
+                                    </div>
                                 ` : `
-                                    <span class="text-[11px] font-semibold text-slate-400 font-outfit bg-wpCard px-2.5 py-0.5 rounded-full border border-wpBorder">
-                                        ⏱️ ${m.startTime}
-                                    </span>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-[11px] font-semibold text-slate-400 font-outfit bg-wpCard px-2.5 py-0.5 rounded-full border border-wpBorder">
+                                            ⏱️ ${m.startTime}
+                                        </span>
+                                        ${(m.isFinished && m.partialScore) ? `
+                                            <span class="text-[10px] font-bold text-slate-300 font-outfit bg-wpDark px-2 py-0.5 rounded-full border border-slate-700">
+                                                ${m.partialScore}
+                                            </span>
+                                        ` : ''}
+                                    </div>
                                 `}
                             </div>
                         </div>
@@ -1270,7 +1282,7 @@
                                     <div class="flex items-center gap-2">
                                         <span class="text-[10px] font-black uppercase text-slate-400 font-outfit tracking-wider">🏁 Marcador Final Oficial:</span>
                                         <span class="text-sm font-black text-wpGreen font-bebas tracking-wide">${m.homeScore} - ${m.awayScore}</span>
-                                        <span class="text-[10px] text-slate-400 font-outfit font-semibold">(Concluido)</span>
+                                        ${m.partialScore ? `<span class="text-[10px] text-slate-400 font-outfit font-semibold">(${m.partialScore})</span>` : '<span class="text-[10px] text-slate-400 font-outfit font-semibold">(Concluido)</span>'}
                                     </div>
                                     <span class="text-[10px] text-slate-400 font-bold font-outfit flex items-center gap-1 group-hover:text-white transition">
                                         <span>Estadísticas</span> <span>→</span>
@@ -1280,7 +1292,7 @@
                                 <div class="mb-3.5 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-wpGreen/15 to-wpCard border border-emerald-500/40 flex items-center justify-between cursor-pointer hover:border-emerald-400 transition group shadow-sm" onclick="openStatsModal('${m.id}')" title="Proyección en vivo ajustada al marcador actual en tiempo real">
                                     <div class="flex items-center gap-2">
                                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                                        <span class="text-[10px] font-black uppercase text-emerald-400 font-outfit tracking-wider">🟢 Proyección Final en Vivo (${m.minute}):</span>
+                                        <span class="text-[10px] font-black uppercase text-emerald-400 font-outfit tracking-wider">🟢 Proyección Final en Vivo (${m.period || m.minute}):</span>
                                         <span class="text-sm font-black text-white font-bebas tracking-wide group-hover:text-emerald-400 transition">${mScorePreds.recommendedScore}</span>
                                         <span class="text-[10px] text-emerald-300 font-outfit font-bold">(${mScorePreds.recommendedProb}% prob. @${mScorePreds.recommendedOdds.toFixed(2)})</span>
                                     </div>
@@ -1334,10 +1346,29 @@
                                 </span>
                             </div>
 
-                            <!-- VS / Separator -->
-                            <div class="hidden md:flex md:col-span-2 flex-col items-center justify-center text-xs font-black text-slate-500 font-bebas tracking-widest">
-                                <span>VS</span>
-                                <span class="text-[9px] text-slate-400 font-outfit">H2H & IA 📊</span>
+                            <!-- VS / Center Status & Partial Score Box -->
+                            <div class="hidden md:flex md:col-span-2 flex-col items-center justify-center text-center p-1.5 rounded-2xl bg-wpDark border border-wpBorder/80 shadow-inner">
+                                ${m.isLive ? `
+                                    <span class="text-[10px] font-black text-rose-400 font-outfit uppercase flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+                                        ${m.period || ('VIVO ' + m.minute)}
+                                    </span>
+                                    ${m.partialScore ? `
+                                        <span class="text-[10px] font-black text-emerald-300 font-outfit bg-wpCard px-2 py-0.5 rounded-md border border-emerald-500/30 mt-0.5">
+                                            ${m.partialScore}
+                                        </span>
+                                    ` : ''}
+                                ` : m.isFinished ? `
+                                    <span class="text-[10px] font-black text-slate-400 font-outfit uppercase">FINAL</span>
+                                    ${m.partialScore ? `
+                                        <span class="text-[10px] font-bold text-slate-300 font-outfit bg-wpCard px-1.5 py-0.5 rounded border border-slate-700 mt-0.5">
+                                            ${m.partialScore}
+                                        </span>
+                                    ` : ''}
+                                ` : `
+                                    <span class="font-bebas text-lg text-slate-400 tracking-widest leading-none">VS</span>
+                                    <span class="text-[9px] text-slate-500 font-outfit">H2H & IA 📊</span>
+                                `}
                             </div>
 
                             <!-- Team 2 & Score -->
@@ -1367,7 +1398,18 @@
                                     `}
                                 </div>
                             </div>
+
+                            <!-- Mobile Partial Score Bar -->
+                            ${(m.isLive || m.isFinished) && m.partialScore ? `
+                                <div class="md:hidden col-span-1 flex items-center justify-between px-3 py-1.5 rounded-xl bg-wpDark border border-wpBorder/70 text-[11px] font-outfit">
+                                    <span class="text-slate-400 font-bold flex items-center gap-1">
+                                        <span class="${m.isLive ? 'text-rose-400 font-black' : 'text-slate-400'}">${m.period || (m.isLive ? 'VIVO' : 'FINAL')}:</span>
+                                    </span>
+                                    <span class="text-emerald-300 font-black px-2 py-0.2 rounded bg-wpCard border border-wpBorder">${m.partialScore}</span>
+                                </div>
+                            ` : ''}
                         </div>
+
 
                         <!-- Main Betting Market Grid (2-Way Moneyline for Baseball/Basketball/NFL vs 3-Way 1X2 for Soccer) -->
                         ${m.hasDraw ? `
@@ -1769,7 +1811,25 @@
                             <div style="width: ${h2h.awayWinProb}%" class="bg-cyan-400 h-full"></div>
                         </div>
                     </div>
+
+                    ${(match.isLive || match.isFinished || match.partialScore) ? `
+                        <div class="mt-3 pt-3 border-t border-wpBorder/60 flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-black uppercase ${match.isLive ? 'text-rose-400' : 'text-slate-300'} font-outfit flex items-center gap-1.5">
+                                    ${match.isLive ? '<span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>' : '🏁'}
+                                    <span>${match.period || (match.isLive ? 'EN VIVO ' + match.minute : 'FINALIZADO')}</span>
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs font-outfit">
+                                <span class="text-slate-400 font-bold">⏱️ Tiempo Parcial:</span>
+                                <span class="px-2.5 py-0.5 rounded-lg bg-wpDark border border-wpBorder text-emerald-400 font-black">
+                                    ${match.partialScore || `${match.homeScore} - ${match.awayScore}`}
+                                </span>
+                            </div>
+                        </div>
+                    ` : ''}
                 </div>
+
 
                 <!-- 🔥 MÓDULO INTELIGENTE DE SUGERENCIA DE MARCADORES (POISSON AI) -->
                 <div class="bg-gradient-to-br from-wpCard via-[#132235] to-wpCard border border-wpGreen/30 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden">

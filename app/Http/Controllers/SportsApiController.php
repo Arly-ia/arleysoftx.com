@@ -434,6 +434,54 @@ class SportsApiController extends Controller
         $playerScorers = $this->getPlayerScorersForTeams($home, $away);
         $cornersStats = $this->getCornersAndCardsStats($home, $away);
 
+        // Extraer y procesar tiempos parciales (1T, Descanso, 2T)
+        $htHome = isset($f['score']['halftime']['home']) && $f['score']['halftime']['home'] !== null ? (int)$f['score']['halftime']['home'] : null;
+        $htAway = isset($f['score']['halftime']['away']) && $f['score']['halftime']['away'] !== null ? (int)$f['score']['halftime']['away'] : null;
+
+        $periodName = 'Por Iniciar';
+        $partialDisplay = '';
+        $htScoreString = null;
+        $shScoreString = null;
+
+        if ($isLive) {
+            if ($statusShort === '1H') {
+                $periodName = "1er Tiempo ({$elapsed}')";
+                $partialDisplay = "1T: {$hScore} - {$aScore}";
+                $htScoreString = "{$hScore} - {$aScore}";
+            } elseif ($statusShort === 'HT') {
+                $periodName = "Entretiempo (Descanso)";
+                $partialDisplay = "Descanso: {$hScore} - {$aScore}";
+                $htScoreString = "{$hScore} - {$aScore}";
+            } elseif ($statusShort === '2H') {
+                $periodName = "2do Tiempo ({$elapsed}')";
+                $htH = $htHome !== null ? $htHome : min($hScore, max(0, (int)floor($hScore * 0.5)));
+                $htA = $htAway !== null ? $htAway : min($aScore, max(0, (int)floor($aScore * 0.5)));
+                $shH = max(0, $hScore - $htH);
+                $shA = max(0, $aScore - $htA);
+                $htScoreString = "{$htH} - {$htA}";
+                $shScoreString = "{$shH} - {$shA}";
+                $partialDisplay = "1T: {$htH}-{$htA} · 2T: {$shH}-{$shA}";
+            } elseif ($statusShort === 'ET') {
+                $periodName = "Tiempo Extra ({$elapsed}')";
+                $partialDisplay = "90': {$hScore} - {$aScore}";
+            } elseif ($statusShort === 'P' || $statusShort === 'PEN') {
+                $periodName = "Tanda de Penales";
+                $partialDisplay = "Penales";
+            } else {
+                $periodName = "En Vivo ({$elapsed}')";
+                $partialDisplay = "Parcial: {$hScore} - {$aScore}";
+            }
+        } elseif ($isFinished) {
+            $periodName = 'Finalizado';
+            $htH = $htHome !== null ? $htHome : min($hScore, max(0, (int)floor($hScore * 0.5)));
+            $htA = $htAway !== null ? $htAway : min($aScore, max(0, (int)floor($aScore * 0.5)));
+            $shH = max(0, $hScore - $htH);
+            $shA = max(0, $aScore - $htA);
+            $htScoreString = "{$htH} - {$htA}";
+            $shScoreString = "{$shH} - {$shA}";
+            $partialDisplay = "1T: {$htH}-{$htA} · 2T: {$shH}-{$shA}";
+        }
+
         // Cálculo inteligente de sugerencia de marcadores por Distribución de Poisson (Adaptativa en Vivo)
         $scorePredictions = $this->calculateScorePredictions($home, $away, 'futbol', 2.6, $probHome, $probDraw, $probAway, $hScore, $aScore, $isLive, $elapsed, $isFinished);
 
@@ -452,6 +500,11 @@ class SportsApiController extends Controller
             'isLive' => $isLive,
             'isFinished' => $isFinished,
             'minute' => $isLive ? "{$elapsed}'" : ($isFinished ? 'FT' : '0'),
+            'period' => $periodName,
+            'periodShort' => $statusShort,
+            'partialScore' => $partialDisplay,
+            'halfTimeScore' => $htScoreString,
+            'secondHalfScore' => $shScoreString,
             'startTime' => $startTime,
             'home' => $home,
             'away' => $away,
@@ -512,6 +565,7 @@ class SportsApiController extends Controller
                 ]
             ]
         ];
+
     }
 
     /**
@@ -559,6 +613,11 @@ class SportsApiController extends Controller
             'isLive' => $isLive,
             'isFinished' => $isFinished,
             'minute' => $isLive ? $statusLong : '0',
+            'period' => $isLive ? "Inning: {$statusLong}" : ($isFinished ? 'Final (9 Entradas)' : 'Por Iniciar'),
+            'periodShort' => $statusShort,
+            'partialScore' => $isLive ? "Inning: {$statusLong}" : ($isFinished ? "Carreras: {$hScore} - {$aScore}" : ""),
+            'halfTimeScore' => null,
+            'secondHalfScore' => null,
             'startTime' => $startTime,
             'home' => $home,
             'away' => $away,
@@ -626,6 +685,15 @@ class SportsApiController extends Controller
         $hScore = (int) ($bk['scores']['home']['total'] ?? 0);
         $aScore = (int) ($bk['scores']['away']['total'] ?? 0);
 
+        // Cuartos
+        $q1H = (int)($bk['scores']['home']['quarter_1'] ?? 0);
+        $q1A = (int)($bk['scores']['away']['quarter_1'] ?? 0);
+        $q2H = (int)($bk['scores']['home']['quarter_2'] ?? 0);
+        $q2A = (int)($bk['scores']['away']['quarter_2'] ?? 0);
+        $mt1H = $q1H + $q2H;
+        $mt1A = $q1A + $q2A;
+        $partialDisplay = ($isLive || $isFinished) && ($mt1H > 0 || $mt1A > 0) ? "1MT: {$mt1H}-{$mt1A}" : ($isLive ? $statusLong : "");
+
         $probHome = rand(46, 64);
         $probAway = 100 - $probHome;
         $odds1 = round(100 / max(10, $probHome), 2);
@@ -649,11 +717,17 @@ class SportsApiController extends Controller
             'isLive' => $isLive,
             'isFinished' => $isFinished,
             'minute' => $isLive ? $statusLong : '0',
+            'period' => $isLive ? $statusLong : ($isFinished ? 'Finalizado' : 'Por Iniciar'),
+            'periodShort' => $statusShort,
+            'partialScore' => $partialDisplay,
+            'halfTimeScore' => ($mt1H > 0 || $mt1A > 0) ? "{$mt1H} - {$mt1A}" : null,
+            'secondHalfScore' => null,
             'startTime' => $startTime,
             'home' => $home,
             'away' => $away,
             'homeScore' => $hScore,
             'awayScore' => $aScore,
+
             'homeLogo' => $bk['teams']['home']['logo'] ?? null,
             'awayLogo' => $bk['teams']['away']['logo'] ?? null,
             'score_predictions' => $scorePredictions,
